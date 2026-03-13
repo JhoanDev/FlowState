@@ -17,28 +17,28 @@ export function WeeklyGoals() {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Sample Goal 1 */}
-        <div className="space-y-3 group cursor-default p-4 rounded-[var(--radius)] transition-colors duration-200 hover:bg-[var(--primary)]/5">
+        <div className="space-y-3 group cursor-default p-4 rounded-[var(--radius)] transition-colors duration-200 hover:bg-[var(--work)]/5">
           <div className="flex items-center justify-between">
-            <div className="text-sm font-bold group-hover:text-[var(--primary)] transition-colors duration-200">Work (FlowState app)</div>
+            <div className="text-sm font-bold group-hover:text-[var(--work)] transition-colors duration-200">Work (FlowState app)</div>
             <div className="text-sm font-medium text-[var(--foreground)]/70">15 / 20 hours</div>
           </div>
-          <div className="h-2.5 w-full bg-[var(--border)]/50 rounded-full overflow-hidden">
+          <div className="h-2.5 w-full bg-[var(--border)]/50 rounded-[var(--radius)] overflow-hidden">
             <div
-              className="h-full bg-[var(--primary)] rounded-full transition-all duration-1000 ease-out shadow-sm"
+              className="h-full bg-[var(--work)] rounded-[var(--radius)] transition-all duration-1000 ease-out"
               style={{ width: "75%" }}
             />
           </div>
         </div>
 
         {/* Sample Goal 2 */}
-        <div className="space-y-3 group cursor-default p-4 rounded-[var(--radius)] transition-colors duration-200 hover:bg-[var(--primary)]/5">
+        <div className="space-y-3 group cursor-default p-4 rounded-[var(--radius)] transition-colors duration-200 hover:bg-[var(--study)]/5">
           <div className="flex items-center justify-between">
-            <div className="text-sm font-bold group-hover:text-blue-800 transition-colors duration-200">Study (Algorithms)</div>
+            <div className="text-sm font-bold group-hover:text-[var(--study)] transition-colors duration-200">Study (Algorithms)</div>
             <div className="text-sm font-medium text-[var(--foreground)]/70">3 / 10 hours</div>
           </div>
-          <div className="h-2.5 w-full bg-[var(--border)]/50 rounded-full overflow-hidden">
+          <div className="h-2.5 w-full bg-[var(--border)]/50 rounded-[var(--radius)] overflow-hidden">
             <div
-              className="h-full bg-blue-800 rounded-full transition-all duration-1000 ease-out shadow-sm"
+              className="h-full bg-[var(--study)] rounded-[var(--radius)] transition-all duration-1000 ease-out"
               style={{ width: "30%" }}
             />
           </div>

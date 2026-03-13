@@ -6,6 +6,7 @@ import { SessionConfigForm } from "@/components/activity/session-config-form";
 import { TimerDisplay } from "@/components/activity/timer-display";
 import { SessionReviewForm, SessionReviewData } from "@/components/activity/session-review-form";
 import { AppLayout } from "@/components/layout/app-layout";
+import { cn } from "@/lib/utils";
 
 type SessionState = "IDLE" | "ACTIVE" | "REVIEW";
 
@@ -44,7 +45,7 @@ export default function SessionPage() {
           )}
 
           {sessionState === "ACTIVE" && (
-            <div className="w-full">
+            <div className={cn("w-full", sessionType === "STUDY" ? "theme-study" : "theme-work")}>
               <TimerDisplay
                 mode={sessionType === "WORK" ? "PROGRESSIVE" : "PROGRESSIVE"}
                 onFinish={handleTimerFinished}
@@ -53,7 +54,7 @@ export default function SessionPage() {
           )}
 
           {sessionState === "REVIEW" && (
-            <div className="w-full flex justify-center">
+            <div className={cn("w-full flex justify-center", sessionType === "STUDY" ? "theme-study" : "theme-work")}>
               <SessionReviewForm onSave={handleReviewSaved} className="w-full max-w-xl" />
             </div>
           )}

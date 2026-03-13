@@ -29,7 +29,7 @@ export function SessionTypeToggle({ value, onChange }: SessionTypeToggleProps) {
         className={cn(
           "flex-1 py-2.5 text-sm font-bold tracking-wide rounded-[calc(var(--radius)-0.25rem)] transition-all duration-300 focus:outline-none",
           value === "STUDY"
-            ? "bg-blue-800 text-white shadow-sm" 
+            ? "bg-blue-800 text-white shadow-sm"
             : "bg-transparent text-[var(--foreground)]/50 hover:bg-[var(--border)]/30 hover:text-[var(--foreground)]"
         )}
       >

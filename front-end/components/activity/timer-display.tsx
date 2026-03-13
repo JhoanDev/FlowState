@@ -26,7 +26,7 @@ export function TimerDisplay({
   } = useSessionTimer({ initialSeconds, mode, onTimerComplete: onFinish });
 
   return (
-    <div className="flex flex-col w-full max-w-lg mx-auto rounded-[var(--radius)] overflow-hidden border border-[var(--border)] bg-[var(--background)] animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+    <div className="flex flex-col w-full max-w-lg mx-auto rounded-[var(--radius)] overflow-hidden border border-[var(--border)] bg-[var(--background)] animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
       
       {/* Beautiful Time Display Block */}
       <div className="flex flex-col items-center justify-center py-24 px-8 border-b border-[var(--border)] relative overflow-hidden bg-[var(--background)]">
@@ -36,7 +36,7 @@ export function TimerDisplay({
           isActive ? "opacity-100" : "opacity-0"
         )} />
         
-        <span className="relative z-10 text-8xl md:text-9xl font-bold tabular-nums tracking-tighter text-[var(--foreground)] drop-shadow-md leading-none transition-all duration-300">
+        <span className="relative z-10 text-8xl md:text-9xl font-bold tabular-nums tracking-tighter text-[var(--foreground)] leading-none transition-all duration-300">
           {formattedTime}
         </span>
         <span className="relative z-10 mt-8 text-sm font-semibold tracking-[0.2em] uppercase text-[var(--primary)]">

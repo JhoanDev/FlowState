@@ -14,11 +14,36 @@
   --background: #050505;
   --foreground: #ffffff;
 
-  --primary: #a82ffc;
-  --primary-foreground: #ffffff;
+  /* Sistema */
+  --system: #7c3aed; 
+  --system-border: #4c1d95; 
+  --system-foreground: #ffffff;
 
+  /* Trabalho */
+  --work: #ea580c; 
+  --work-foreground: #ffffff;
+
+  /* Estudo */
+  --study: #2563eb; 
+  --study-foreground: #ffffff;
+
+  /* Default system theme */
+  --primary: var(--system);
+  --primary-foreground: var(--system-foreground);
+
+  /* Flat design rules */
   --border: #27272a;
-  --radius: 0.2rem;
+  --radius: 0.1;
+}
+
+.theme-work {
+  --primary: var(--work);
+  --primary-foreground: var(--work-foreground);
+}
+
+.theme-study {
+  --primary: var(--study);
+  --primary-foreground: var(--study-foreground);
 }
 
 @media (prefers-color-scheme: light) {

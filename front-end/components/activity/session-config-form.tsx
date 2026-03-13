@@ -6,6 +6,7 @@ import { TagSelector } from "./tag-selector";
 import { ProjectSelector } from "./project-selector";
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SessionConfigFormProps {
   onStart?: (type: "WORK" | "STUDY") => void;
@@ -15,7 +16,7 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
   const [sessionType, setSessionType] = React.useState<"WORK" | "STUDY">("WORK");
   const [project, setProject] = React.useState<string>("");
   const [tags, setTags] = React.useState<string[]>([]);
-  
+
   const handleStartSession = () => {
     // In future: Save to sqlite etc.
     if (onStart) {
@@ -24,7 +25,10 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
   };
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-lg mx-auto min-h-[500px] rounded-[var(--radius)] border border-[var(--border)] bg-[var(--background)] p-8 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out shadow-sm">
+    <div className={cn(
+      "flex flex-col gap-8 w-full max-w-lg mx-auto min-h-[500px] rounded-[var(--radius)] border border-[var(--border)] bg-[var(--background)] p-8 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out shadow-sm",
+      sessionType === "STUDY" ? "theme-study" : "theme-work"
+    )}>
       <div className="text-center flex-none">
         <h3 className="text-2xl font-bold tracking-tight text-[var(--foreground)] mb-2">Configure Session</h3>
         <p className="text-sm text-[var(--foreground)]/60 font-medium">What's the goal for the next block?</p>

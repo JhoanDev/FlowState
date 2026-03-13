@@ -47,17 +47,21 @@ export function RecentActivity() {
           {sampleActivities.map((activity) => (
             <div key={activity.id} className="flex items-start gap-4 group cursor-default p-4 rounded-[var(--radius)] hover:bg-[var(--primary)]/5 transition-colors duration-200">
               <div
-                className={`flex h-12 w-12 items-center justify-center shrink-0 rounded-[var(--radius)] border border-[var(--border)] text-xs font-bold transition-transform duration-200 group-hover:scale-105 shadow-sm ${
+                className={`flex h-12 w-12 items-center justify-center shrink-0 rounded-[var(--radius)] border border-[var(--border)] text-xs font-bold transition-transform duration-200 group-hover:scale-105 ${
                   activity.type === "WORK"
-                    ? "bg-[var(--primary)]/10 text-[var(--primary)]"
-                    : "bg-blue-800/10 text-blue-800"
+                    ? "bg-[var(--work)]/10 text-[var(--work)]"
+                    : "bg-[var(--study)]/10 text-[var(--study)]"
                 }`}
               >
                 {activity.type === "WORK" ? "WK" : "ST"}
               </div>
               <div className="flex flex-col gap-1.5 w-full min-w-0 justify-center">
                 <div className="flex items-center justify-between w-full">
-                  <span className="text-sm font-bold truncate pr-2 group-hover:text-[var(--primary)] transition-colors duration-200">{activity.category}</span>
+                  <span className={`text-sm font-bold truncate pr-2 transition-colors duration-200 ${
+                    activity.type === "WORK"
+                      ? "group-hover:text-[var(--work)]"
+                      : "group-hover:text-[var(--study)]"
+                  }`}>{activity.category}</span>
                   <span className="text-xs font-medium text-[var(--foreground)]/50 shrink-0">
                     {activity.timeAgo}
                   </span>

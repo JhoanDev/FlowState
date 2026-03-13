@@ -25,7 +25,7 @@ export function SessionReviewForm({ onSave, className }: SessionReviewFormProps)
   };
 
   return (
-    <div className={cn("flex flex-col w-full max-w-lg mx-auto rounded-[var(--radius)] overflow-hidden border border-[var(--border)] bg-[var(--background)] animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out shadow-sm", className)}>
+    <div className={cn("flex flex-col w-full max-w-lg mx-auto rounded-[var(--radius)] overflow-hidden border border-[var(--border)] bg-[var(--background)] animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out", className)}>
       
       {/* Header Block */}
       <div className="p-8 border-b border-[var(--border)] bg-[var(--border)]/10 text-center">
