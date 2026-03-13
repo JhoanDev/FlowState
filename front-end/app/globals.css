@@ -11,16 +11,19 @@
 }
 
 :root {
-  --background: #000000;
-  --foreground: #ededed;
-  --primary: #9333ea;
+  --background: #050505;
+  --foreground: #ffffff;
+
+  --primary: #a82ffc;
   --primary-foreground: #ffffff;
-  --border: #262626;
+
+  --border: #27272a;
+  --radius: 0.2rem;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    --background: #000000; /* Forcing Dark Mode Flat Design */
+    --background: #000000;
     --foreground: #ededed;
   }
 }
@@ -28,7 +31,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
   width: 100vw;
   height: 100vh;
   overflow: hidden;

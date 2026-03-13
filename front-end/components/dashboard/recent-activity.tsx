@@ -45,28 +45,28 @@ export function RecentActivity() {
       <CardContent>
         <div className="space-y-6">
           {sampleActivities.map((activity) => (
-            <div key={activity.id} className="flex items-start gap-4">
+            <div key={activity.id} className="flex items-start gap-4 group cursor-default p-4 rounded-[var(--radius)] hover:bg-[var(--primary)]/5 transition-colors duration-200">
               <div
-                className={`flex h-10 w-10 items-center justify-center shrink-0 border border-[var(--border)] text-xs font-bold ${
+                className={`flex h-12 w-12 items-center justify-center shrink-0 rounded-[var(--radius)] border border-[var(--border)] text-xs font-bold transition-transform duration-200 group-hover:scale-105 shadow-sm ${
                   activity.type === "WORK"
                     ? "bg-[var(--primary)]/10 text-[var(--primary)]"
-                    : "bg-[#2563eb]/10 text-[#2563eb]" // Using a blue shade for Study explicitly just as example, ideally from tokens
+                    : "bg-blue-800/10 text-blue-800"
                 }`}
               >
                 {activity.type === "WORK" ? "WK" : "ST"}
               </div>
-              <div className="flex flex-col gap-1 w-full">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{activity.category}</span>
-                  <span className="text-xs text-[var(--foreground)]/50">
+              <div className="flex flex-col gap-1.5 w-full min-w-0 justify-center">
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-sm font-bold truncate pr-2 group-hover:text-[var(--primary)] transition-colors duration-200">{activity.category}</span>
+                  <span className="text-xs font-medium text-[var(--foreground)]/50 shrink-0">
                     {activity.timeAgo}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold px-2 py-0.5 bg-[var(--border)]/50">
+                <div className="flex items-center gap-3 w-full">
+                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-[var(--radius)] bg-[var(--border)]/30 shrink-0 text-[var(--foreground)]/80">
                     {activity.duration}
                   </span>
-                  <span className="text-xs text-[var(--foreground)]/70 truncate border-l border-[var(--border)] pl-2">
+                  <span className="text-sm text-[var(--foreground)]/60 truncate border-l-2 border-[var(--border)]/30 pl-3">
                     {activity.note}
                   </span>
                 </div>

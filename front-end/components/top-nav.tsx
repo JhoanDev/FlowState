@@ -1,27 +1,32 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { Play } from "lucide-react";
+import Link from "next/link";
+import * as React from "react";
 
-export function TopNav({ className }: { className?: string }) {
+export function TopNav({ className, title = "Dashboard" }: { className?: string; title?: string }) {
   return (
     <header
       className={cn(
-        "flex h-16 items-center justify-between px-6 border-b border-[var(--border)] bg-[var(--background)]",
+        "flex h-20 items-center justify-between px-8 border-b border-[var(--border)] bg-[var(--background)] z-50",
         className
       )}
     >
-      <div>
-        {/* Placeholder for page title or breadcrumbs if needed in the future */}
-        <h2 className="text-lg font-semibold tracking-tight">Dashboard</h2>
+      <div className="flex-1">
+        <h2 className="text-xl font-semibold tracking-tight text-[var(--foreground)]">{title}</h2>
       </div>
 
-      <div className="flex items-center gap-4">
-        {/* Placeholder for generic action or global timer toggle */}
-        <button
-          className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] text-sm font-semibold transition-colors hover:bg-[var(--primary)]/90"
-        >
-          <Play className="h-4 w-4" />
-          Start Session
-        </button>
+      <div className="relative flex items-center gap-4 shrink-0">
+        {title !== "Session" && (
+          <Link
+            href="/session"
+            className="flex items-center gap-3 px-6 py-3 border-2 border-transparent bg-[var(--primary)] text-[var(--primary-foreground)] text-base font-semibold transition-all duration-200 ease-in-out hover:bg-transparent hover:text-[var(--primary)] hover:border-[var(--primary)] outline-none"
+          >
+            <Play className="h-5 w-5 fill-current" />
+            Start Session
+          </Link>
+        )}
       </div>
     </header>
   );

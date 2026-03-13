@@ -8,58 +8,66 @@ import { Clock, Flame, Target } from "lucide-react";
 
 export function StatsCards() {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
       {/* Total Work Hours */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Work Time</CardTitle>
-          <Clock className="h-4 w-4 text-[var(--foreground)]/50" />
+      <Card className="group cursor-default hover:bg-[var(--primary)]/5 transition-colors duration-300">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+          <CardTitle className="text-sm font-bold uppercase tracking-wider text-[var(--foreground)]/60">Work Time</CardTitle>
+          <div className="p-2 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--background)] group-hover:border-[var(--primary)]/30 group-hover:bg-[var(--primary)]/10 transition-colors duration-300 shadow-sm">
+            <Clock className="h-4 w-4 text-[var(--foreground)]/50 group-hover:text-[var(--primary)] group-hover:scale-110 transition-all duration-300" />
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">128.5h</div>
-          <p className="text-xs text-[var(--foreground)]/50">
-            +5% from last month
+          <div className="text-4xl font-black tracking-tighter tabular-nums">128.5h</div>
+          <p className="text-sm font-medium text-[var(--foreground)]/50 mt-2">
+            <span className="text-emerald-500 font-bold">+5%</span> from last month
           </p>
         </CardContent>
       </Card>
 
       {/* Total Study Hours */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Study Time</CardTitle>
-          <Clock className="h-4 w-4 text-[var(--foreground)]/50" />
+      <Card className="group cursor-default hover:bg-[var(--primary)]/5 transition-colors duration-300">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+          <CardTitle className="text-sm font-bold uppercase tracking-wider text-[var(--foreground)]/60">Study Time</CardTitle>
+          <div className="p-2 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--background)] group-hover:border-blue-800/30 group-hover:bg-blue-800/10 transition-colors duration-300 shadow-sm">
+            <Clock className="h-4 w-4 text-[var(--foreground)]/50 group-hover:-rotate-12 group-hover:text-blue-800 transition-all duration-300" />
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">42.0h</div>
-          <p className="text-xs text-[var(--foreground)]/50">
-            +12% from last month
+          <div className="text-4xl font-black tracking-tighter tabular-nums">42.0h</div>
+          <p className="text-sm font-medium text-[var(--foreground)]/50 mt-2">
+            <span className="text-emerald-500 font-bold">+12%</span> from last month
           </p>
         </CardContent>
       </Card>
 
       {/* Active Streak */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
-          <Flame className="h-4 w-4 text-[var(--foreground)]/50" />
+      <Card className="group cursor-default hover:bg-[var(--primary)]/5 transition-colors duration-300">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+          <CardTitle className="text-sm font-bold uppercase tracking-wider text-[var(--foreground)]/60">Current Streak</CardTitle>
+          <div className="p-2 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--background)] group-hover:border-red-500/30 group-hover:bg-red-500/10 transition-colors duration-300 shadow-sm">
+            <Flame className="h-4 w-4 text-[var(--foreground)]/50 group-hover:text-red-500 group-hover:scale-110 transition-all duration-300" />
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">14 days</div>
-          <p className="text-xs text-[var(--foreground)]/50">
+          <div className="text-4xl font-black tracking-tighter tabular-nums">14<span className="text-2xl text-[var(--foreground)]/30 ml-1 font-bold tracking-normal">days</span></div>
+          <p className="text-sm font-medium text-[var(--foreground)]/50 mt-2">
             Best: 32 days
           </p>
         </CardContent>
       </Card>
 
       {/* Weekly Goal Progress */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Goals Met</CardTitle>
-          <Target className="h-4 w-4 text-[var(--foreground)]/50" />
+      <Card className="group cursor-default hover:bg-[var(--primary)]/5 transition-colors duration-300">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+          <CardTitle className="text-sm font-bold uppercase tracking-wider text-[var(--foreground)]/60">Goals Met</CardTitle>
+          <div className="p-2 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--background)] group-hover:border-emerald-500/30 group-hover:bg-emerald-500/10 transition-colors duration-300 shadow-sm">
+            <Target className="h-4 w-4 text-[var(--foreground)]/50 group-hover:text-emerald-500 group-hover:scale-110 transition-all duration-300" />
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">3/4</div>
-          <p className="text-xs text-[var(--foreground)]/50">
+          <div className="text-4xl font-black tracking-tighter tabular-nums text-emerald-500">3/4</div>
+          <p className="text-sm font-medium text-[var(--foreground)]/50 mt-2">
             Focus needed on algorithms
           </p>
         </CardContent>
