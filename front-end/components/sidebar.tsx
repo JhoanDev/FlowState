@@ -1,13 +1,14 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { BarChart2, BookOpen, Clock, Settings, LayoutDashboard, Target } from "lucide-react";
+import { BarChart2, BookOpen, Clock, Settings, LayoutDashboard, Target, Folder } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/" },
   { icon: Target, label: "Session", href: "/session" },
+  { icon: Folder, label: "Projects & Tags", href: "/projects" },
   { icon: BookOpen, label: "Logbook", href: "/logbook" },
   { icon: BarChart2, label: "Reports", href: "/reports" },
 ];

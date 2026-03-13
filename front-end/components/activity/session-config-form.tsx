@@ -43,8 +43,8 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
               <ProjectSelector value={project} onChange={setProject} />
             </div>
           ) : (
-            <div key="study-block" className="absolute inset-x-0 top-0 space-y-3 animate-in slide-in-from-right-4 fade-in duration-300">
-              <label className="text-sm font-semibold text-[var(--foreground)]/70 uppercase tracking-wider">
+            <div key="study-block" className="absolute inset-x-0 top-0 animate-in slide-in-from-right-4 fade-in duration-300">
+              <label className="text-xs font-semibold text-[var(--foreground)]/70 mb-2 block uppercase tracking-wider">
                 Focus Tags
               </label>
               <TagSelector tags={tags} onChange={setTags} />
