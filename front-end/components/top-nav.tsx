@@ -1,21 +1,24 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Play } from "lucide-react";
-import Link from "next/link";
-import * as React from "react";
 
-export function TopNav({ className, title = "Dashboard" }: { className?: string; title?: string }) {
+export function TopNav({
+  className,
+  title = "Dashboard",
+}: {
+  className?: string;
+  title?: string;
+}) {
   return (
     <header
       className={cn(
-        "flex h-20 items-center justify-between px-8 border-b border-[var(--border)] bg-[var(--background)] z-50",
+        "flex h-16 items-center px-8 border-b border-border bg-background shrink-0",
         className
       )}
     >
-      <div className="flex-1">
-        <h2 className="text-xl font-semibold tracking-tight text-[var(--foreground)]">{title}</h2>
-      </div>
+      <h2 className="text-base font-semibold tracking-tight text-foreground">
+        {title}
+      </h2>
     </header>
   );
 }

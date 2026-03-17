@@ -1,77 +1,106 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+"use client";
+
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Clock, Flame, Target } from "lucide-react";
+import type { DashboardStats } from "@/types";
 
-export function StatsCards() {
+interface StatsCardsProps {
+  data: DashboardStats | null;
+  isLoading: boolean;
+}
+
+interface StatCardProps {
+  label: string;
+  value: string;
+  subtext: string;
+  trend?: number;
+  icon: React.ElementType;
+  accentColor: string;
+}
+
+function StatCard({ label, value, subtext, trend, icon: Icon, accentColor }: StatCardProps) {
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-      {/* Total Work Hours */}
-      <Card className="group cursor-default hover:bg-[var(--work)]/5 transition-colors duration-300">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <CardTitle className="text-sm font-bold uppercase tracking-wider text-[var(--foreground)]/60">Work Time</CardTitle>
-          <div className="p-2 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--background)] group-hover:border-[var(--work)]/30 group-hover:bg-[var(--work)]/10 transition-colors duration-300">
-            <Clock className="h-4 w-4 text-[var(--foreground)]/50 group-hover:text-[var(--work)] group-hover:scale-110 transition-all duration-300" />
+    <Card className="group cursor-default">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+            {label}
+          </span>
+          <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-muted transition-all duration-300 group-hover:bg-${accentColor}/10`}>
+            <Icon className={`h-4 w-4 text-muted-foreground transition-all duration-300 group-hover:text-${accentColor} group-hover:scale-110`} />
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="text-4xl font-black tracking-tighter tabular-nums">128.5h</div>
-          <p className="text-sm font-medium text-[var(--foreground)]/50 mt-2">
-            <span className="text-emerald-500 font-bold">+5%</span> from last month
-          </p>
-        </CardContent>
-      </Card>
+        </div>
+        <div className="text-3xl font-bold tracking-tight tabular-nums">{value}</div>
+        <p className="text-sm text-muted-foreground mt-2">
+          {trend !== undefined && (
+            <span className="text-success font-semibold">+{trend}% </span>
+          )}
+          {subtext}
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
 
-      {/* Total Study Hours */}
-      <Card className="group cursor-default hover:bg-[var(--study)]/5 transition-colors duration-300">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <CardTitle className="text-sm font-bold uppercase tracking-wider text-[var(--foreground)]/60">Study Time</CardTitle>
-          <div className="p-2 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--background)] group-hover:border-[var(--study)]/30 group-hover:bg-[var(--study)]/10 transition-colors duration-300">
-            <Clock className="h-4 w-4 text-[var(--foreground)]/50 group-hover:-rotate-12 group-hover:text-[var(--study)] transition-all duration-300" />
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="text-4xl font-black tracking-tighter tabular-nums">42.0h</div>
-          <p className="text-sm font-medium text-[var(--foreground)]/50 mt-2">
-            <span className="text-emerald-500 font-bold">+12%</span> from last month
-          </p>
-        </CardContent>
-      </Card>
+function StatCardSkeleton() {
+  return (
+    <Card>
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <Skeleton className="h-3 w-20" />
+          <Skeleton className="h-9 w-9 rounded-lg" />
+        </div>
+        <Skeleton className="h-8 w-28 mb-2" />
+        <Skeleton className="h-4 w-36 mt-2" />
+      </CardContent>
+    </Card>
+  );
+}
 
-      {/* Active Streak */}
-      <Card className="group cursor-default hover:bg-emerald-500/5 transition-colors duration-300">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <CardTitle className="text-sm font-bold uppercase tracking-wider text-[var(--foreground)]/60">Current Streak</CardTitle>
-          <div className="p-2 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--background)] group-hover:border-emerald-500/30 group-hover:bg-emerald-500/10 transition-colors duration-300">
-            <Flame className="h-4 w-4 text-[var(--foreground)]/50 group-hover:text-emerald-500 group-hover:scale-110 transition-all duration-300" />
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="text-4xl font-black tracking-tighter tabular-nums">14<span className="text-2xl text-[var(--foreground)]/30 ml-1 font-bold tracking-normal">days</span></div>
-          <p className="text-sm font-medium text-[var(--foreground)]/50 mt-2">
-            Best: 32 days
-          </p>
-        </CardContent>
-      </Card>
+export function StatsCards({ data, isLoading }: StatsCardsProps) {
+  if (isLoading || !data) {
+    return (
+      <div className="grid gap-5 grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <StatCardSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
 
-      {/* Weekly Goal Progress */}
-      <Card className="group cursor-default hover:bg-emerald-500/5 transition-colors duration-300">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <CardTitle className="text-sm font-bold uppercase tracking-wider text-[var(--foreground)]/60">Goals Met</CardTitle>
-          <div className="p-2 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--background)] group-hover:border-emerald-500/30 group-hover:bg-emerald-500/10 transition-colors duration-300">
-            <Target className="h-4 w-4 text-[var(--foreground)]/50 group-hover:text-emerald-500 group-hover:scale-110 transition-all duration-300" />
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="text-4xl font-black tracking-tighter tabular-nums text-emerald-500">3/4</div>
-          <p className="text-sm font-medium text-[var(--foreground)]/50 mt-2">
-            Focus needed on algorithms
-          </p>
-        </CardContent>
-      </Card>
+  return (
+    <div className="grid gap-5 grid-cols-4">
+      <StatCard
+        label="Work Time"
+        value={`${data.workHours}h`}
+        subtext="from last month"
+        trend={data.workTrend}
+        icon={Clock}
+        accentColor="work"
+      />
+      <StatCard
+        label="Study Time"
+        value={`${data.studyHours}h`}
+        subtext="from last month"
+        trend={data.studyTrend}
+        icon={Clock}
+        accentColor="study"
+      />
+      <StatCard
+        label="Current Streak"
+        value={`${data.currentStreak} days`}
+        subtext={`Best: ${data.bestStreak} days`}
+        icon={Flame}
+        accentColor="success"
+      />
+      <StatCard
+        label="Goals Met"
+        value={`${data.goalsMet}/${data.goalsTotal}`}
+        subtext="this week"
+        icon={Target}
+        accentColor="primary"
+      />
     </div>
   );
 }

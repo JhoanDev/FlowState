@@ -1,40 +1,47 @@
 "use client";
 
-import * as React from "react";
 import { cn } from "@/lib/utils";
+import { motion } from "motion/react";
+import type { SessionType } from "@/types";
 
 interface SessionTypeToggleProps {
-  value: "WORK" | "STUDY";
-  onChange: (value: "WORK" | "STUDY") => void;
+  value: SessionType;
+  onChange: (value: SessionType) => void;
 }
+
+const options: { value: SessionType; label: string }[] = [
+  { value: "WORK", label: "Work" },
+  { value: "STUDY", label: "Study" },
+];
 
 export function SessionTypeToggle({ value, onChange }: SessionTypeToggleProps) {
   return (
-    <div className="flex w-full items-center p-1.5 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--background)] shadow-inner">
-      <button
-        type="button"
-        onClick={() => onChange("WORK")}
-        className={cn(
-          "flex-1 py-2.5 text-sm font-bold tracking-wide rounded-[calc(var(--radius)-0.25rem)] transition-all duration-300 focus:outline-none",
-          value === "WORK"
-            ? "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-sm"
-            : "bg-transparent text-[var(--foreground)]/50 hover:bg-[var(--border)]/30 hover:text-[var(--foreground)]"
-        )}
-      >
-        WORK
-      </button>
-      <button
-        type="button"
-        onClick={() => onChange("STUDY")}
-        className={cn(
-          "flex-1 py-2.5 text-sm font-bold tracking-wide rounded-[calc(var(--radius)-0.25rem)] transition-all duration-300 focus:outline-none",
-          value === "STUDY"
-            ? "bg-blue-800 text-white shadow-sm"
-            : "bg-transparent text-[var(--foreground)]/50 hover:bg-[var(--border)]/30 hover:text-[var(--foreground)]"
-        )}
-      >
-        STUDY
-      </button>
+    <div className="relative flex w-full items-center gap-1 p-1 rounded-lg border border-border bg-muted">
+      {options.map((opt) => {
+        const isActive = value === opt.value;
+        return (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => onChange(opt.value)}
+            className={cn(
+              "relative z-10 flex-1 py-3 text-sm font-semibold tracking-wide rounded-md transition-colors duration-200",
+              isActive
+                ? "text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {opt.label}
+            {isActive && (
+              <motion.span
+                layoutId="session-toggle-bg"
+                className="absolute inset-0 rounded-md bg-primary shadow-sm -z-10"
+                transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+              />
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 }

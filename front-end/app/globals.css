@@ -1,64 +1,116 @@
 @import "tailwindcss";
 
+/* ─── Tailwind Theme Bridge ──────────────────────────────────────
+   Maps CSS vars → Tailwind classes: bg-background, text-foreground,
+   border-border, bg-primary, text-muted, bg-card, etc.            */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-work: var(--work);
+  --color-work-foreground: var(--work-foreground);
+  --color-study: var(--study);
+  --color-study-foreground: var(--study-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.5);
 }
 
+/* ─── Design Tokens (Premium Dark) ───────────────────────────── */
 :root {
-  --background: #050505;
-  --foreground: #ffffff;
+  --background: #000000;
+  --foreground: #ededed;
 
-  /* Sistema */
-  --system: #7c3aed; 
-  --system-border: #4c1d95; 
-  --system-foreground: #ffffff;
+  --card: #0a0a0a;
+  --card-foreground: #ededed;
 
-  /* Trabalho */
-  --work: #ea580c; 
+  --primary: #8b5cf6;
+  --primary-foreground: #ffffff;
+
+  --muted: #141414;
+  --muted-foreground: #888888;
+
+  --accent: #1a1a1a;
+  --accent-foreground: #ededed;
+
+  --border: #1c1c1c;
+  --input: #1c1c1c;
+  --ring: #8b5cf6;
+
+  --success: #10b981;
+  --success-foreground: #ffffff;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  /* Session themes */
+  --work: #f97316;
   --work-foreground: #ffffff;
-
-  /* Estudo */
-  --study: #2563eb; 
+  --study: #3b82f6;
   --study-foreground: #ffffff;
 
-  /* Default system theme */
-  --primary: var(--system);
-  --primary-foreground: var(--system-foreground);
-
-  /* Flat design rules */
-  --border: #27272a;
-  --radius: 0.1;
+  --radius: 0.625rem;
 }
 
+/* ─── Session Theme Overrides ────────────────────────────────── */
 .theme-work {
   --primary: var(--work);
   --primary-foreground: var(--work-foreground);
+  --ring: var(--work);
 }
 
 .theme-study {
   --primary: var(--study);
   --primary-foreground: var(--study-foreground);
+  --ring: var(--study);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --background: #000000;
-    --foreground: #ededed;
-  }
-}
-
+/* ─── Base Styles ────────────────────────────────────────────── */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-family: var(--font-sans), var(--font-mono), "JetBrains Mono", system-ui, sans-serif;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
   margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* Selection */
+::selection {
+  background: var(--primary);
+  color: var(--primary-foreground);
 }

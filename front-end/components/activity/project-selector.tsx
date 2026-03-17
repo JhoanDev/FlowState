@@ -1,44 +1,56 @@
 "use client";
 
-import * as React from "react";
 import { cn } from "@/lib/utils";
-import { FolderGit2 } from "lucide-react";
+import { FolderGit2, ChevronDown } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import type { Project } from "@/types";
 
 interface ProjectSelectorProps {
   value: string;
-  onChange: (project: string) => void;
+  onChange: (projectId: string) => void;
+  projects: Project[];
+  isLoading: boolean;
 }
 
-// Temporary mock options - in the future this will load from SQLite via Tauri command
-const MOCK_PROJECTS = ["FlowState Core", "ZAPAPI", "Portfolio", "None"];
+export function ProjectSelector({
+  value,
+  onChange,
+  projects,
+  isLoading,
+}: ProjectSelectorProps) {
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        <Skeleton className="h-3.5 w-16" />
+        <Skeleton className="h-12 w-full rounded-md" />
+      </div>
+    );
+  }
 
-export function ProjectSelector({ value, onChange }: ProjectSelectorProps) {
   return (
-    <div className="relative w-full">
-      <label className="text-xs font-semibold text-[var(--foreground)]/70 mb-2 block uppercase tracking-wider">
+    <div className="space-y-3">
+      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
         Project
       </label>
-      <div className="relative">
-        <FolderGit2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--foreground)]/50 pointer-events-none" />
+      <div className="relative group">
+        <FolderGit2 className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none transition-colors duration-200 group-hover:text-foreground" />
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className={cn(
-            "flex h-14 w-full appearance-none rounded-[var(--radius)] border border-[var(--border)] bg-transparent pl-10 pr-8 py-2 text-base font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-[var(--primary)] disabled:cursor-not-allowed disabled:opacity-50"
+            "flex h-12 w-full appearance-none rounded-lg border border-input bg-transparent pl-11 pr-10 py-3 text-sm font-medium transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring hover:border-muted-foreground/40 cursor-pointer"
           )}
         >
-          <option value="" disabled className="bg-[var(--background)]">Select a project</option>
-          {MOCK_PROJECTS.map((proj) => (
-            <option key={proj} value={proj} className="bg-[var(--background)]">
-              {proj}
+          <option value="" disabled className="bg-background">
+            Select a project
+          </option>
+          {projects.map((proj) => (
+            <option key={proj.id} value={proj.id} className="bg-background">
+              {proj.name}
             </option>
           ))}
         </select>
-        <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-          <svg className="w-4 h-4 text-[var(--foreground)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-          </svg>
-        </div>
+        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
       </div>
     </div>
   );

@@ -1,55 +1,61 @@
 "use client";
 
-import * as React from "react";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import type { Tag } from "@/types";
 
 interface TagSelectorProps {
-  tags: string[];
-  onChange: (tags: string[]) => void;
+  selectedIds: string[];
+  onChange: (ids: string[]) => void;
+  tags: Tag[];
+  isLoading: boolean;
 }
 
-// Global predefined list of tags replacing free-text input
-const PRESET_TAGS = [
-  "Programação Competitiva",
-  "Linux",
-  "Algoritmos",
-  "Backend",
-  "Frontend",
-  "Deep Work",
-  "Reading",
-  "Review"
-];
-
-export function TagSelector({ tags, onChange }: TagSelectorProps) {
-  const toggleTag = (tag: string) => {
-    if (tags.includes(tag)) {
-      onChange(tags.filter((t) => t !== tag));
+export function TagSelector({
+  selectedIds,
+  onChange,
+  tags,
+  isLoading,
+}: TagSelectorProps) {
+  const toggleTag = (id: string) => {
+    if (selectedIds.includes(id)) {
+      onChange(selectedIds.filter((t) => t !== id));
     } else {
-      onChange([...tags, tag]);
+      onChange([...selectedIds, id]);
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-wrap gap-2.5">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <Skeleton key={i} className="h-10 w-24 rounded-lg" />
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-wrap gap-3">
-      {PRESET_TAGS.map((tag) => {
-        const isSelected = tags.includes(tag);
+    <div className="flex flex-wrap gap-2.5">
+      {tags.map((tag) => {
+        const isSelected = selectedIds.includes(tag.id);
         return (
           <button
-            key={tag}
+            key={tag.id}
             type="button"
-            onClick={() => toggleTag(tag)}
-            className="outline-none transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--primary)] rounded-[var(--radius)]"
+            onClick={() => toggleTag(tag.id)}
+            className="outline-none active:scale-95 transition-transform duration-100"
           >
             <Badge
               className={cn(
-                "px-4 py-2 text-sm font-medium cursor-pointer border transition-colors duration-200",
+                "px-4 py-2 text-sm font-medium cursor-pointer border rounded-lg transition-all duration-200",
                 isSelected
-                  ? "border-[var(--primary)] bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]/90 shadow-sm"
-                  : "border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]/70 hover:bg-[var(--border)]/50 hover:text-[var(--foreground)]"
+                  ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                  : "border-border bg-transparent text-muted-foreground hover:border-muted-foreground/40 hover:text-foreground hover:bg-accent"
               )}
             >
-              {tag}
+              {tag.name}
             </Badge>
           </button>
         );
