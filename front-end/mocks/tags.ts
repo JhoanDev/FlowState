@@ -1,12 +1,17 @@
 import type { Tag } from "@/types";
 
 export const mockTags: Tag[] = [
-  { id: "t1", name: "React", createdAt: "2026-01-15T10:00:00Z" },
-  { id: "t2", name: "Rust", createdAt: "2026-01-16T10:00:00Z" },
-  { id: "t3", name: "Next.js", createdAt: "2026-01-17T10:00:00Z" },
-  { id: "t4", name: "Go", createdAt: "2026-01-18T10:00:00Z" },
-  { id: "t5", name: "C++", createdAt: "2026-01-19T10:00:00Z" },
-  { id: "t6", name: "Algorithms", createdAt: "2026-01-20T10:00:00Z" },
-  { id: "t7", name: "Linux", createdAt: "2026-01-21T10:00:00Z" },
-  { id: "t8", name: "Competitive Programming", createdAt: "2026-01-22T10:00:00Z" },
+  { id: 1, name: "React", color: "#61dafb", createdAt: "2026-01-15T10:00:00Z" },
+  { id: 2, name: "Rust", color: "#dea584", createdAt: "2026-01-16T10:00:00Z" },
+  { id: 3, name: "Next.js", color: "#fafafa", createdAt: "2026-01-17T10:00:00Z" },
+  { id: 4, name: "Go", color: "#00add8", createdAt: "2026-01-18T10:00:00Z" },
+  { id: 5, name: "C++", color: "#659ad2", createdAt: "2026-01-19T10:00:00Z" },
+  { id: 6, name: "Algorithms", color: "#a78bfa", createdAt: "2026-01-20T10:00:00Z" },
+  { id: 7, name: "Linux", color: "#fcc624", createdAt: "2026-01-21T10:00:00Z" },
+  {
+    id: 8,
+    name: "Competitive Programming",
+    color: "#ef4444",
+    createdAt: "2026-01-22T10:00:00Z",
+  },
 ];

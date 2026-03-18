@@ -25,7 +25,7 @@ export function SessionReviewForm({ onSave, className }: SessionReviewFormProps)
   return (
     <div
       className={cn(
-        "flex flex-col w-full rounded-lg border border-border bg-card overflow-hidden",
+        "flex flex-col w-full rounded-lg border border-border bg-card overflow-hidden shadow-sm",
         className
       )}
     >
@@ -38,7 +38,7 @@ export function SessionReviewForm({ onSave, className }: SessionReviewFormProps)
       </div>
 
       {/* Rating */}
-      <div className="flex items-center justify-start px-10 py-10 gap-3 border-b border-border">
+      <div className="flex items-center px-10 py-10 gap-4 border-b border-border">
         {[1, 2, 3, 4, 5].map((num) => (
           <button
             key={num}
@@ -49,7 +49,7 @@ export function SessionReviewForm({ onSave, className }: SessionReviewFormProps)
           >
             <Star
               className={cn(
-                "w-12 h-12 transition-all duration-200",
+                "w-14 h-14 transition-all duration-200",
                 (hoverRating || rating) >= num
                   ? "fill-primary text-primary"
                   : "text-muted fill-transparent hover:text-muted-foreground"
@@ -66,7 +66,7 @@ export function SessionReviewForm({ onSave, className }: SessionReviewFormProps)
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Log your thoughts, learnings, or blockers... (optional)"
-          className="w-full h-36 bg-transparent p-4 text-sm rounded-lg border border-input focus:ring-2 focus:ring-ring/50 focus:border-ring outline-none placeholder:text-muted-foreground resize-none transition-all duration-200"
+          className="w-full h-40 bg-transparent p-5 text-sm rounded-lg border border-input focus:ring-2 focus:ring-ring/50 focus:border-ring outline-none placeholder:text-muted-foreground resize-none transition-all duration-200"
         />
       </div>
 
@@ -75,10 +75,10 @@ export function SessionReviewForm({ onSave, className }: SessionReviewFormProps)
         <Button
           onClick={handleSave}
           disabled={rating === 0}
-          className="w-full gap-2.5 h-12 text-base"
+          className="w-full gap-2.5"
           size="lg"
         >
-          <Check className="h-4.5 w-4.5" />
+          <Check className="h-5 w-5" />
           Save to Logbook
         </Button>
       </div>

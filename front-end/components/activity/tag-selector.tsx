@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 import type { Tag } from "@/types";
 
 interface TagSelectorProps {
-  selectedIds: string[];
-  onChange: (ids: string[]) => void;
+  selectedIds: number[];
+  onChange: (ids: number[]) => void;
   tags: Tag[];
   isLoading: boolean;
 }
@@ -18,7 +18,7 @@ export function TagSelector({
   tags,
   isLoading,
 }: TagSelectorProps) {
-  const toggleTag = (id: string) => {
+  const toggleTag = (id: number) => {
     if (selectedIds.includes(id)) {
       onChange(selectedIds.filter((t) => t !== id));
     } else {
@@ -28,16 +28,16 @@ export function TagSelector({
 
   if (isLoading) {
     return (
-      <div className="flex flex-wrap gap-2.5">
+      <div className="flex flex-wrap gap-3">
         {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="h-10 w-24 rounded-lg" />
+          <Skeleton key={i} className="h-12 w-28 rounded-lg" />
         ))}
       </div>
     );
   }
 
   return (
-    <div className="flex flex-wrap gap-2.5">
+    <div className="flex flex-wrap gap-3">
       {tags.map((tag) => {
         const isSelected = selectedIds.includes(tag.id);
         return (
@@ -49,7 +49,7 @@ export function TagSelector({
           >
             <Badge
               className={cn(
-                "px-4 py-2 text-sm font-medium cursor-pointer border rounded-lg transition-all duration-200",
+                "px-5 py-2.5 text-sm font-medium cursor-pointer border rounded-lg transition-all duration-200",
                 isSelected
                   ? "border-primary bg-primary text-primary-foreground shadow-sm"
                   : "border-border bg-transparent text-muted-foreground hover:border-muted-foreground/40 hover:text-foreground hover:bg-accent"

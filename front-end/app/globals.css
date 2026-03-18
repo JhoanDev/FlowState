@@ -25,6 +25,7 @@
   --color-work-foreground: var(--work-foreground);
   --color-study: var(--study);
   --color-study-foreground: var(--study-foreground);
+  --color-surface: var(--surface);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --radius-sm: calc(var(--radius) * 0.5);
@@ -32,25 +33,27 @@
   --radius-lg: calc(var(--radius) * 1.5);
 }
 
-/* ─── Design Tokens (Premium Dark) ───────────────────────────── */
+/* ─── Design Tokens (Premium Dark — Layered Depth) ───────────── */
 :root {
-  --background: #000000;
-  --foreground: #ededed;
+  --background: #09090b;
+  --foreground: #fafafa;
 
-  --card: #0a0a0a;
-  --card-foreground: #ededed;
+  --card: #0f0f12;
+  --card-foreground: #fafafa;
+
+  --surface: #16161a;
 
   --primary: #8b5cf6;
   --primary-foreground: #ffffff;
 
-  --muted: #141414;
-  --muted-foreground: #888888;
+  --muted: #1c1c22;
+  --muted-foreground: #71717a;
 
-  --accent: #1a1a1a;
-  --accent-foreground: #ededed;
+  --accent: #23232b;
+  --accent-foreground: #fafafa;
 
-  --border: #1c1c1c;
-  --input: #1c1c1c;
+  --border: #27272a;
+  --input: #27272a;
   --ring: #8b5cf6;
 
   --success: #10b981;
@@ -65,7 +68,7 @@
   --study: #3b82f6;
   --study-foreground: #ffffff;
 
-  --radius: 0.625rem;
+  --radius: 0.75rem;
 }
 
 /* ─── Session Theme Overrides ────────────────────────────────── */

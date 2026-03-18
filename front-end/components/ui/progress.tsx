@@ -13,7 +13,7 @@ function Progress({
 }: ProgressProps) {
   return (
     <div
-      className={cn("h-2.5 w-full overflow-hidden rounded-full bg-muted", className)}
+      className={cn("h-3 w-full overflow-hidden rounded-full bg-muted", className)}
       {...props}
     >
       <div

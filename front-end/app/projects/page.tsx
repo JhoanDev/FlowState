@@ -28,7 +28,7 @@ export default function ProjectsPage() {
     setProjects((prev) => [...prev, newProject]);
   };
 
-  const handleRemoveProject = async (id: string) => {
+  const handleRemoveProject = async (id: number) => {
     await deleteProject(id);
     setProjects((prev) => prev.filter((p) => p.id !== id));
   };
@@ -38,14 +38,14 @@ export default function ProjectsPage() {
     setTags((prev) => [...prev, newTag]);
   };
 
-  const handleRemoveTag = async (id: string) => {
+  const handleRemoveTag = async (id: number) => {
     await deleteTag(id);
     setTags((prev) => prev.filter((t) => t.id !== id));
   };
 
   return (
     <AppLayout title="Projects & Tags">
-      <div className="grid grid-cols-2 gap-12 max-w-5xl items-start">
+      <div className="grid grid-cols-2 gap-8 items-start h-full">
         <ListManager
           title="Projects"
           description="Manage your active work repositories"

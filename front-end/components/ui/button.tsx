@@ -13,7 +13,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "inline-flex items-center justify-center whitespace-nowrap font-medium rounded-md transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+          "inline-flex items-center justify-center whitespace-nowrap font-medium rounded-md transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97]",
           {
             "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md":
               variant === "default",
@@ -25,10 +25,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               variant === "ghost",
             "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm":
               variant === "destructive",
-            "h-11 px-5 py-2.5 text-sm": size === "default",
-            "h-9 px-4 text-xs": size === "sm",
-            "h-12 px-8 text-base": size === "lg",
-            "h-10 w-10": size === "icon",
+            "h-12 px-6 py-3 text-sm": size === "default",
+            "h-10 px-4 text-sm": size === "sm",
+            "h-14 px-8 text-base": size === "lg",
+            "h-11 w-11": size === "icon",
           },
           className
         )}

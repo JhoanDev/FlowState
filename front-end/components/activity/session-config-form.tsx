@@ -20,7 +20,7 @@ interface SessionConfigFormProps {
 export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
   const [sessionType, setSessionType] = React.useState<SessionType>("WORK");
   const [projectId, setProjectId] = React.useState("");
-  const [tagIds, setTagIds] = React.useState<string[]>([]);
+  const [tagIds, setTagIds] = React.useState<number[]>([]);
 
   const projects = useAsync(getProjects);
   const tags = useAsync(getTags);
@@ -32,7 +32,7 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
   return (
     <div
       className={cn(
-        "flex flex-col gap-8 w-full rounded-lg border border-border bg-card p-10 transition-colors duration-500",
+        "flex flex-col gap-10 w-full rounded-lg border border-border bg-card p-10 transition-colors duration-500",
         sessionType === "STUDY" ? "theme-study" : "theme-work"
       )}
     >
@@ -45,7 +45,7 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
 
       <SessionTypeToggle value={sessionType} onChange={setSessionType} />
 
-      <div className="min-h-[180px] relative overflow-hidden">
+      <div className="min-h-[200px] relative overflow-hidden">
         <AnimatePresence mode="wait">
           {sessionType === "WORK" ? (
             <motion.div
@@ -86,8 +86,8 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
       </div>
 
       <div className="pt-4 border-t border-border">
-        <Button className="w-full gap-2.5 h-12 text-base" size="lg" onClick={handleStart}>
-          <Play className="h-4.5 w-4.5 fill-current" />
+        <Button className="w-full gap-2.5" size="lg" onClick={handleStart}>
+          <Play className="h-5 w-5 fill-current" />
           Start Focus
         </Button>
       </div>

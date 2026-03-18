@@ -15,22 +15,22 @@ import type { SessionType, SessionReviewData } from "@/types";
 type SessionState = "IDLE" | "ACTIVE" | "REVIEW";
 
 const pageVariants = {
-  initial: { opacity: 0, y: 12, filter: "blur(4px)" },
+  initial: { opacity: 0, y: 16, filter: "blur(4px)" },
   animate: { opacity: 1, y: 0, filter: "blur(0px)" },
-  exit: { opacity: 0, y: -8, filter: "blur(4px)" },
+  exit: { opacity: 0, y: -12, filter: "blur(4px)" },
 };
 
 function SessionSidebar() {
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Zap className="h-4 w-4 text-primary" />
+          <CardTitle className="flex items-center gap-2.5">
+            <Zap className="h-[18px] w-[18px] text-primary" />
             Quick Tips
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 text-sm text-muted-foreground">
+        <CardContent className="space-y-4 text-sm text-muted-foreground leading-relaxed">
           <p>Choose <span className="text-work font-medium">Work</span> for project-based tasks and <span className="text-study font-medium">Study</span> for learning sessions.</p>
           <p>The timer counts up — focus as long as you need, then end when done.</p>
         </CardContent>
@@ -38,19 +38,19 @@ function SessionSidebar() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Keyboard className="h-4 w-4 text-primary" />
+          <CardTitle className="flex items-center gap-2.5">
+            <Keyboard className="h-[18px] w-[18px] text-primary" />
             Shortcuts
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-4">
           {[
             { key: "Space", action: "Start / Pause" },
             { key: "Esc", action: "End session" },
           ].map((shortcut) => (
             <div key={shortcut.key} className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">{shortcut.action}</span>
-              <kbd className="px-2 py-0.5 rounded-md bg-muted text-muted-foreground text-xs font-mono border border-border">
+              <kbd className="px-2.5 py-1 rounded-md bg-muted text-muted-foreground text-xs font-mono border border-border">
                 {shortcut.key}
               </kbd>
             </div>
@@ -60,23 +60,23 @@ function SessionSidebar() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-primary" />
+          <CardTitle className="flex items-center gap-2.5">
+            <Clock className="h-[18px] w-[18px] text-primary" />
             Today
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-4">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Sessions</span>
-            <span className="font-medium tabular-nums">3</span>
+            <span className="font-semibold tabular-nums">3</span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Total time</span>
-            <span className="font-medium tabular-nums">4h 30m</span>
+            <span className="font-semibold tabular-nums">4h 30m</span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Avg. focus</span>
-            <span className="font-medium tabular-nums">1h 30m</span>
+            <span className="font-semibold tabular-nums">1h 30m</span>
           </div>
         </CardContent>
       </Card>
@@ -140,7 +140,7 @@ export default function SessionPage() {
               transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
               className="flex items-center justify-center h-full"
             >
-              <div className="w-full max-w-2xl">
+              <div className="w-full max-w-3xl">
                 <TimerDisplay
                   mode="PROGRESSIVE"
                   onFinish={handleTimerFinished}
