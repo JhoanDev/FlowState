@@ -31,6 +31,9 @@
   --radius-sm: calc(var(--radius) * 0.5);
   --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) * 1.5);
+  --radius-xl: calc(var(--radius) * 2);
+  --radius-2xl: calc(var(--radius) * 3);
+  --radius-3xl: calc(var(--radius) * 4);
 }
 
 /* ─── Design Tokens (Premium Dark — Layered Depth) ───────────── */
@@ -68,7 +71,7 @@
   --study: #3b82f6;
   --study-foreground: #ffffff;
 
-  --radius: 0.75rem;
+  --radius: 0.7rem;
 }
 
 /* ─── Session Theme Overrides ────────────────────────────────── */
@@ -101,13 +104,16 @@ body {
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted-foreground);
 }
