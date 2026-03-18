@@ -27,6 +27,19 @@ export async function createTag(
   return newTag;
 }
 
+export async function updateTag(
+  id: number,
+  data: { name?: string; color?: string }
+): Promise<Tag> {
+  // Future: return await invoke('update_tag', { id, ...data });
+  await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
+  const tag = mockTags.find((t) => t.id === id);
+  if (!tag) throw new Error(`Tag ${id} not found`);
+  if (data.name !== undefined) tag.name = data.name;
+  if (data.color !== undefined) tag.color = data.color;
+  return { ...tag };
+}
+
 export async function deleteTag(id: number): Promise<void> {
   // Future: return await invoke('delete_tag', { id });
   await new Promise((r) => setTimeout(r, SIMULATED_DELAY));

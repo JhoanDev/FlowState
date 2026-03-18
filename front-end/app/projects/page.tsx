@@ -5,8 +5,8 @@ import { AppLayout } from "@/components/layout/app-layout";
 import { ListManager } from "@/components/projects/list-manager";
 import { FolderGit2, Tag as TagIcon } from "lucide-react";
 import { useAsync } from "@/hooks/use-async";
-import { getProjects, createProject, deleteProject } from "@/services/projects";
-import { getTags, createTag, deleteTag } from "@/services/tags";
+import { getProjects, createProject, updateProject, deleteProject } from "@/services/projects";
+import { getTags, createTag, updateTag, deleteTag } from "@/services/tags";
 
 export default function ProjectsPage() {
   const projectsQuery = useAsync(getProjects);
@@ -23,9 +23,14 @@ export default function ProjectsPage() {
     if (tagsQuery.data) setTags(tagsQuery.data);
   }, [tagsQuery.data]);
 
-  const handleAddProject = async (name: string) => {
-    const newProject = await createProject(name);
+  const handleAddProject = async (name: string, color: string) => {
+    const newProject = await createProject(name, color);
     setProjects((prev) => [...prev, newProject]);
+  };
+
+  const handleEditProject = async (id: number, data: { name?: string; color?: string }) => {
+    const updated = await updateProject(id, data);
+    setProjects((prev) => prev.map((p) => (p.id === id ? updated : p)));
   };
 
   const handleRemoveProject = async (id: number) => {
@@ -33,9 +38,14 @@ export default function ProjectsPage() {
     setProjects((prev) => prev.filter((p) => p.id !== id));
   };
 
-  const handleAddTag = async (name: string) => {
-    const newTag = await createTag(name);
+  const handleAddTag = async (name: string, color: string) => {
+    const newTag = await createTag(name, color);
     setTags((prev) => [...prev, newTag]);
+  };
+
+  const handleEditTag = async (id: number, data: { name?: string; color?: string }) => {
+    const updated = await updateTag(id, data);
+    setTags((prev) => prev.map((t) => (t.id === id ? updated : t)));
   };
 
   const handleRemoveTag = async (id: number) => {
@@ -45,7 +55,7 @@ export default function ProjectsPage() {
 
   return (
     <AppLayout title="Projects & Tags">
-      <div className="grid grid-cols-2 gap-8 items-start h-full">
+      <div className="grid grid-cols-2 gap-6 h-full min-h-0">
         <ListManager
           title="Projects"
           description="Manage your active work repositories"
@@ -55,6 +65,7 @@ export default function ProjectsPage() {
           items={projects}
           isLoading={projectsQuery.isLoading}
           onAdd={handleAddProject}
+          onEdit={handleEditProject}
           onRemove={handleRemoveProject}
         />
 
@@ -67,6 +78,7 @@ export default function ProjectsPage() {
           items={tags}
           isLoading={tagsQuery.isLoading}
           onAdd={handleAddTag}
+          onEdit={handleEditTag}
           onRemove={handleRemoveTag}
         />
       </div>

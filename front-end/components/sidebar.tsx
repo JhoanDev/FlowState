@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   Target,
   Folder,
+  Flame,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -17,6 +18,7 @@ const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/" },
   { icon: Target, label: "Session", href: "/session" },
   { icon: Folder, label: "Projects & Tags", href: "/projects" },
+  { icon: Flame, label: "Goals & Streaks", href: "/goals" },
   { icon: BookOpen, label: "Logbook", href: "/logbook" },
   { icon: BarChart2, label: "Reports", href: "/reports" },
 ];

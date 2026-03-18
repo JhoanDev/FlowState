@@ -28,6 +28,19 @@ export async function createProject(
   return newProject;
 }
 
+export async function updateProject(
+  id: number,
+  data: { name?: string; color?: string }
+): Promise<Project> {
+  // Future: return await invoke('update_project', { id, ...data });
+  await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
+  const project = mockProjects.find((p) => p.id === id);
+  if (!project) throw new Error(`Project ${id} not found`);
+  if (data.name !== undefined) project.name = data.name;
+  if (data.color !== undefined) project.color = data.color;
+  return { ...project };
+}
+
 export async function deleteProject(id: number): Promise<void> {
   // Future: return await invoke('delete_project', { id });
   await new Promise((r) => setTimeout(r, SIMULATED_DELAY));

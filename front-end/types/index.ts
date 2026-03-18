@@ -47,9 +47,11 @@ export interface SessionTag {
 export interface WeeklyGoal {
   id: number;
   type: SessionType;
-  label: string;
+  label: string; // derived from project.name or tag.name
   targetHours: number;
-  currentHours: number; // computed from sessions, not stored
+  projectId: number | null; // FK → projects (used when type = 'WORK')
+  tagId: number | null; // FK → tags (used when type = 'STUDY')
+  currentHours: number; // computed from sessions, not stored in DB
   weekStart: string; // ISO date (YYYY-MM-DD), always a Monday
   createdAt: string;
 }
@@ -123,6 +125,33 @@ export interface DistributionChart {
   title: string;
   total: number;
   slices: DistributionSlice[];
+}
+
+// ─── Weekly Goals Management ────────────────────────────────────
+
+export interface WeeklyGoalInput {
+  type: SessionType;
+  targetHours: number;
+  projectId: number | null; // set when type = 'WORK'
+  tagId: number | null; // set when type = 'STUDY'
+}
+
+export interface WeeklyGoalSummary {
+  totalCreated: number;
+  totalMet: number;
+  avgHoursPerWeek: number;
+}
+
+// ─── Streaks & Consistency ──────────────────────────────────────
+
+export interface StreakInfo {
+  currentStreak: number;
+  bestStreak: number;
+}
+
+export interface ConsistencyDay {
+  date: string; // YYYY-MM-DD
+  hasActivity: boolean;
 }
 
 // ─── Session with Relations (joined query result) ───────────────

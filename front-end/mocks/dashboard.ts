@@ -1,6 +1,5 @@
 import type {
   DashboardStats,
-  WeeklyGoal,
   ActivityEntry,
   HeatmapDay,
   DistributionChart,
@@ -34,7 +33,7 @@ function getProjectColor(projectId: number | null): string {
   return mockProjects.find((p) => p.id === projectId)?.color ?? "#71717a";
 }
 
-// ─── Stats (computed from sessions) ─────────────────────────────
+// ─── Stats (fully computed from sessions) ───────────────────────
 
 const completedSessions = mockSessions.filter((s) => s.status === "COMPLETED");
 
@@ -46,65 +45,45 @@ const totalStudySeconds = completedSessions
   .filter((s) => s.type === "STUDY")
   .reduce((sum, s) => sum + s.durationSeconds, 0);
 
+// Streak computed from real sessions (same logic as services/streaks.ts)
+function computeCurrentStreakFromSessions(): number {
+  const dates = new Set<string>();
+  for (const s of completedSessions) {
+    dates.add(s.startedAt.split("T")[0]);
+  }
+  const sorted = [...dates].sort((a, b) => b.localeCompare(a));
+  if (sorted.length === 0) return 0;
+
+  const today = "2026-03-18";
+  const dateSet = new Set(sorted);
+  let checkDate = new Date(today + "T00:00:00Z");
+
+  if (!dateSet.has(today)) {
+    checkDate.setUTCDate(checkDate.getUTCDate() - 1);
+    if (!dateSet.has(checkDate.toISOString().split("T")[0])) return 0;
+  }
+
+  let streak = 0;
+  while (dateSet.has(checkDate.toISOString().split("T")[0])) {
+    streak++;
+    checkDate.setUTCDate(checkDate.getUTCDate() - 1);
+  }
+  return streak;
+}
+
 export const mockStats: DashboardStats = {
   workHours: secondsToHours(totalWorkSeconds),
   workTrend: 5,
   studyHours: secondsToHours(totalStudySeconds),
   studyTrend: 12,
-  currentStreak: 14,
-  bestStreak: 32,
+  currentStreak: computeCurrentStreakFromSessions(),
+  bestStreak: computeCurrentStreakFromSessions(), // same for mock data (sessions span ~12 days)
   goalsMet: 3,
   goalsTotal: 4,
 };
 
-// ─── Weekly Goals ───────────────────────────────────────────────
-
-const currentWeekStart = "2026-03-16"; // Monday of current week
-
-// Compute current hours from sessions this week
-const weekSessions = completedSessions.filter(
-  (s) => s.startedAt >= `${currentWeekStart}T00:00:00Z`
-);
-
-const flowstateWeekHours = secondsToHours(
-  weekSessions
-    .filter((s) => s.projectId === 2)
-    .reduce((sum, s) => sum + s.durationSeconds, 0)
-);
-
-const algoWeekHours = secondsToHours(
-  weekSessions
-    .filter((s) => {
-      const tagIds = mockSessionTags
-        .filter((st) => st.sessionId === s.id)
-        .map((st) => st.tagId);
-      return tagIds.includes(6); // Algorithms tag
-    })
-    .reduce((sum, s) => sum + s.durationSeconds, 0)
-);
-
-export const mockWeeklyGoals: WeeklyGoal[] = [
-  {
-    id: 1,
-    type: "WORK",
-    label: "FlowState App",
-    targetHours: 20,
-    currentHours: flowstateWeekHours,
-    weekStart: currentWeekStart,
-    createdAt: "2026-03-16T00:00:00Z",
-  },
-  {
-    id: 2,
-    type: "STUDY",
-    label: "Algorithms",
-    targetHours: 10,
-    currentHours: algoWeekHours,
-    weekStart: currentWeekStart,
-    createdAt: "2026-03-16T00:00:00Z",
-  },
-];
-
 // ─── Recent Activities (derived view) ───────────────────────────
+// Simulates: SELECT s.*, p.name, p.color FROM sessions s LEFT JOIN projects p ...
 
 export const mockActivities: ActivityEntry[] = completedSessions
   .sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime())
@@ -113,7 +92,7 @@ export const mockActivities: ActivityEntry[] = completedSessions
     id: s.id,
     type: s.type,
     projectName: getProjectName(s.projectId),
-    projectColor: getProjectColor(s.projectId !== null ? s.projectId : null),
+    projectColor: getProjectColor(s.projectId),
     tags: getSessionTags(s.id),
     durationSeconds: s.durationSeconds,
     startedAt: s.startedAt,
@@ -122,6 +101,7 @@ export const mockActivities: ActivityEntry[] = completedSessions
   }));
 
 // ─── Heatmap (~1 year) ───────────────────────────────────────────
+// Real sessions used where available, simulated data for older dates.
 
 function generateHeatmap(): HeatmapDay[] {
   const days: HeatmapDay[] = [];
@@ -148,8 +128,9 @@ function generateHeatmap(): HeatmapDay[] {
 
       days.push({ date: dateStr, totalSeconds, sessionCount: daySessions.length, intensity });
     } else {
-      // Simulated historical data for older dates
-      const rand = Math.random();
+      // Simulated historical data for older dates (seeded for consistency)
+      const seed = dateStr.split("-").reduce((a, b) => a + parseInt(b, 10), 0);
+      const rand = ((seed * 9301 + 49297) % 233280) / 233280;
       let intensity: number;
       let totalSeconds: number;
       if (rand < 0.15) {
@@ -183,6 +164,10 @@ function generateHeatmap(): HeatmapDay[] {
 export const mockHeatmap: HeatmapDay[] = generateHeatmap();
 
 // ─── Distribution Charts ────────────────────────────────────────
+// Simulates: SELECT p.name, p.color, SUM(s.duration_seconds)/3600.0 as hours
+//            FROM sessions s LEFT JOIN projects p ON s.project_id = p.id
+//            WHERE s.type = 'WORK' AND s.status = 'COMPLETED'
+//            GROUP BY s.project_id ORDER BY hours DESC
 
 function buildWorkDistribution(): DistributionChart {
   const workSessions = completedSessions.filter((s) => s.type === "WORK");
@@ -208,6 +193,12 @@ function buildWorkDistribution(): DistributionChart {
   };
 }
 
+// Simulates: SELECT t.name, t.color, SUM(s.duration_seconds)/3600.0 as hours
+//            FROM sessions s JOIN session_tags st ON s.id = st.session_id
+//            JOIN tags t ON st.tag_id = t.id
+//            WHERE s.type = 'STUDY' AND s.status = 'COMPLETED'
+//            GROUP BY t.id ORDER BY hours DESC
+
 function buildStudyDistribution(): DistributionChart {
   const studySessions = completedSessions.filter((s) => s.type === "STUDY");
   const byTag = new Map<string, { seconds: number; color: string }>();
@@ -222,7 +213,6 @@ function buildStudyDistribution(): DistributionChart {
       const prev = byTag.get("Other") ?? { seconds: 0, color: "#71717a" };
       byTag.set("Other", { seconds: prev.seconds + s.durationSeconds, color: "#71717a" });
     } else {
-      // Split time equally across tags
       const perTag = s.durationSeconds / tags.length;
       for (const tag of tags) {
         if (!tag) continue;

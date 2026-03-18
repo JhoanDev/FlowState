@@ -5,12 +5,43 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Plus, X, type LucideIcon } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus, X, Check, type LucideIcon } from "lucide-react";
+
+const COLOR_PRESETS = [
+  "#ef4444", // red
+  "#f97316", // orange
+  "#f59e0b", // amber
+  "#d97706", // amber-dark
+  "#eab308", // yellow
+  "#84cc16", // lime
+  "#22c55e", // green
+  "#16a34a", // green-dark
+  "#10b981", // emerald
+  "#14b8a6", // teal
+  "#06b6d4", // cyan
+  "#0891b2", // cyan-dark
+  "#0ea5e9", // sky
+  "#3b82f6", // blue
+  "#2563eb", // blue-dark
+  "#6366f1", // indigo
+  "#4f46e5", // indigo-dark
+  "#8b5cf6", // violet
+  "#7c3aed", // violet-dark
+  "#a855f7", // purple
+  "#d946ef", // fuchsia
+  "#c026d3", // fuchsia-dark
+  "#ec4899", // pink
+  "#f43f5e", // rose
+  "#e11d48", // rose-dark
+  "#78716c", // stone
+  "#64748b", // slate
+];
 
 export interface ListItem {
   id: number;
   name: string;
+  color: string;
 }
 
 interface ListManagerProps {
@@ -21,10 +52,153 @@ interface ListManagerProps {
   themeClass: "theme-work" | "theme-study";
   items: ListItem[];
   isLoading: boolean;
-  onAdd: (name: string) => void;
+  onAdd: (name: string, color: string) => void;
+  onEdit: (id: number, data: { name?: string; color?: string }) => void;
   onRemove: (id: number) => void;
   className?: string;
 }
+
+// ─── Color Picker ───────────────────────────────────────────────
+
+function ColorPicker({
+  selected,
+  usedColors,
+  currentItemColor,
+  onChange,
+}: {
+  selected: string;
+  usedColors: Set<string>;
+  currentItemColor?: string;
+  onChange: (color: string) => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {COLOR_PRESETS.map((color) => {
+        const isTaken = usedColors.has(color) && color !== currentItemColor;
+        const isSelected = selected === color;
+
+        return (
+          <button
+            key={color}
+            type="button"
+            disabled={isTaken}
+            onClick={() => onChange(color)}
+            className={cn(
+              "h-6 w-6 rounded-full transition-all duration-200 border-2",
+              isTaken
+                ? "opacity-20 cursor-not-allowed border-transparent"
+                : isSelected
+                  ? "scale-110 border-foreground"
+                  : "border-transparent hover:scale-110"
+            )}
+            style={{ backgroundColor: color }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── Edit Popover (floats below the clicked item) ───────────────
+
+function EditPopover({
+  item,
+  usedColors,
+  onSave,
+  onCancel,
+}: {
+  item: ListItem;
+  usedColors: Set<string>;
+  onSave: (data: { name: string; color: string }) => void;
+  onCancel: () => void;
+}) {
+  const [editName, setEditName] = React.useState(item.name);
+  const [editColor, setEditColor] = React.useState(item.color);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const popoverRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    inputRef.current?.focus();
+    inputRef.current?.select();
+  }, []);
+
+  // Close on click outside
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        handleSave();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleSave = () => {
+    const trimmed = editName.trim();
+    if (!trimmed) {
+      onCancel();
+      return;
+    }
+    if (trimmed === item.name && editColor === item.color) {
+      onCancel();
+      return;
+    }
+    onSave({ name: trimmed, color: editColor });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSave();
+    }
+    if (e.key === "Escape") {
+      e.preventDefault();
+      onCancel();
+    }
+  };
+
+  return (
+    <div
+      ref={popoverRef}
+      className="absolute left-0 top-full mt-2 z-50 w-80 space-y-4 p-5 rounded-lg border border-border bg-card shadow-lg"
+    >
+      {/* Name input + action buttons */}
+      <div className="flex gap-2">
+        <input
+          ref={inputRef}
+          value={editName}
+          onChange={(e) => setEditName(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className="flex-1 h-9 bg-transparent px-3 text-sm font-medium rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-all duration-200"
+        />
+        <button
+          type="button"
+          onClick={handleSave}
+          className="h-9 w-9 shrink-0 flex items-center justify-center rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-200"
+        >
+          <Check className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="h-9 w-9 shrink-0 flex items-center justify-center rounded-md bg-muted text-muted-foreground hover:bg-accent transition-colors duration-200"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+
+      {/* Color grid */}
+      <ColorPicker
+        selected={editColor}
+        usedColors={usedColors}
+        currentItemColor={item.color}
+        onChange={setEditColor}
+      />
+    </div>
+  );
+}
+
+// ─── Main Component ─────────────────────────────────────────────
 
 export function ListManager({
   title,
@@ -35,67 +209,151 @@ export function ListManager({
   items,
   isLoading,
   onAdd,
+  onEdit,
   onRemove,
   className,
 }: ListManagerProps) {
   const [inputValue, setInputValue] = React.useState("");
+  const [editingId, setEditingId] = React.useState<number | null>(null);
+
+  const usedColors = new Set(items.map((i) => i.color));
+  const availableColors = COLOR_PRESETS.filter((c) => !usedColors.has(c));
+
+  const [selectedColor, setSelectedColor] = React.useState(
+    () => availableColors[0] ?? COLOR_PRESETS[0]
+  );
+
+  React.useEffect(() => {
+    if (usedColors.has(selectedColor) && availableColors.length > 0) {
+      setSelectedColor(availableColors[0]);
+    }
+  }, [items.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
-    onAdd(inputValue.trim());
+    if (usedColors.has(selectedColor)) return;
+    onAdd(inputValue.trim(), selectedColor);
     setInputValue("");
+    const nextAvailable = COLOR_PRESETS.filter(
+      (c) => !usedColors.has(c) && c !== selectedColor
+    );
+    if (nextAvailable.length > 0) {
+      setSelectedColor(nextAvailable[0]);
+    }
+  };
+
+  const handleEditSave = (id: number, data: { name: string; color: string }) => {
+    const item = items.find((i) => i.id === id);
+    if (!item) return;
+
+    const changes: { name?: string; color?: string } = {};
+    if (data.name !== item.name) changes.name = data.name;
+    if (data.color !== item.color) changes.color = data.color;
+
+    if (Object.keys(changes).length > 0) {
+      onEdit(id, changes);
+    }
+    setEditingId(null);
   };
 
   return (
-    <Card className={cn("flex flex-col", themeClass, className)}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-3">
+    <Card className={cn("flex flex-col h-full", themeClass, className)}>
+      <CardHeader className="p-5 pb-0">
+        <CardTitle className="flex items-center gap-3 text-lg">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
             <Icon className="h-5 w-5 text-primary" />
           </div>
           {title}
         </CardTitle>
-        <CardDescription className="ml-[52px]">{description}</CardDescription>
+        <p className="text-sm text-muted-foreground mt-1.5 ml-[52px]">
+          {description}
+        </p>
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-6 flex-1">
-        <form onSubmit={handleSubmit} className="flex gap-3">
-          <Input
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder={placeholder}
-            className="flex-1"
-          />
-          <Button type="submit">
-            <Plus className="h-[18px] w-[18px] mr-2" />
-            Add
-          </Button>
-        </form>
+      <CardContent className="p-5 pt-4 flex-1 flex flex-col gap-5 min-h-0">
+        {/* Add form */}
+        <div className="space-y-3 shrink-0">
+          <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+            New {title.toLowerCase().replace(/s$/, "")}
+          </label>
+          <form onSubmit={handleSubmit} className="flex gap-2.5">
+            <Input
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder={placeholder}
+              className="flex-1 h-10"
+            />
+            <Button type="submit" size="sm" className="h-10 px-4 gap-2">
+              <Plus className="h-4 w-4" />
+              Add
+            </Button>
+          </form>
 
-        <div className="flex flex-wrap gap-3">
-          {isLoading ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-11 w-32 rounded-lg" />
-            ))
-          ) : items.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-6">No items yet.</p>
-          ) : (
-            items.map((item) => (
-              <span
-                key={item.id}
-                className="group inline-flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium border border-border bg-primary/5 text-foreground rounded-lg transition-all duration-200 hover:border-primary/40 hover:bg-primary/10"
-              >
-                {item.name}
-                <button
-                  onClick={() => onRemove(item.id)}
-                  className="p-1 rounded text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-200"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </span>
-            ))
-          )}
+          {/* Color picker */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground shrink-0">Color:</span>
+            <ColorPicker
+              selected={selectedColor}
+              usedColors={usedColors}
+              onChange={setSelectedColor}
+            />
+          </div>
+        </div>
+
+        {/* Items list */}
+        <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="flex flex-wrap gap-2.5 content-start">
+            {isLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-10 w-32 rounded-lg" />
+              ))
+            ) : items.length === 0 ? (
+              <p className="text-base text-muted-foreground py-6 w-full text-center">
+                No items yet.
+              </p>
+            ) : (
+              items.map((item) => (
+                <div key={item.id} className="relative">
+                  <span
+                    className={cn(
+                      "group inline-flex items-center gap-2.5 px-4 py-2.5 text-base font-medium border rounded-lg transition-all duration-200 cursor-pointer",
+                      editingId === item.id
+                        ? "bg-accent ring-1 ring-primary/30"
+                        : "hover:bg-accent"
+                    )}
+                    style={{ borderColor: `${item.color}30` }}
+                    onClick={() => setEditingId(editingId === item.id ? null : item.id)}
+                  >
+                    <span
+                      className="h-3 w-3 rounded-full shrink-0"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    {item.name}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onRemove(item.id);
+                      }}
+                      className="p-0.5 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200 opacity-0 group-hover:opacity-100"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </span>
+
+                  {/* Edit popover — floats below the item */}
+                  {editingId === item.id && (
+                    <EditPopover
+                      item={item}
+                      usedColors={usedColors}
+                      onSave={(data) => handleEditSave(item.id, data)}
+                      onCancel={() => setEditingId(null)}
+                    />
+                  )}
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
