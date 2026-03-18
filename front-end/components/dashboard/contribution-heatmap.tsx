@@ -8,14 +8,19 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import type { HeatmapDay } from "@/types";
+import type { HeatmapDay, ActivityEntry } from "@/types";
+import { RecentActivity } from "./recent-activity";
 
 interface ContributionHeatmapProps {
   data: HeatmapDay[] | null;
   isLoading: boolean;
+  selectedDate?: string | null;
+  onSelectDate?: (date: string) => void;
+  selectedActivities?: ActivityEntry[] | null;
+  isLoadingSelected?: boolean;
 }
 
-const CELL = 10;
+const CELL = 13;
 const GAP = 3;
 const DAY_LABELS = ["", "Mon", "", "Wed", "", "Fri", ""];
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -29,12 +34,18 @@ const intensityClasses: Record<number, string> = {
   4: "bg-primary",
 };
 
-function HeatmapGrid({ days }: { days: HeatmapDay[] }) {
+interface HeatmapGridProps {
+  days: HeatmapDay[];
+  selectedDate?: string | null;
+  onSelectDate?: (date: string) => void;
+}
+
+function HeatmapGrid({ days, selectedDate, onSelectDate }: HeatmapGridProps) {
   const weeks: (HeatmapDay | null)[][] = [];
   let currentWeek: (HeatmapDay | null)[] = [];
 
-  const firstDate = new Date(days[0].date);
-  const startPad = firstDate.getDay();
+  const firstDate = new Date(days[0].date + "T00:00:00Z");
+  const startPad = firstDate.getUTCDay();
   for (let i = 0; i < startPad; i++) {
     currentWeek.push(null);
   }
@@ -105,27 +116,39 @@ function HeatmapGrid({ days }: { days: HeatmapDay[] }) {
 
           <div className="flex" style={{ gap: GAP }}>
             {weeks.map((week, wi) => (
-              <div key={wi} className="flex flex-col" style={{ gap: GAP }}>
-                {week.map((day, di) => (
-                  <div
-                    key={`${wi}-${di}`}
-                    className={cn(
-                      "rounded-[2px] transition-all duration-150",
-                      day !== null
-                        ? cn(
-                            intensityClasses[day.intensity],
-                            "hover:ring-1 hover:ring-primary/50 hover:scale-125 cursor-default"
-                          )
-                        : "bg-transparent"
-                    )}
-                    style={{ width: CELL, height: CELL }}
-                    title={
-                      day?.date
-                        ? `${day.date} — ${day.sessionCount} session${day.sessionCount !== 1 ? "s" : ""}, ${Math.round(day.totalSeconds / 60)}min`
-                        : undefined
-                    }
-                  />
-                ))}
+              <div key={wi} className="flex flex-col shrink-0" style={{ gap: GAP }}>
+                {week.map((day, di) => {
+                  const isSelected = day?.date === selectedDate;
+                  const isInteractive = !!day && day.sessionCount > 0;
+                  
+                  return (
+                    <div
+                      key={`${wi}-${di}`}
+                      onClick={() => {
+                        if (isInteractive && onSelectDate) {
+                          onSelectDate(day.date);
+                        }
+                      }}
+                      className={cn(
+                        "rounded-[2px] transition-all duration-150 shrink-0",
+                        day !== null
+                          ? cn(
+                              intensityClasses[day.intensity],
+                              isInteractive && "hover:ring-2 hover:ring-primary/50 cursor-pointer z-10",
+                              !isInteractive && "cursor-default",
+                              isSelected && "ring-2 ring-primary ring-offset-1 ring-offset-background z-20 hover:ring-primary"
+                            )
+                          : "bg-transparent"
+                      )}
+                      style={{ width: CELL, height: CELL }}
+                      title={
+                        day?.date
+                          ? `${day.date} — ${day.sessionCount} session${day.sessionCount !== 1 ? "s" : ""}, ${Math.round(day.totalSeconds / 60)}min`
+                          : undefined
+                      }
+                    />
+                  );
+                })}
               </div>
             ))}
           </div>
@@ -135,10 +158,17 @@ function HeatmapGrid({ days }: { days: HeatmapDay[] }) {
   );
 }
 
-export function ContributionHeatmap({ data, isLoading }: ContributionHeatmapProps) {
+export function ContributionHeatmap({ 
+  data, 
+  isLoading, 
+  selectedDate, 
+  onSelectDate,
+  selectedActivities,
+  isLoadingSelected
+}: ContributionHeatmapProps) {
   return (
-    <Card className="flex flex-col w-fit shrink-0">
-      <CardHeader className="pb-0 p-4">
+    <Card className="flex flex-col w-fit shrink-0 max-h-full overflow-hidden">
+      <CardHeader className="pb-0 p-4 shrink-0 border-b border-transparent">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm">Activity</CardTitle>
           <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
@@ -154,13 +184,25 @@ export function ContributionHeatmap({ data, isLoading }: ContributionHeatmapProp
           </div>
         </div>
       </CardHeader>
-      <CardContent className="p-4 pt-3 flex-1">
+      <div className="p-4 pt-3 shrink-0">
         {isLoading || !data ? (
-          <Skeleton className="h-full w-full rounded-md" />
+          <Skeleton className="h-[120px] w-full rounded-md" />
         ) : (
-          <HeatmapGrid days={data} />
+          <HeatmapGrid days={data} selectedDate={selectedDate} onSelectDate={onSelectDate} />
         )}
-      </CardContent>
+      </div>
+
+      {selectedDate && (
+        <div className="flex-1 min-h-0 border-t border-border bg-accent/30">
+          <RecentActivity 
+            data={selectedActivities ?? null} 
+            isLoading={isLoadingSelected ?? false} 
+            title={`Sessions on ${selectedDate}`} 
+            emptyMessage={`No sessions found for ${selectedDate}.`}
+            hideCard={true}
+          />
+        </div>
+      )}
     </Card>
   );
 }

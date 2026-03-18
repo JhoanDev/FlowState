@@ -6,57 +6,62 @@ import { CurrentWeekGoals } from "@/components/goals/current-week-goals";
 import { GoalsHistory } from "@/components/goals/goals-history";
 import { StreakCard } from "@/components/goals/streak-card";
 import { ConsistencyGrid } from "@/components/goals/consistency-grid";
+
+import { useGoals } from "@/hooks/useGoals";
+import { useStats } from "@/hooks/useStats";
 import { useAsync } from "@/hooks/use-async";
-import {
-  getWeeklyGoals,
-  createWeeklyGoal,
-  updateWeeklyGoal,
-  deleteWeeklyGoal,
-  getGoalsSummary,
-  getGoalsHistory,
-} from "@/services/weekly-goals";
+
 import { getProjects } from "@/services/projects";
 import { getTags } from "@/services/tags";
-import { getStreakInfo, getConsistencyDays } from "@/services/streaks";
 import type { SessionType } from "@/types";
 
 export default function GoalsPage() {
-  const goalsQuery = useAsync(getWeeklyGoals);
-  const historyQuery = useAsync(getGoalsHistory);
-  const summaryQuery = useAsync(getGoalsSummary);
+  const { 
+    goals, 
+    history, 
+    summary, 
+    isLoading: isLoadingGoals, 
+    addGoal, 
+    editGoal, 
+    removeGoal 
+  } = useGoals();
+  
+  const { 
+    streakInfo, 
+    consistencyDays, 
+    isLoading: isLoadingStats 
+  } = useStats();
+
   const projectsQuery = useAsync(getProjects);
   const tagsQuery = useAsync(getTags);
-  const streakQuery = useAsync(getStreakInfo);
-  const consistencyQuery = useAsync(getConsistencyDays);
 
-  const [goals, setGoals] = React.useState(goalsQuery.data ?? []);
+  const handleAddGoal = async (input: import("@/types").WeeklyGoalInput) => {
+    let resolvedProjectId = input.projectId;
+    let resolvedTagId = input.tagId;
 
-  React.useEffect(() => {
-    if (goalsQuery.data) setGoals(goalsQuery.data);
-  }, [goalsQuery.data]);
+    if (!resolvedProjectId && input.type === "WORK" && projectsQuery.data) {
+       // Only resolve from label if projectId is not defined, wait, the input might not have label anymore?
+       // The UI usually sends what we need, but let's pass it directly.
+    }
 
-  const handleAddGoal = async (type: SessionType, label: string, targetHours: number) => {
-    const newGoal = await createWeeklyGoal({ type, label, targetHours, referenceId: null });
-    setGoals((prev) => [...prev, newGoal]);
+    await addGoal({ ...input, projectId: resolvedProjectId, tagId: resolvedTagId });
   };
 
   const handleEditGoal = async (id: number, data: { targetHours?: number }) => {
-    const updated = await updateWeeklyGoal(id, data);
-    setGoals((prev) => prev.map((g) => (g.id === id ? updated : g)));
+    await editGoal(id, data);
   };
 
   const handleRemoveGoal = async (id: number) => {
-    await deleteWeeklyGoal(id);
-    setGoals((prev) => prev.filter((g) => g.id !== id));
+    await removeGoal(id);
   };
 
   return (
     <AppLayout title="Goals & Streaks">
-      <div className="flex flex-col gap-4 h-full">
+      <div className="flex flex-col gap-4 h-full overflow-hidden">
         {/* Row 1 — Streak + Consistency */}
         <div className="grid grid-cols-2 gap-4 shrink-0">
-          <StreakCard data={streakQuery.data} isLoading={streakQuery.isLoading} />
-          <ConsistencyGrid data={consistencyQuery.data} isLoading={consistencyQuery.isLoading} />
+          <StreakCard data={streakInfo} isLoading={isLoadingStats} />
+          <ConsistencyGrid data={consistencyDays} isLoading={isLoadingStats} />
         </div>
 
         {/* Row 2 — Current Week Goals + History */}
@@ -65,15 +70,15 @@ export default function GoalsPage() {
             goals={goals}
             projects={projectsQuery.data ?? []}
             tags={tagsQuery.data ?? []}
-            isLoading={goalsQuery.isLoading}
+            isLoading={isLoadingGoals}
             onAdd={handleAddGoal}
             onEdit={handleEditGoal}
             onRemove={handleRemoveGoal}
           />
           <GoalsHistory
-            history={historyQuery.data}
-            summary={summaryQuery.data}
-            isLoading={historyQuery.isLoading}
+            history={history}
+            summary={summary}
+            isLoading={isLoadingGoals}
           />
         </div>
       </div>

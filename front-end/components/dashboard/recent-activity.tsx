@@ -13,6 +13,9 @@ import type { ActivityEntry } from "@/types";
 interface RecentActivityProps {
   data: ActivityEntry[] | null;
   isLoading: boolean;
+  title?: string;
+  emptyMessage?: string;
+  hideCard?: boolean;
 }
 
 function formatDuration(seconds: number): string {
@@ -101,13 +104,20 @@ function ActivitySkeleton() {
   );
 }
 
-export function RecentActivity({ data, isLoading }: RecentActivityProps) {
-  return (
-    <Card className="flex flex-col min-h-0 h-full">
-      <CardHeader className="p-4 pb-0 shrink-0">
-        <CardTitle className="text-sm">Recent Sessions</CardTitle>
-      </CardHeader>
-      <CardContent className="p-4 pt-2 flex-1 min-h-0 overflow-y-auto">
+export function RecentActivity({ 
+  data, 
+  isLoading, 
+  title = "Recent Sessions", 
+  emptyMessage = "No sessions recorded yet.",
+  hideCard = false
+}: RecentActivityProps) {
+  
+  const content = (
+    <>
+      <div className="p-4 pb-0 shrink-0">
+        <h3 className="text-sm font-semibold leading-none tracking-tight">{title}</h3>
+      </div>
+      <div className="p-4 pt-2 flex-1 min-h-0 overflow-y-auto">
         {isLoading || !data ? (
           <div className="space-y-1">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -116,14 +126,24 @@ export function RecentActivity({ data, isLoading }: RecentActivityProps) {
           </div>
         ) : data.length === 0 ? (
           <p className="text-xs text-muted-foreground py-4 text-center">
-            No sessions recorded yet.
+            {emptyMessage}
           </p>
         ) : (
           data.map((activity) => (
             <ActivityItem key={activity.id} activity={activity} />
           ))
         )}
-      </CardContent>
+      </div>
+    </>
+  );
+
+  if (hideCard) {
+    return <div className="flex flex-col min-h-0 h-full">{content}</div>;
+  }
+
+  return (
+    <Card className="flex flex-col min-h-0 h-full">
+      {content}
     </Card>
   );
 }
