@@ -20,9 +20,9 @@ Um aplicativo desktop nativo e local-first focado no rastreamento de tempo, gest
 
 **3.2. Módulo de Cronômetro e Foco**
 * **Timer Híbrido e Maratona:** Suporte a tempo progressivo, regressivo (Pomodoro) e perfil rigoroso para simular tempo limitado.
-* **Integração com Editor:** Botão de atalho na interface que dispara o VS Code na pasta do projeto ativo.
 * **Mini-Player (PiP):** Janela flutuante minimalista (Always on Top).
 * **Imunidade a Suspensão:** Lógica baseada na diferença de timestamps para prevenir atrasos de suspensão do SO.
+* **Possibilidade de cadastrar sessoẽs anteriores**: 
 
 **3.3. Metas e Histórico (Logbook)**
 * **Metas Semanais:** Horas-alvo por categoria/projeto com barras de progresso visuais em tempo real.

@@ -89,6 +89,20 @@ export interface SessionReviewData {
   notes: string;
 }
 
+export interface SessionStartConfig {
+  type: SessionType;
+  timerMode: TimerMode;
+  plannedDurationSeconds: number | null;
+  projectId: number | null;
+  tagIds: number[];
+}
+
+export interface TodayStats {
+  sessionCount: number;
+  totalSeconds: number;
+  avgSeconds: number; // average per session
+}
+
 // ─── Dashboard Visualization Types ──────────────────────────────
 
 export interface HeatmapDay {

@@ -25,7 +25,7 @@ export function SessionTypeToggle({ value, onChange }: SessionTypeToggleProps) {
             type="button"
             onClick={() => onChange(opt.value)}
             className={cn(
-              "relative z-10 flex-1 py-3.5 text-sm font-semibold tracking-wide rounded-md transition-colors duration-200",
+              "relative z-10 flex-1 py-3 text-sm font-semibold tracking-wide rounded-md transition-colors duration-200",
               isActive
                 ? "text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground"

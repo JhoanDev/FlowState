@@ -1,19 +1,15 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { FolderGit2, ChevronDown } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import type { Project } from "@/types";
 
 interface ProjectSelectorProps {
-  value: string;
-  onChange: (projectId: string) => void;
+  value: number | null;
+  onChange: (projectId: number | null) => void;
   projects: Project[];
   isLoading: boolean;
 }
-
-// Note: value is kept as string because <select> always returns strings.
-// The parent converts to number when needed.
 
 export function ProjectSelector({
   value,
@@ -23,38 +19,47 @@ export function ProjectSelector({
 }: ProjectSelectorProps) {
   if (isLoading) {
     return (
-      <div className="space-y-3">
-        <Skeleton className="h-4 w-16" />
-        <Skeleton className="h-14 w-full rounded-md" />
+      <div className="flex flex-wrap gap-2.5">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-10 w-36 rounded-lg" />
+        ))}
       </div>
     );
   }
 
   return (
-    <div className="space-y-3">
-      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-        Project
-      </label>
-      <div className="relative group">
-        <FolderGit2 className="absolute left-4 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-muted-foreground pointer-events-none transition-colors duration-200 group-hover:text-foreground" />
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className={cn(
-            "flex h-14 w-full appearance-none rounded-lg border border-input bg-transparent pl-12 pr-10 py-3 text-sm font-medium transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring hover:border-muted-foreground/40 cursor-pointer"
-          )}
-        >
-          <option value="" disabled className="bg-background">
-            Select a project
-          </option>
-          {projects.map((proj) => (
-            <option key={proj.id} value={proj.id} className="bg-background">
+    <div className="flex flex-wrap gap-2.5">
+      {projects.map((proj) => {
+        const isSelected = value === proj.id;
+        return (
+          <button
+            key={proj.id}
+            type="button"
+            onClick={() => onChange(isSelected ? null : proj.id)}
+            className="outline-none active:scale-95 transition-transform duration-100"
+          >
+            <span
+              className={cn(
+                "inline-flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium cursor-pointer border rounded-lg transition-all duration-200",
+                isSelected
+                  ? "shadow-sm"
+                  : "border-border bg-transparent text-muted-foreground hover:bg-accent hover:text-foreground"
+              )}
+              style={isSelected ? {
+                borderColor: proj.color,
+                backgroundColor: `${proj.color}15`,
+                color: proj.color,
+              } : undefined}
+            >
+              <span
+                className="h-3 w-3 rounded-full shrink-0"
+                style={{ backgroundColor: proj.color }}
+              />
               {proj.name}
-            </option>
-          ))}
-        </select>
-        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-muted-foreground pointer-events-none" />
-      </div>
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }

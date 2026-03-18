@@ -1,4 +1,4 @@
-import type { Session, SessionReviewData, SessionWithRelations } from "@/types";
+import type { Session, SessionReviewData, SessionWithRelations, TodayStats } from "@/types";
 import { mockSessions, mockSessionTags } from "@/mocks/sessions";
 import { mockProjects } from "@/mocks/projects";
 import { mockTags } from "@/mocks/tags";
@@ -55,5 +55,38 @@ export async function getSessionWithRelations(
     ...session,
     project: project ? { id: project.id, name: project.name, color: project.color } : null,
     tags: tags.map((t) => ({ id: t.id, name: t.name, color: t.color })),
+  };
+}
+
+export async function saveManualSession(
+  session: Omit<Session, "id" | "createdAt">,
+  tagIds: number[]
+): Promise<Session> {
+  // Future: return await invoke('save_manual_session', { session, tagIds });
+  await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
+  const newSession: Session = {
+    ...session,
+    id: nextId++,
+    createdAt: new Date().toISOString(),
+  };
+  mockSessions.push(newSession);
+  for (const tagId of tagIds) {
+    mockSessionTags.push({ sessionId: newSession.id, tagId });
+  }
+  return newSession;
+}
+
+export async function getTodayStats(): Promise<TodayStats> {
+  // Future: return await invoke('get_today_stats');
+  await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
+  const today = new Date("2026-03-18").toISOString().split("T")[0];
+  const todaySessions = mockSessions.filter(
+    (s) => s.status === "COMPLETED" && s.startedAt.split("T")[0] === today
+  );
+  const totalSeconds = todaySessions.reduce((sum, s) => sum + s.durationSeconds, 0);
+  return {
+    sessionCount: todaySessions.length,
+    totalSeconds,
+    avgSeconds: todaySessions.length > 0 ? Math.round(totalSeconds / todaySessions.length) : 0,
   };
 }

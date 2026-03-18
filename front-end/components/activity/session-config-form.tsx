@@ -6,91 +6,175 @@ import { SessionTypeToggle } from "./session-type-toggle";
 import { TagSelector } from "./tag-selector";
 import { ProjectSelector } from "./project-selector";
 import { Button } from "@/components/ui/button";
-import { Play } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Play, Timer, Hourglass } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAsync } from "@/hooks/use-async";
 import { getProjects } from "@/services/projects";
 import { getTags } from "@/services/tags";
-import type { SessionType } from "@/types";
+import type { SessionType, TimerMode, SessionStartConfig } from "@/types";
 
 interface SessionConfigFormProps {
-  onStart?: (type: SessionType) => void;
+  onStart?: (config: SessionStartConfig) => void;
 }
+
+const POMODORO_PRESETS = [
+  { label: "25m", seconds: 25 * 60 },
+  { label: "45m", seconds: 45 * 60 },
+  { label: "60m", seconds: 60 * 60 },
+  { label: "90m", seconds: 90 * 60 },
+];
 
 export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
   const [sessionType, setSessionType] = React.useState<SessionType>("WORK");
-  const [projectId, setProjectId] = React.useState("");
+  const [timerMode, setTimerMode] = React.useState<TimerMode>("PROGRESSIVE");
+  const [plannedSeconds, setPlannedSeconds] = React.useState(25 * 60);
+  const [projectId, setProjectId] = React.useState<number | null>(null);
   const [tagIds, setTagIds] = React.useState<number[]>([]);
 
   const projects = useAsync(getProjects);
   const tags = useAsync(getTags);
 
   const handleStart = () => {
-    onStart?.(sessionType);
+    onStart?.({
+      type: sessionType,
+      timerMode,
+      plannedDurationSeconds: timerMode === "REGRESSIVE" ? plannedSeconds : null,
+      projectId: sessionType === "WORK" ? projectId : null,
+      tagIds,
+    });
   };
 
   return (
-    <div
+    <Card
       className={cn(
-        "flex flex-col gap-10 w-full rounded-lg border border-border bg-card p-10 transition-colors duration-500",
+        "flex flex-col h-full transition-colors duration-500",
         sessionType === "STUDY" ? "theme-study" : "theme-work"
       )}
     >
-      <div>
-        <h3 className="text-xl font-semibold tracking-tight">Configure Session</h3>
-        <p className="text-sm text-muted-foreground mt-2">
+      <CardHeader className="p-5 pb-0">
+        <CardTitle className="text-base">Configure Session</CardTitle>
+        <p className="text-sm text-muted-foreground mt-1">
           What&apos;s the goal for the next block?
         </p>
-      </div>
+      </CardHeader>
 
-      <SessionTypeToggle value={sessionType} onChange={setSessionType} />
+      <CardContent className="p-5 pt-4 flex-1 flex flex-col gap-5 min-h-0 overflow-y-auto">
+        <SessionTypeToggle value={sessionType} onChange={setSessionType} />
 
-      <div className="min-h-[200px] relative overflow-hidden">
-        <AnimatePresence mode="wait">
-          {sessionType === "WORK" ? (
-            <motion.div
-              key="work-selector"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+        {/* Timer Mode */}
+        <div className="space-y-2.5 shrink-0">
+          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Timer Mode
+          </label>
+          <div className="flex gap-2.5">
+            <button
+              type="button"
+              onClick={() => setTimerMode("PROGRESSIVE")}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium border rounded-lg transition-all duration-200",
+                timerMode === "PROGRESSIVE"
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border text-muted-foreground hover:bg-accent hover:text-foreground"
+              )}
             >
-              <ProjectSelector
-                value={projectId}
-                onChange={setProjectId}
-                projects={projects.data ?? []}
-                isLoading={projects.isLoading}
-              />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="study-selector"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-              className="space-y-3"
+              <Timer className="h-4 w-4" />
+              Progressive
+            </button>
+            <button
+              type="button"
+              onClick={() => setTimerMode("REGRESSIVE")}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium border rounded-lg transition-all duration-200",
+                timerMode === "REGRESSIVE"
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border text-muted-foreground hover:bg-accent hover:text-foreground"
+              )}
             >
-              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Focus Tags
-              </label>
-              <TagSelector
-                selectedIds={tagIds}
-                onChange={setTagIds}
-                tags={tags.data ?? []}
-                isLoading={tags.isLoading}
-              />
+              <Hourglass className="h-4 w-4" />
+              Pomodoro
+            </button>
+          </div>
+
+          <AnimatePresence>
+            {timerMode === "REGRESSIVE" && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                <div className="flex gap-2.5 pt-2">
+                  {POMODORO_PRESETS.map((preset) => (
+                    <button
+                      key={preset.seconds}
+                      type="button"
+                      onClick={() => setPlannedSeconds(preset.seconds)}
+                      className={cn(
+                        "flex-1 py-2 text-sm font-medium border rounded-md transition-all duration-200",
+                        plannedSeconds === preset.seconds
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border text-muted-foreground hover:bg-accent"
+                      )}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Project selector (WORK only) */}
+        <AnimatePresence>
+          {sessionType === "WORK" && (
+            <motion.div
+              key="project-selector"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden shrink-0"
+            >
+              <div className="space-y-2.5">
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  Project
+                </label>
+                <ProjectSelector
+                  value={projectId}
+                  onChange={setProjectId}
+                  projects={projects.data ?? []}
+                  isLoading={projects.isLoading}
+                />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
 
-      <div className="pt-4 border-t border-border">
-        <Button className="w-full gap-2.5" size="lg" onClick={handleStart}>
-          <Play className="h-5 w-5 fill-current" />
-          Start Focus
-        </Button>
-      </div>
-    </div>
+        {/* Tags (always visible) */}
+        <div className="space-y-2.5 shrink-0">
+          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Tags
+          </label>
+          <TagSelector
+            selectedIds={tagIds}
+            onChange={setTagIds}
+            tags={tags.data ?? []}
+            isLoading={tags.isLoading}
+          />
+        </div>
+
+        <div className="flex-1" />
+
+        <div className="pt-4 border-t border-border shrink-0">
+          <Button className="w-full gap-2.5 text-sm" size="lg" onClick={handleStart}>
+            <Play className="h-4 w-4 fill-current" />
+            Start Focus
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
