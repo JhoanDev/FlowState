@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import type { HeatmapDay, ActivityEntry } from "@/types";
 import { RecentActivity } from "./recent-activity";
+import { useSettings } from "@/providers/settings-provider";
 
 interface ContributionHeatmapProps {
   data: HeatmapDay[] | null;
@@ -22,8 +23,6 @@ interface ContributionHeatmapProps {
 
 const CELL = 13;
 const GAP = 3;
-const DAY_LABELS = ["", "Mon", "", "Wed", "", "Fri", ""];
-const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const LABEL_W = 28;
 
 const intensityClasses: Record<number, string> = {
@@ -38,9 +37,10 @@ interface HeatmapGridProps {
   days: HeatmapDay[];
   selectedDate?: string | null;
   onSelectDate?: (date: string) => void;
+  locale: string;
 }
 
-function HeatmapGrid({ days, selectedDate, onSelectDate }: HeatmapGridProps) {
+function HeatmapGrid({ days, selectedDate, onSelectDate, locale }: HeatmapGridProps) {
   const weeks: (HeatmapDay | null)[][] = [];
   let currentWeek: (HeatmapDay | null)[] = [];
 
@@ -68,9 +68,11 @@ function HeatmapGrid({ days, selectedDate, onSelectDate }: HeatmapGridProps) {
   for (let wi = 0; wi < weeks.length; wi++) {
     const firstDay = weeks[wi].find((d) => d !== null);
     if (firstDay) {
-      const month = new Date(firstDay.date).getMonth();
+      const d = new Date(firstDay.date + "T00:00:00Z");
+      const month = d.getMonth();
       if (month !== lastMonth) {
-        monthLabels.push({ weekIndex: wi, label: MONTH_NAMES[month] });
+        const title = d.toLocaleDateString(locale, { month: "short", timeZone: "UTC" });
+        monthLabels.push({ weekIndex: wi, label: title });
         lastMonth = month;
       }
     }
@@ -78,6 +80,15 @@ function HeatmapGrid({ days, selectedDate, onSelectDate }: HeatmapGridProps) {
 
   const gridW = weeks.length * (CELL + GAP) - GAP;
   const gridH = 7 * (CELL + GAP) - GAP;
+
+  // Day labels dynamically translated
+  const labelRefDate = new Date("2024-01-01T12:00:00Z"); // Start on a Monday
+  const dayLabels = Array.from({ length: 7 }, (_, i) => {
+    if (i % 2 === 0) return "";
+    const d = new Date(labelRefDate);
+    d.setUTCDate(d.getUTCDate() + i);
+    return d.toLocaleDateString(locale, { weekday: "short", timeZone: "UTC" }).slice(0, 3);
+  });
 
   return (
     <div className="overflow-x-auto">
@@ -103,7 +114,7 @@ function HeatmapGrid({ days, selectedDate, onSelectDate }: HeatmapGridProps) {
             className="flex flex-col shrink-0"
             style={{ width: LABEL_W, height: gridH }}
           >
-            {DAY_LABELS.map((label, i) => (
+            {dayLabels.map((label, i) => (
               <div
                 key={i}
                 className="flex items-center text-[10px] text-muted-foreground leading-none"
@@ -143,7 +154,7 @@ function HeatmapGrid({ days, selectedDate, onSelectDate }: HeatmapGridProps) {
                       style={{ width: CELL, height: CELL }}
                       title={
                         day?.date
-                          ? `${day.date} — ${day.sessionCount} session${day.sessionCount !== 1 ? "s" : ""}, ${Math.round(day.totalSeconds / 60)}min`
+                          ? `${new Date(day.date + "T12:00:00Z").toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })} — ${day.sessionCount} session${day.sessionCount !== 1 ? "s" : ""}, ${Math.round(day.totalSeconds / 60)}min`
                           : undefined
                       }
                     />
@@ -166,6 +177,10 @@ export function ContributionHeatmap({
   selectedActivities,
   isLoadingSelected
 }: ContributionHeatmapProps) {
+  const { settings } = useSettings();
+  const locale = settings?.dateFormat === "BR" ? "pt-BR" : "en-US";
+  const displaySelectedDate = selectedDate ? new Date(selectedDate + "T12:00:00Z").toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" }) : "";
+
   return (
     <Card className="flex flex-col w-fit shrink-0 max-h-full overflow-hidden">
       <CardHeader className="pb-0 p-4 shrink-0 border-b border-transparent">
@@ -188,7 +203,7 @@ export function ContributionHeatmap({
         {isLoading || !data ? (
           <Skeleton className="h-[120px] w-full rounded-md" />
         ) : (
-          <HeatmapGrid days={data} selectedDate={selectedDate} onSelectDate={onSelectDate} />
+          <HeatmapGrid days={data} selectedDate={selectedDate} onSelectDate={onSelectDate} locale={locale} />
         )}
       </div>
 
@@ -197,8 +212,8 @@ export function ContributionHeatmap({
           <RecentActivity 
             data={selectedActivities ?? null} 
             isLoading={isLoadingSelected ?? false} 
-            title={`Sessions on ${selectedDate}`} 
-            emptyMessage={`No sessions found for ${selectedDate}.`}
+            title={`Sessions on ${displaySelectedDate}`} 
+            emptyMessage={`No sessions found for ${displaySelectedDate}.`}
             hideCard={true}
           />
         </div>

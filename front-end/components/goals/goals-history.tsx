@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { History, CheckCircle2, XCircle } from "lucide-react";
 import type { WeeklyGoal, WeeklyGoalSummary } from "@/types";
+import { useSettings } from "@/providers/settings-provider";
 
 // ─── Types ──────────────────────────────────────────────────────
 
@@ -52,24 +53,24 @@ function SummaryBar({ summary }: { summary: WeeklyGoalSummary }) {
 
 // ─── Week Block ─────────────────────────────────────────────────
 
-function formatWeekLabel(weekStart: string): string {
+function formatWeekLabel(weekStart: string, locale: string): string {
   const start = new Date(weekStart);
   const end = new Date(start);
   end.setDate(end.getDate() + 6);
 
   const format = (d: Date) =>
-    d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    d.toLocaleDateString(locale, { month: "short", day: "numeric" });
 
   return `${format(start)} – ${format(end)}`;
 }
 
-function WeekBlock({ weekStart, goals }: { weekStart: string; goals: WeeklyGoal[] }) {
+function WeekBlock({ weekStart, goals, locale }: { weekStart: string; goals: WeeklyGoal[]; locale: string }) {
   const totalMet = goals.filter((g) => g.currentHours >= g.targetHours).length;
 
   return (
     <div className="space-y-2.5">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium">{formatWeekLabel(weekStart)}</span>
+        <span className="text-sm font-medium">{formatWeekLabel(weekStart, locale)}</span>
         <span className="text-xs text-muted-foreground">
           {totalMet}/{goals.length} met
         </span>
@@ -123,6 +124,9 @@ function WeekBlock({ weekStart, goals }: { weekStart: string; goals: WeeklyGoal[
 // ─── Main Component ─────────────────────────────────────────────
 
 export function GoalsHistory({ history, summary, isLoading }: GoalsHistoryProps) {
+  const { settings } = useSettings();
+  const locale = settings?.dateFormat === "BR" ? "pt-BR" : "en-US";
+
   // Skip current week — show only past weeks
   const pastWeeks = history?.slice(1) ?? [];
 
@@ -161,7 +165,7 @@ export function GoalsHistory({ history, summary, isLoading }: GoalsHistoryProps)
             </p>
           ) : (
             pastWeeks.map(({ weekStart, goals }) => (
-              <WeekBlock key={weekStart} weekStart={weekStart} goals={goals} />
+              <WeekBlock key={weekStart} weekStart={weekStart} goals={goals} locale={locale} />
             ))
           )}
         </div>

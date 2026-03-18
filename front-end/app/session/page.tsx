@@ -12,6 +12,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Play, ClipboardList } from "lucide-react";
 import type { SessionStartConfig, SessionReviewData } from "@/types";
+import { useSettings } from "@/providers/settings-provider";
 
 type SessionState = "IDLE" | "ACTIVE" | "REVIEW";
 
@@ -28,6 +29,24 @@ export default function SessionPage() {
   const [sessionState, setSessionState] = React.useState<SessionState>("IDLE");
   const [sessionConfig, setSessionConfig] = React.useState<SessionStartConfig | null>(null);
   const [activePanel, setActivePanel] = React.useState<ActivePanel>("config");
+  const { settings } = useSettings();
+
+  React.useEffect(() => {
+    // Automatically manage strict mode (fullscreen) based on session state
+    if (sessionState === "ACTIVE" && settings?.strictModeDefault) {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch((err) => {
+          console.warn("Strict mode fullscreen request failed:", err);
+        });
+      }
+    } else if (sessionState === "REVIEW" || sessionState === "IDLE") {
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch((err) => {
+          console.warn("Failed to exit fullscreen:", err);
+        });
+      }
+    }
+  }, [sessionState, settings?.strictModeDefault]);
 
   const handleSessionStarted = (config: SessionStartConfig) => {
     setSessionConfig(config);

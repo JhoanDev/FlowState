@@ -54,7 +54,7 @@ export default function Dashboard() {
     <AppLayout title="Overview">
       <div className="flex flex-col gap-4 h-full">
         {/* Row 1 — Heatmap (fit content) + Recent Sessions (fills rest) */}
-        <div className="flex gap-4 h-[500px] shrink-0">
+        <div className="flex gap-4 h-[400px] shrink-0">
           <ContributionHeatmap 
             data={heatmap.data} 
             isLoading={heatmap.isLoading} 

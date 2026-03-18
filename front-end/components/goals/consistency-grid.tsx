@@ -5,16 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CalendarCheck } from "lucide-react";
 import type { ConsistencyDay } from "@/types";
+import { useSettings } from "@/providers/settings-provider";
 
 interface ConsistencyGridProps {
   data: ConsistencyDay[] | null;
   isLoading: boolean;
 }
 
-function DayCell({ day }: { day: ConsistencyDay }) {
+function DayCell({ day, locale }: { day: ConsistencyDay, locale: string }) {
   const date = new Date(day.date);
   const dayNum = date.getDate();
-  const dayName = date.toLocaleDateString("en-US", { weekday: "short" }).slice(0, 2);
+  const dayName = date.toLocaleDateString(locale, { weekday: "short" }).slice(0, 2);
   const isToday = day.date === "2026-03-18";
 
   return (
@@ -35,6 +36,9 @@ function DayCell({ day }: { day: ConsistencyDay }) {
 }
 
 export function ConsistencyGrid({ data, isLoading }: ConsistencyGridProps) {
+  const { settings } = useSettings();
+  const locale = settings?.dateFormat === "BR" ? "pt-BR" : "en-US";
+
   const activeDays = data?.filter((d) => d.hasActivity).length ?? 0;
   const totalDays = data?.length ?? 30;
   const rate = totalDays > 0 ? Math.round((activeDays / totalDays) * 100) : 0;
@@ -67,7 +71,7 @@ export function ConsistencyGrid({ data, isLoading }: ConsistencyGridProps) {
         ) : (
           <div className="grid grid-cols-10 gap-1.5">
             {data.map((day) => (
-              <DayCell key={day.date} day={day} />
+              <DayCell key={day.date} day={day} locale={locale} />
             ))}
           </div>
         )}

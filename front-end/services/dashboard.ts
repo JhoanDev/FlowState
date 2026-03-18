@@ -8,6 +8,8 @@ import {
   getMockStats,
   getMockActivities,
   getMockActivitiesByDate,
+  getMockActivitiesByProject,
+  getMockActivitiesByTag,
   getMockHeatmap,
   getMockWorkDistribution,
   getMockStudyDistribution,
@@ -62,6 +64,25 @@ export async function getActivitiesByDate(date: string): Promise<ActivityEntry[]
   await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
   return getMockActivitiesByDate(date);
 }
+
+export async function getActivitiesByProject(projectId: number): Promise<ActivityEntry[]> {
+  if (isTauri()) {
+    const res = await invokeTauri<ActivityEntry[]>("get_activities_by_project", { projectId });
+    if (res) return res;
+  }
+  await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
+  return getMockActivitiesByProject(projectId);
+}
+
+export async function getActivitiesByTag(tagId: number): Promise<ActivityEntry[]> {
+  if (isTauri()) {
+    const res = await invokeTauri<ActivityEntry[]>("get_activities_by_tag", { tagId });
+    if (res) return res;
+  }
+  await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
+  return getMockActivitiesByTag(tagId);
+}
+
 
 export async function getHeatmap(): Promise<HeatmapDay[]> {
   if (isTauri()) {

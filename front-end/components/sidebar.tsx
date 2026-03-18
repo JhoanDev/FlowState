@@ -12,6 +12,7 @@ import {
   Flame,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const navItems = [
@@ -20,7 +21,6 @@ const navItems = [
   { icon: Folder, label: "Projects & Tags", href: "/projects" },
   { icon: Flame, label: "Goals & Streaks", href: "/goals" },
   { icon: BookOpen, label: "Logbook", href: "/logbook" },
-  { icon: BarChart2, label: "Reports", href: "/reports" },
 ];
 
 function NavLink({
@@ -68,9 +68,13 @@ export function Sidebar({ className }: { className?: string }) {
     >
       {/* Logo */}
       <div className="flex h-[72px] items-center gap-3.5 px-7">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-          <Clock className="h-[18px] w-[18px] text-primary" />
-        </div>
+        <Image
+          src="/logo.png"
+          alt="FlowState Logo"
+          width={36}
+          height={36}
+          className="shrink-0"
+        />
         <span className="text-base font-bold tracking-tight">FlowState</span>
       </div>
 

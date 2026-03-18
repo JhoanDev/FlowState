@@ -121,6 +121,44 @@ export function getMockActivitiesByDate(date: string): ActivityEntry[] {
     }));
 }
 
+export function getMockActivitiesByProject(projectId: number): ActivityEntry[] {
+  const completedSessions = mockSessions.filter((s) => s.status === "COMPLETED" && s.projectId === projectId);
+  return completedSessions
+    .sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime())
+    .map((s) => ({
+      id: s.id,
+      type: s.type,
+      projectName: getProjectName(s.projectId),
+      projectColor: getProjectColor(s.projectId),
+      tags: getSessionTags(s.id),
+      durationSeconds: s.durationSeconds,
+      startedAt: s.startedAt,
+      rating: s.rating,
+      notes: s.notes,
+    }));
+}
+
+export function getMockActivitiesByTag(tagId: number): ActivityEntry[] {
+  const matchingSessionIds = mockSessionTags.filter((st) => st.tagId === tagId).map((st) => st.sessionId);
+  const completedSessions = mockSessions.filter(
+    (s) => s.status === "COMPLETED" && matchingSessionIds.includes(s.id)
+  );
+  return completedSessions
+    .sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime())
+    .map((s) => ({
+      id: s.id,
+      type: s.type,
+      projectName: getProjectName(s.projectId),
+      projectColor: getProjectColor(s.projectId),
+      tags: getSessionTags(s.id),
+      durationSeconds: s.durationSeconds,
+      startedAt: s.startedAt,
+      rating: s.rating,
+      notes: s.notes,
+    }));
+}
+
+
 // ─── Heatmap (~1 year) ───────────────────────────────────────────
 
 export function getMockHeatmap(): HeatmapDay[] {

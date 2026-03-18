@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Star, Clock, BookOpen, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ActivityEntry } from "@/types";
+import { useSettings } from "@/providers/settings-provider";
 
 interface SessionReviewListProps {
   date: string | null;
@@ -38,11 +39,11 @@ function formatDuration(seconds: number): string {
   return `${m}m`;
 }
 
-function formatTime(isoDate: string): string {
-  return new Date(isoDate).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
+function formatTime(isoDate: string, use12h: boolean): string {
+  return new Date(isoDate).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: use12h });
 }
 
-function EntryCard({ activity }: { activity: ActivityEntry }) {
+function EntryCard({ activity, use12h }: { activity: ActivityEntry, use12h: boolean }) {
   return (
     <div className="flex flex-col gap-3 p-4 rounded-lg border border-border bg-card hover:border-muted-foreground/30 transition-colors">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -79,7 +80,7 @@ function EntryCard({ activity }: { activity: ActivityEntry }) {
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Clock className="h-3.5 w-3.5" />
             <span className="font-medium">{formatDuration(activity.durationSeconds)}</span>
-            <span className="opacity-50">({formatTime(activity.startedAt)})</span>
+            <span className="opacity-50">({formatTime(activity.startedAt, use12h)})</span>
           </div>
           <div className="h-4 w-[1px] bg-border" />
           <StarRating rating={activity.rating} />
@@ -99,6 +100,9 @@ function EntryCard({ activity }: { activity: ActivityEntry }) {
 }
 
 export function SessionReviewList({ date, activities, isLoading }: SessionReviewListProps) {
+  const { settings } = useSettings();
+  const use12h = settings?.timeFormat === "12h";
+
   if (!date) {
     return (
       <Card className="flex flex-col h-full items-center justify-center border-dashed">
@@ -140,7 +144,7 @@ export function SessionReviewList({ date, activities, isLoading }: SessionReview
           </div>
         ) : (
           activities.map((activity) => (
-            <EntryCard key={activity.id} activity={activity} />
+            <EntryCard key={activity.id} activity={activity} use12h={use12h} />
           ))
         )}
       </CardContent>

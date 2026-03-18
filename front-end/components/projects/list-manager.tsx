@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, X, Check, type LucideIcon } from "lucide-react";
+import { Plus, X, Check, Pencil, type LucideIcon } from "lucide-react";
 
 const COLOR_PRESETS = [
   "#ef4444", // red
@@ -55,6 +55,8 @@ interface ListManagerProps {
   onAdd: (name: string, color: string) => void;
   onEdit: (id: number, data: { name?: string; color?: string }) => void;
   onRemove: (id: number) => void;
+  selectedId?: number | null;
+  onSelect?: (id: number) => void;
   className?: string;
 }
 
@@ -122,17 +124,6 @@ function EditPopover({
     inputRef.current?.select();
   }, []);
 
-  // Close on click outside
-  React.useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
-        handleSave();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }); // eslint-disable-line react-hooks/exhaustive-deps
-
   const handleSave = () => {
     const trimmed = editName.trim();
     if (!trimmed) {
@@ -145,6 +136,17 @@ function EditPopover({
     }
     onSave({ name: trimmed, color: editColor });
   };
+
+  // Close on click outside
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        handleSave();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [editName, editColor, item.name, item.color, onCancel, onSave]); 
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -211,6 +213,8 @@ export function ListManager({
   onAdd,
   onEdit,
   onRemove,
+  selectedId,
+  onSelect,
   className,
 }: ListManagerProps) {
   const [inputValue, setInputValue] = React.useState("");
@@ -317,28 +321,53 @@ export function ListManager({
                 <div key={item.id} className="relative">
                   <span
                     className={cn(
-                      "group inline-flex items-center gap-2.5 px-4 py-2.5 text-base font-medium border rounded-lg transition-all duration-200 cursor-pointer",
+                      "group inline-flex items-center justify-between gap-3 px-4 py-2.5 text-base font-medium border rounded-lg transition-all duration-200 cursor-pointer min-w-[140px]",
                       editingId === item.id
-                        ? "bg-accent ring-1 ring-primary/30"
-                        : "hover:bg-accent"
+                        ? "bg-accent/50 ring-2 ring-primary/30"
+                        : selectedId === item.id
+                          ? "shadow-sm"
+                          : "hover:bg-accent/40 bg-transparent"
                     )}
-                    style={{ borderColor: `${item.color}30` }}
-                    onClick={() => setEditingId(editingId === item.id ? null : item.id)}
+                    style={{ 
+                      borderColor: selectedId === item.id ? item.color : `${item.color}40`,
+                      backgroundColor: selectedId === item.id ? `${item.color}15` : undefined,
+                      boxShadow: selectedId === item.id ? `0 0 0 1px ${item.color}` : undefined
+                    }}
+                    onClick={() => {
+                      if (onSelect) onSelect(item.id);
+                    }}
                   >
-                    <span
-                      className="h-3 w-3 rounded-full shrink-0"
-                      style={{ backgroundColor: item.color }}
-                    />
-                    {item.name}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onRemove(item.id);
-                      }}
-                      className="p-0.5 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200 opacity-0 group-hover:opacity-100"
-                    >
-                      <X className="h-3.5 w-3.5" />
-                    </button>
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        className="h-3 w-3 rounded-full shrink-0"
+                        style={{ backgroundColor: item.color }}
+                      />
+                      {item.name}
+                    </div>
+
+                    <div className="flex items-center space-x-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingId(editingId === item.id ? null : item.id);
+                        }}
+                        className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-200"
+                        title="Edit"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (selectedId === item.id && onSelect) onSelect(-1); // Deselect on remove
+                          onRemove(item.id);
+                        }}
+                        className="p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200"
+                        title="Delete"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
                   </span>
 
                   {/* Edit popover — floats below the item */}

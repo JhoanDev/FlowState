@@ -157,6 +157,19 @@ export interface ConsistencyDay {
 // ─── Session with Relations (joined query result) ───────────────
 
 export interface SessionWithRelations extends Session {
-  project: Pick<Project, "id" | "name" | "color"> | null;
-  tags: Pick<Tag, "id" | "name" | "color">[];
+  project?: Project;
+  tags: Tag[];
+}
+
+export type ThemeOption = "light" | "dark" | "system";
+export type LanguageOption = "en" | "pt" | "es";
+export type TimeFormatOption = "12h" | "24h";
+export type DateFormatOption = "US" | "BR";
+
+export interface AppSettings {
+  theme: ThemeOption;
+  language: LanguageOption;
+  timeFormat: TimeFormatOption;
+  dateFormat: DateFormatOption;
+  strictModeDefault: boolean;
 }

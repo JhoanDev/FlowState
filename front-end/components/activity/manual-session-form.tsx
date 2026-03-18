@@ -4,6 +4,8 @@ import * as React from "react";
 import { SessionTypeToggle } from "./session-type-toggle";
 import { TagSelector } from "./tag-selector";
 import { ProjectSelector } from "./project-selector";
+import { DatePicker } from "@/components/ui/date-picker";
+import { TimePicker } from "@/components/ui/time-picker";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Star } from "lucide-react";
@@ -98,38 +100,32 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
         <SessionTypeToggle value={sessionType} onChange={setSessionType} />
 
         {/* Date & Time */}
-        <div className="grid grid-cols-3 gap-3 shrink-0">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0">
           <div className="space-y-2">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Date
             </label>
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring"
+            <DatePicker 
+              value={date} 
+              onChange={setDate} 
             />
           </div>
           <div className="space-y-2">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Start
+              Start Time
             </label>
-            <input
-              type="time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring"
+            <TimePicker 
+              value={startTime} 
+              onChange={setStartTime} 
             />
           </div>
           <div className="space-y-2">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              End
+              End Time
             </label>
-            <input
-              type="time"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              className="flex h-10 w-full rounded-lg border border-input bg-transparent px-3 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring"
+            <TimePicker 
+              value={endTime} 
+              onChange={setEndTime} 
             />
           </div>
         </div>
