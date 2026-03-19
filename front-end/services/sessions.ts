@@ -1,4 +1,5 @@
 import type { Session, SessionReviewData, SessionWithRelations, TodayStats } from "@/types";
+import { invokeTauri } from "@/services/tauri";
 import { mockSessions, mockSessionTags } from "@/mocks/sessions";
 import { mockProjects } from "@/mocks/projects";
 import { mockTags } from "@/mocks/tags";
@@ -10,7 +11,9 @@ let nextId = Math.max(...mockSessions.map((s) => s.id)) + 1;
 export async function saveSession(
   session: Omit<Session, "id" | "createdAt">
 ): Promise<Session> {
-  // Future: return await invoke('save_session', { session });
+  const res = await invokeTauri<Session>("save_session", { session });
+  if (res) return res;
+
   await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
   const newSession: Session = {
     ...session,
@@ -25,7 +28,13 @@ export async function saveSessionReview(
   sessionId: number,
   review: SessionReviewData
 ): Promise<void> {
-  // Future: return await invoke('save_session_review', { sessionId, review });
+  const res = await invokeTauri<void>("save_session_review", {
+    sessionId,
+    rating: review.rating,
+    notes: review.notes,
+  });
+  if (res !== null) return;
+
   await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
   const session = mockSessions.find((s) => s.id === sessionId);
   if (session) {
@@ -37,7 +46,9 @@ export async function saveSessionReview(
 export async function getSessionWithRelations(
   sessionId: number
 ): Promise<SessionWithRelations | null> {
-  // Future: return await invoke('get_session', { sessionId });
+  const res = await invokeTauri<SessionWithRelations>("get_session", { sessionId });
+  if (res) return res;
+
   await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
   const session = mockSessions.find((s) => s.id === sessionId);
   if (!session) return null;
@@ -53,8 +64,8 @@ export async function getSessionWithRelations(
 
   return {
     ...session,
-    project: project ? { id: project.id, name: project.name, color: project.color } : null,
-    tags: tags.map((t) => ({ id: t.id, name: t.name, color: t.color })),
+    project: project ?? undefined,
+    tags,
   };
 }
 
@@ -62,7 +73,9 @@ export async function saveManualSession(
   session: Omit<Session, "id" | "createdAt">,
   tagIds: number[]
 ): Promise<Session> {
-  // Future: return await invoke('save_manual_session', { session, tagIds });
+  const res = await invokeTauri<Session>("save_manual_session", { session, tagIds });
+  if (res) return res;
+
   await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
   const newSession: Session = {
     ...session,
@@ -77,9 +90,11 @@ export async function saveManualSession(
 }
 
 export async function getTodayStats(): Promise<TodayStats> {
-  // Future: return await invoke('get_today_stats');
+  const res = await invokeTauri<TodayStats>("get_today_stats");
+  if (res) return res;
+
   await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
-  const today = new Date("2026-03-18").toISOString().split("T")[0];
+  const today = new Date().toISOString().split("T")[0];
   const todaySessions = mockSessions.filter(
     (s) => s.status === "COMPLETED" && s.startedAt.split("T")[0] === today
   );

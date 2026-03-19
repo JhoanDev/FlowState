@@ -1,6 +1,4 @@
-/// SQL migration to create all FlowState tables.
-/// Executed once on first app launch via tauri-plugin-sql.
-pub const CREATE_TABLES: &str = r#"
+pub const CREATE_TABLES: &str = "
 CREATE TABLE IF NOT EXISTS projects (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     name        TEXT    NOT NULL UNIQUE,
@@ -57,4 +55,15 @@ CREATE TABLE IF NOT EXISTS weekly_goals (
 );
 
 CREATE INDEX IF NOT EXISTS idx_weekly_goals_week ON weekly_goals(week_start);
-"#;
+
+CREATE TABLE IF NOT EXISTS settings (
+    key   TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+);
+
+INSERT OR IGNORE INTO settings (key, value) VALUES ('theme', 'system');
+INSERT OR IGNORE INTO settings (key, value) VALUES ('language', 'en');
+INSERT OR IGNORE INTO settings (key, value) VALUES ('timeFormat', '24h');
+INSERT OR IGNORE INTO settings (key, value) VALUES ('dateFormat', 'BR');
+INSERT OR IGNORE INTO settings (key, value) VALUES ('strictModeDefault', 'true');
+";

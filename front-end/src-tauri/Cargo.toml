@@ -20,4 +20,5 @@ serde_json = "1"
 log = "0.4"
 tauri = { version = "2" }
 tauri-plugin-log = "2"
-tauri-plugin-sql = { version = "2", features = ["sqlite"] }
+rusqlite = { version = "0.31", features = ["bundled"] }
+chrono = { version = "0.4", features = ["serde"] }

@@ -1,24 +1,8 @@
 import type { StreakInfo, ConsistencyDay } from "@/types";
+import { invokeTauri } from "@/services/tauri";
 import { mockSessions } from "@/mocks/sessions";
 
 const SIMULATED_DELAY = 300;
-
-const isTauri = () => typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
-
-async function invokeTauri<T>(cmd: string, args?: Record<string, unknown>): Promise<T | null> {
-  if (isTauri()) {
-    try {
-      // @ts-expect-error: @tauri-apps/api/core might not be installed in the purely mock environment
-      const { invoke } = await import("@tauri-apps/api/core");
-      // @ts-expect-error: TS cannot infer the return type of dynamic imports easily
-      return await invoke<T>(cmd, args);
-    } catch (error) {
-      console.warn(`Failed to invoke Tauri command: ${cmd}`, error);
-      return null;
-    }
-  }
-  return null;
-}
 
 // ─── Helpers (UTC-safe date operations) ─────────────────────────
 
@@ -67,7 +51,7 @@ function calculateCurrentStreak(activeDates: string[], today: string): number {
 function calculateBestStreak(activeDates: string[]): number {
   if (activeDates.length === 0) return 0;
 
-  const sorted = [...activeDates].sort(); 
+  const sorted = [...activeDates].sort();
   let best = 1;
   let current = 1;
 
@@ -92,10 +76,8 @@ function calculateBestStreak(activeDates: string[]): number {
 
 export const statsService = {
   async getCurrentStreak(): Promise<StreakInfo> {
-    if (isTauri()) {
-      const res = await invokeTauri<StreakInfo>("get_streak_info");
-      if (res) return res;
-    }
+    const res = await invokeTauri<StreakInfo>("get_streak_info");
+    if (res) return res;
 
     // Mock Fallback
     await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
@@ -109,10 +91,8 @@ export const statsService = {
   },
 
   async getConsistencyDays(): Promise<ConsistencyDay[]> {
-    if (isTauri()) {
-      const res = await invokeTauri<ConsistencyDay[]>("get_consistency_days", { days: 30 });
-      if (res) return res;
-    }
+    const res = await invokeTauri<ConsistencyDay[]>("get_consistency_days", { days: 30 });
+    if (res) return res;
 
     // Mock Fallback
     await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
