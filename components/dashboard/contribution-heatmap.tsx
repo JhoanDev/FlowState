@@ -21,8 +21,6 @@ interface ContributionHeatmapProps {
   isLoadingSelected?: boolean;
 }
 
-const CELL = 14;
-const GAP = 4;
 const LABEL_W = 28;
 
 const intensityClasses: Record<number, string> = {
@@ -60,49 +58,28 @@ function HeatmapGrid({ days: rawDays, selectedDate, onSelectDate, locale }: Heat
   const baseDays = generateEmptyDays(182);
   const rawDaysMap = new Map(rawDays.map((d) => [d.date, d]));
   
-  const days = baseDays.map((baseDay) => {
-    return rawDaysMap.get(baseDay.date) || baseDay;
-  });
-
-  const weeks: (HeatmapDay | null)[][] = [];
-  let currentWeek: (HeatmapDay | null)[] = [];
+  const cells: (HeatmapDay | null)[] = [];
+  const days = baseDays.map((baseDay) => rawDaysMap.get(baseDay.date) || baseDay);
 
   const firstDate = new Date(days[0].date + "T00:00:00Z");
   const startPad = firstDate.getUTCDay();
-  for (let i = 0; i < startPad; i++) {
-    currentWeek.push(null);
-  }
+  for (let i = 0; i < startPad; i++) cells.push(null);
+  cells.push(...days);
+  while (cells.length % 7 !== 0) cells.push(null);
 
-  for (const day of days) {
-    currentWeek.push(day);
-    if (currentWeek.length === 7) {
-      weeks.push(currentWeek);
-      currentWeek = [];
-    }
-  }
-  if (currentWeek.length > 0) {
-    while (currentWeek.length < 7) currentWeek.push(null);
-    weeks.push(currentWeek);
-  }
-
-  // Month labels at the first week where a new month appears
-  const monthLabels: { weekIndex: number; label: string }[] = [];
+  const colCount = cells.length / 7;
+  const monthLabels: { col: number; label: string }[] = [];
   let lastMonth = -1;
-  for (let wi = 0; wi < weeks.length; wi++) {
-    const firstDay = weeks[wi].find((d) => d !== null);
-    if (firstDay) {
-      const d = new Date(firstDay.date + "T00:00:00Z");
-      const month = d.getMonth();
-      if (month !== lastMonth) {
-        const title = d.toLocaleDateString(locale, { month: "short", timeZone: "UTC" });
-        monthLabels.push({ weekIndex: wi, label: title });
-        lastMonth = month;
+  for (let c = 0; c < colCount; c++) {
+    const firstCellInCol = cells[c * 7];
+    if (firstCellInCol) {
+      const d = new Date(firstCellInCol.date + "T00:00:00Z");
+      if (d.getMonth() !== lastMonth) {
+        monthLabels.push({ col: c, label: d.toLocaleDateString(locale, { month: "short", timeZone: "UTC" }) });
+        lastMonth = d.getMonth();
       }
     }
   }
-
-  const gridW = weeks.length * (CELL + GAP) - GAP;
-  const gridH = 7 * (CELL + GAP) - GAP;
 
   // Day labels dynamically translated
   const labelRefDate = new Date("2024-01-01T12:00:00Z"); // Start on a Monday
@@ -114,78 +91,57 @@ function HeatmapGrid({ days: rawDays, selectedDate, onSelectDate, locale }: Heat
   });
 
   return (
-    <div className="overflow-x-auto">
-      <div style={{ minWidth: `calc(${LABEL_W + gridW}px + 0.625rem)` }}>
-        {/* Month labels */}
-        <div className="flex" style={{ paddingLeft: LABEL_W, height: 15 }}>
-          <div className="relative w-full">
-            {monthLabels.map(({ weekIndex, label }) => (
-              <span
-                key={`${weekIndex}-${label}`}
-                className="absolute text-[10px] text-muted-foreground leading-none"
-                style={{ left: weekIndex * (CELL + GAP) }}
-              >
-                {label}
-              </span>
-            ))}
-          </div>
+    <div className="flex flex-col w-full h-full min-h-0">
+      <div className="relative w-full h-[15px] shrink-0" style={{ paddingLeft: '28px' }}>
+        {monthLabels.map(({ col, label }) => (
+          <span
+            key={`${col}-${label}`}
+            className="absolute text-[8px] xl:text-[10px] text-muted-foreground leading-none"
+            style={{ left: `calc(28px + ${col} * (100% - 28px) / ${colCount})` }}
+          >
+            {label}
+          </span>
+        ))}
+      </div>
+
+      <div className="flex w-full aspect-[28/7]">
+        <div className="flex flex-col justify-between shrink-0 h-full py-[1.5%] w-[20px] xl:w-[28px]">
+          {dayLabels.map((label, i) => (
+            <div key={i} className="flex items-center text-[8px] xl:text-[10px] text-muted-foreground leading-none h-full">
+              {label}
+            </div>
+          ))}
         </div>
 
-        {/* Day labels + grid */}
-        <div className="flex">
-          <div
-            className="flex flex-col shrink-0"
-            style={{ width: LABEL_W, height: gridH }}
-          >
-            {dayLabels.map((label, i) => (
+        <div className="grid grid-rows-7 grid-flow-col gap-0.5 xl:gap-1 flex-1 min-w-0 h-full w-full">
+          {cells.map((day, i) => {
+            const isSelected = day?.date === selectedDate;
+            const isInteractive = !!day && day.sessionCount > 0;
+            return (
               <div
                 key={i}
-                className="flex items-center text-[10px] text-muted-foreground leading-none"
-                style={{ height: CELL, marginBottom: i < 6 ? GAP : 0 }}
-              >
-                {label}
-              </div>
-            ))}
-          </div>
-
-          <div className="flex" style={{ gap: GAP }}>
-            {weeks.map((week, wi) => (
-              <div key={wi} className="flex flex-col shrink-0" style={{ gap: GAP }}>
-                {week.map((day, di) => {
-                  const isSelected = day?.date === selectedDate;
-                  const isInteractive = !!day && day.sessionCount > 0;
-                  
-                  return (
-                    <div
-                      key={`${wi}-${di}`}
-                      onClick={() => {
-                        if (isInteractive && onSelectDate) {
-                          onSelectDate(day.date);
-                        }
-                      }}
-                      className={cn(
-                        "rounded-[2px] transition-all duration-150 shrink-0",
-                        day !== null
-                          ? cn(
-                              intensityClasses[day.intensity],
-                              isInteractive && "hover:ring-2 hover:ring-primary/50 cursor-pointer z-10",
-                              !isInteractive && "cursor-default",
-                              isSelected && "ring-2 ring-primary ring-offset-1 ring-offset-background z-20 hover:ring-primary"
-                            )
-                          : "bg-transparent"
-                      )}
-                      style={{ width: CELL, height: CELL }}
-                      title={
-                        day?.date
-                          ? `${new Date(day.date + "T12:00:00Z").toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })} — ${day.sessionCount} session${day.sessionCount !== 1 ? "s" : ""}, ${Math.round(day.totalSeconds / 60)}min`
-                          : undefined
-                      }
-                    />
-                  );
-                })}
-              </div>
-            ))}
-          </div>
+                onClick={() => {
+                  if (isInteractive && onSelectDate) onSelectDate(day.date);
+                }}
+                className={cn(
+                  "rounded-[2%] transition-all w-full h-full shrink-0 duration-150",
+                  day !== null
+                    ? cn(
+                        intensityClasses[day.intensity],
+                        isInteractive && "hover:ring-2 hover:ring-primary/50 cursor-pointer z-10",
+                        !isInteractive && "cursor-default",
+                        isSelected && "ring-2 ring-primary ring-offset-1 ring-offset-background z-20 hover:ring-primary"
+                      )
+                    : "bg-transparent"
+                )}
+                title={
+                  day?.date
+                    ? `${new Date(day.date + "T12:00:00Z").toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })} — ${day.sessionCount} sessions`
+                    : undefined
+                }
+              />
+            );
+          })}
         </div>
       </div>
     </div>
@@ -205,42 +161,47 @@ export function ContributionHeatmap({
   const displaySelectedDate = selectedDate ? new Date(selectedDate + "T12:00:00Z").toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" }) : "";
 
   return (
-    <Card className="flex flex-col w-fit shrink-0 max-h-full overflow-hidden max-w-[75%]">
-      <CardHeader className="pb-0 p-4 shrink-0 border-b border-transparent">
+    <Card className="flex flex-col w-full md:flex-[0.55] shrink-0 h-auto md:h-full md:overflow-hidden min-h-0 border-border">
+      <CardHeader className="pb-0 p-3 xl:p-4 shrink-0 border-b border-transparent">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm">Activity</CardTitle>
-          <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+          <CardTitle className="text-xs xl:text-sm">Activity</CardTitle>
+          <div className="flex items-center gap-1.5 text-[8px] xl:text-[10px] text-muted-foreground">
             <span>Less</span>
             {[0, 1, 2, 3, 4].map((level) => (
               <div
                 key={level}
-                className={cn("rounded-[2px]", intensityClasses[level])}
-                style={{ width: CELL, height: CELL }}
+                className={cn("rounded-sm w-2 h-2 xl:w-3 xl:h-3", intensityClasses[level])}
               />
             ))}
             <span>More</span>
           </div>
         </div>
       </CardHeader>
-      <div className="p-4 pt-3 shrink-0">
+      <div className="p-3 xl:p-4 pt-2 xl:pt-3 flex-none shrink-0 border-b border-transparent">
         {isLoading || !data ? (
-          <Skeleton className="h-[120px] w-full rounded-md" />
+          <Skeleton className="aspect-[28/7] w-full rounded-md" />
         ) : (
           <HeatmapGrid days={data} selectedDate={selectedDate} onSelectDate={onSelectDate} locale={locale} />
         )}
       </div>
 
-      {selectedDate && (
-        <div className="flex-1 min-h-0 border-t border-border bg-accent/30">
+      <div className="flex-1 min-h-[220px] md:min-h-0 border-t border-border bg-accent/30 flex flex-col">
+        {selectedDate ? (
           <RecentActivity 
             data={selectedActivities ?? null} 
             isLoading={isLoadingSelected ?? false} 
             title={`Sessions on ${displaySelectedDate}`} 
-            emptyMessage={`No sessions found for ${displaySelectedDate}.`}
+            emptyMessage={`No sessions found for this day`}
             hideCard={true}
           />
-        </div>
-      )}
+        ) : (
+          <div className="flex-1 flex items-center justify-center p-4 min-h-0">
+            <span className="text-xs xl:text-sm text-muted-foreground italic select-none">
+              Select a day on the heatmap to view its sessions
+            </span>
+          </div>
+        )}
+      </div>
     </Card>
   );
 }

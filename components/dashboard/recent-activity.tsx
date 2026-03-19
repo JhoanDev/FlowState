@@ -38,23 +38,23 @@ function formatTimeAgo(isoDate: string): string {
 
 function ActivityItem({ activity }: { activity: ActivityEntry }) {
   return (
-    <div className="flex items-start gap-3 py-2.5 px-3 rounded-lg border-b border-border last:border-0 transition-all duration-200 hover:bg-accent group cursor-default">
+    <div className="flex items-start gap-2 xl:gap-3 py-1.5 xl:py-2.5 px-2 xl:px-3 rounded-md border-b border-border last:border-0 transition-all duration-200 hover:bg-accent group cursor-default">
       <Badge
         variant={activity.type === "WORK" ? "work" : "study"}
-        className="mt-0.5 shrink-0 text-[10px] font-bold px-1.5 py-0.5"
+        className="mt-0.5 shrink-0 text-[8px] xl:text-[10px] font-bold px-1 xl:px-1.5 py-0 xl:py-0.5 leading-none"
       >
         {activity.type === "WORK" ? "WK" : "ST"}
       </Badge>
       <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 min-w-0 overflow-hidden">
+        <div className="flex items-center justify-between gap-1.5 xl:gap-2">
+          <div className="flex items-center gap-1 xl:gap-1.5 min-w-0 overflow-hidden">
             {activity.projectName && (
               <span
-                className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded border border-border shrink-0"
+                className="inline-flex items-center gap-1 text-[8px] xl:text-[10px] font-semibold px-1 xl:px-1.5 py-0 xl:py-0.5 rounded border border-border shrink-0 leading-none"
                 style={{ color: activity.projectColor ?? undefined }}
               >
                 <span
-                  className="h-1.5 w-1.5 rounded-full shrink-0"
+                  className="h-1 w-1 xl:h-1.5 xl:w-1.5 rounded-full shrink-0"
                   style={{ backgroundColor: activity.projectColor ?? undefined }}
                 />
                 {activity.projectName}
@@ -63,11 +63,11 @@ function ActivityItem({ activity }: { activity: ActivityEntry }) {
             {activity.tags.slice(0, 2).map((tag) => (
               <span
                 key={tag.name}
-                className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded border border-border shrink-0"
+                className="inline-flex items-center gap-1 text-[8px] xl:text-[10px] font-medium px-1 xl:px-1.5 py-0 xl:py-0.5 rounded border border-border shrink-0 leading-none"
                 style={{ color: tag.color }}
               >
                 <span
-                  className="h-1.5 w-1.5 rounded-full shrink-0"
+                  className="h-1 w-1 xl:h-1.5 xl:w-1.5 rounded-full shrink-0"
                   style={{ backgroundColor: tag.color }}
                 />
                 {tag.name}
@@ -76,11 +76,11 @@ function ActivityItem({ activity }: { activity: ActivityEntry }) {
           </div>
           <span className="text-[10px] text-muted-foreground shrink-0">{formatTimeAgo(activity.startedAt)}</span>
         </div>
-        <div className="flex items-center gap-2 mt-1">
-          <span className="text-[10px] font-medium text-muted-foreground bg-muted px-1.5 py-0.5 rounded shrink-0">
+        <div className="flex items-center gap-1.5 xl:gap-2 mt-0.5 xl:mt-1">
+          <span className="text-[8px] xl:text-[10px] font-medium text-muted-foreground bg-muted px-1 xl:px-1.5 py-0 xl:py-0.5 rounded shrink-0 leading-none">
             {formatDuration(activity.durationSeconds)}
           </span>
-          <span className="text-[10px] text-muted-foreground truncate">
+          <span className="text-[8px] xl:text-[10px] text-muted-foreground truncate mx-0.5">
             {activity.notes}
           </span>
         </div>
@@ -114,10 +114,10 @@ export function RecentActivity({
   
   const content = (
     <>
-      <div className="p-4 pb-0 shrink-0">
-        <h3 className="text-sm font-semibold leading-none tracking-tight">{title}</h3>
+      <div className="p-3 xl:p-4 pb-0 shrink-0">
+        <h3 className="text-xs xl:text-sm font-semibold leading-none tracking-tight">{title}</h3>
       </div>
-      <div className="p-4 pt-2 flex-1 min-h-0 overflow-y-auto">
+      <div className="p-3 xl:p-4 pt-1.5 xl:pt-2 flex-1 min-h-0 md:overflow-y-auto">
         {isLoading || !data ? (
           <div className="space-y-1">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -142,7 +142,7 @@ export function RecentActivity({
   }
 
   return (
-    <Card className="flex flex-col min-h-0 h-full">
+    <Card className="flex flex-col min-h-0 md:h-full">
       {content}
     </Card>
   );

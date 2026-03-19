@@ -28,15 +28,18 @@ function NavLink({
   icon: Icon,
   label,
   isActive,
+  onClick,
 }: {
   href: string;
   icon: React.ElementType;
   label: string;
   isActive: boolean;
+  onClick?: () => void;
 }) {
   return (
     <Link
       href={href}
+      onClick={onClick}
       className={cn(
         "relative flex items-center gap-3.5 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ease-out group",
         isActive
@@ -56,13 +59,13 @@ function NavLink({
   );
 }
 
-export function Sidebar({ className }: { className?: string }) {
+export function Sidebar({ className, onNavClick }: { className?: string; onNavClick?: () => void }) {
   const pathname = usePathname();
 
   return (
     <aside
       className={cn(
-        "flex w-[280px] flex-col bg-card",
+        "flex w-[280px] flex-col bg-card border-r border-border shrink-0",
         className
       )}
     >
@@ -87,6 +90,7 @@ export function Sidebar({ className }: { className?: string }) {
             icon={item.icon}
             label={item.label}
             isActive={pathname === item.href}
+            onClick={onNavClick}
           />
         ))}
       </nav>
@@ -98,6 +102,7 @@ export function Sidebar({ className }: { className?: string }) {
           icon={Settings}
           label="Settings"
           isActive={pathname === "/settings"}
+          onClick={onNavClick}
         />
       </div>
     </aside>

@@ -53,9 +53,9 @@ export function WeeklyGoals({ data, isLoading }: WeeklyGoalsProps) {
       </CardHeader>
       <CardContent className="p-4 pt-2">
         {isLoading || !data ? (
-          <div className="flex gap-4">
+          <div className="flex overflow-x-auto gap-4 snap-x pb-2 lg:pb-0">
             {Array.from({ length: 2 }).map((_, i) => (
-              <div key={i} className="flex-1 space-y-2 p-3">
+              <div key={i} className="flex-1 min-w-[240px] lg:min-w-0 snap-center space-y-2 p-3 shrink-0">
                 <div className="flex items-center justify-between">
                   <Skeleton className="h-3 w-28" />
                   <Skeleton className="h-3 w-14" />
@@ -69,8 +69,12 @@ export function WeeklyGoals({ data, isLoading }: WeeklyGoalsProps) {
             No goals set for this week.
           </p>
         ) : (
-          <div className="flex gap-4">
-            {data.map((goal) => <GoalItem key={goal.id} goal={goal} />)}
+          <div className="flex overflow-x-auto gap-4 snap-x pb-2 lg:pb-0">
+            {data.map((goal) => (
+              <div key={goal.id} className="flex-1 min-w-[240px] lg:min-w-0 snap-center shrink-0">
+                <GoalItem goal={goal} />
+              </div>
+            ))}
           </div>
         )}
       </CardContent>

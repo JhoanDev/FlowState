@@ -29,36 +29,36 @@ export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRa
 
   return (
     <Card className="flex flex-col h-full bg-card shadow-none border-border">
-      <CardHeader className="p-4 border-b border-border/50 shrink-0">
-        <div className="flex items-center gap-3 justify-between">
-          <CardTitle className="text-base font-bold flex items-center gap-2">
-            <Trophy className="h-4 w-4 text-primary" />
+      <CardHeader className="p-3 xl:p-4 border-b border-border/50 shrink-0">
+        <div className="flex items-center gap-2 xl:gap-3 justify-between">
+          <CardTitle className="text-sm xl:text-base font-bold flex items-center gap-1.5 xl:gap-2">
+            <Trophy className="h-3 w-3 xl:h-4 xl:w-4 text-primary" />
             Top Rated
           </CardTitle>
-          <div className="flex gap-1 bg-accent/30 p-1 rounded-md">
+          <div className="flex gap-0.5 xl:gap-1 bg-accent/30 p-0.5 xl:p-1 rounded-md">
             <Button
               variant={isWork ? "secondary" : "ghost"}
               size="sm"
-              className={cn("h-7 px-3 text-xs font-semibold", isWork && "bg-background text-foreground shadow-sm")}
+              className={cn("h-6 xl:h-7 px-2 xl:px-3 text-[10px] xl:text-xs font-semibold hover:text-foreground", isWork && "bg-background text-foreground shadow-sm hover:bg-background/80 hover:text-foreground")}
               onClick={() => setActiveTab("WORK")}
             >
-              <Briefcase className="w-3 h-3 mr-1.5" />
+              <Briefcase className="w-2.5 h-2.5 xl:w-3 xl:h-3 mr-1 xl:mr-1.5" />
               Work
             </Button>
             <Button
               variant={!isWork ? "secondary" : "ghost"}
               size="sm"
-              className={cn("h-7 px-3 text-xs font-semibold", !isWork && "bg-background text-foreground shadow-sm")}
+              className={cn("h-6 xl:h-7 px-2 xl:px-3 text-[10px] xl:text-xs font-semibold hover:text-foreground", !isWork && "bg-background text-foreground shadow-sm hover:bg-background/80 hover:text-foreground")}
               onClick={() => setActiveTab("STUDY")}
             >
-               <BookOpen className="w-3 h-3 mr-1.5" />
+               <BookOpen className="w-2.5 h-2.5 xl:w-3 xl:h-3 mr-1 xl:mr-1.5" />
                Study
             </Button>
           </div>
         </div>
       </CardHeader>
       
-      <CardContent className="p-4 flex-1 min-h-[220px] overflow-y-auto space-y-3">
+      <CardContent className="p-3 xl:p-4 flex-1 min-h-0 md:overflow-y-auto space-y-1.5 xl:space-y-3 shrink-0">
         {isLoading ? (
            Array.from({ length: 4 }).map((_, i) => (
              <Skeleton key={i} className="h-12 w-full rounded-md" />
@@ -71,29 +71,29 @@ export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRa
            items.map((item, index) => (
              <div 
                key={item.id}
-               className="flex items-center group justify-between p-3 rounded-md border border-border/60 bg-transparent hover:border-border transition-colors cursor-default"
+               className="flex items-center group justify-between p-2 xl:p-3 rounded-md border border-border/60 bg-transparent hover:border-border transition-colors cursor-default"
              >
-                <div className="flex items-center gap-3">
-                   <span className="text-xs font-bold text-muted-foreground w-4 text-center">
+                <div className="flex items-center gap-2 xl:gap-3">
+                   <span className="text-[10px] xl:text-xs font-bold text-muted-foreground w-3 xl:w-4 text-center">
                      #{index + 1}
                    </span>
                    <div 
-                     className="w-2.5 h-2.5 rounded-full" 
+                     className="w-2 h-2 xl:w-2.5 xl:h-2.5 rounded-full shrink-0" 
                      style={{ backgroundColor: item.color || "currentColor" }}
                    />
-                   <div className="flex flex-col">
-                     <span className="text-sm font-bold text-foreground truncate max-w-[140px] leading-tight">
+                   <div className="flex flex-col min-w-0">
+                     <span className="text-xs xl:text-sm font-bold text-foreground truncate max-w-[100px] xl:max-w-[140px] leading-none">
                        {item.name}
                      </span>
-                     <span className="text-[10px] text-muted-foreground mt-0.5 font-medium">
+                     <span className="text-[8px] xl:text-[10px] text-muted-foreground mt-1 font-medium leading-none">
                        {item.totalSessions} sessions
                      </span>
                    </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 bg-accent/40 px-2 py-1 rounded">
-                   <Star className="h-3.5 w-3.5 text-orange-400 fill-orange-400" />
-                   <span className="text-sm font-bold font-mono text-foreground">
+                <div className="flex items-center gap-1 xl:gap-1.5 bg-accent/40 px-1.5 xl:px-2 py-0.5 xl:py-1 rounded shrink-0">
+                   <Star className="h-2.5 w-2.5 xl:h-3.5 xl:w-3.5 text-orange-400 fill-orange-400" />
+                   <span className="text-[10px] xl:text-sm font-bold font-mono text-foreground leading-none">
                       {(item.averageRating || 0).toFixed(1)}
                    </span>
                 </div>

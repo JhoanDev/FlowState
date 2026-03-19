@@ -52,9 +52,9 @@ export default function Dashboard() {
 
   return (
     <AppLayout title="Overview">
-      <div className="flex flex-col gap-4 h-full">
-        {/* Row 1 — Heatmap (fit content) + Recent Sessions (fills rest) */}
-        <div className="flex gap-4 h-[400px] shrink-0">
+      <div className="flex flex-col gap-3 xl:gap-4 h-[calc(100vh-5rem)] md:h-full overflow-y-auto md:overflow-hidden pb-4 md:pb-0 transition-all duration-300 w-full max-w-full">
+        {/* Row 1 — Heatmap (55% height) + Recent Sessions (45% width) */}
+        <div className="flex flex-col md:flex-row gap-3 xl:gap-4 md:flex-[0.55] h-auto md:h-full min-h-0 shrink-0">
           <ContributionHeatmap 
             data={heatmap.data} 
             isLoading={heatmap.isLoading} 
@@ -63,19 +63,19 @@ export default function Dashboard() {
             selectedActivities={selectedActivities}
             isLoadingSelected={isLoadingSelected}
           />
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 flex flex-col h-auto md:h-full min-h-0">
             <RecentActivity data={activities.data} isLoading={activities.isLoading} />
           </div>
         </div>
 
-        {/* Row 2 — Distribution Charts & Ranking (expands to fill) */}
-        <div className="grid gap-4 grid-cols-1 lg:grid-cols-3 flex-1 min-h-0">
+        {/* Row 2 — Distribution Charts & Ranking (45% height) */}
+        <div className="grid gap-3 xl:gap-4 grid-cols-1 md:grid-cols-3 md:flex-[0.45] h-auto md:h-full min-h-0 shrink-0">
           <DistributionChartCard data={workDist.data} isLoading={workDist.isLoading} />
           <DistributionChartCard data={studyDist.data} isLoading={studyDist.isLoading} />
-          <TopRatedRanking 
-            workItems={topRatedWork.data || []} 
-            studyItems={topRatedStudy.data || []} 
-            isLoading={topRatedWork.isLoading || topRatedStudy.isLoading} 
+          <TopRatedRanking
+            workItems={topRatedWork.data || []}
+            studyItems={topRatedStudy.data || []}
+            isLoading={topRatedWork.isLoading || topRatedStudy.isLoading}
           />
         </div>
       </div>

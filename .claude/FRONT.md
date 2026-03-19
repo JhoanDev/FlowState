@@ -31,3 +31,12 @@ export async function getUsers(): Promise<User[]> {
   return mockUsers;
 }
 ```
+
+#### 7. Padrões Ágeis de Responsividade (Desktop Fluído e Mobile Real)
+
+* **7.1 Sem Breakpoints Bruscos:** Para animações e responsividade suaves, abandone larguras fixas limitantes (ex: `w-20 md:w-24`). Utilize CSS puro com "Fluid Tensions": `w-full h-full max-w-[140px] aspect-square flex-1 min-w-0 min-h-0`. Deixe o Flexbox/Grid escalar os SVGs.
+* **7.2 Tiling WM Mode (Desktop Shrinking):** Em telas `< lg` e `>= md` (meia janela), o app nunca deve recorrer a scrolls internos estranhos para compensar. A interface deve ser "100% visível, mas espremida". Use proporções `flex-[0.45]`, reduza as fontes (`xl:text-sm text-[10px]`) e confie no Flex.
+* **7.3 Fim do Scroll Trap Mobile:** Ao stackar no break para mobile puro (`flex-col`), NUNCA force `h-[Xpx]` rígidos. Remova scrolls internos (`md:overflow-y-auto`) e permita wrap do conteúdo para ser rolado naturalmente na janela do dispositivo.
+* **7.4 Carrosséis Horizontais (Mobile):** Para sequências de cards ("Stats", "Goals"), opte por `flex overflow-x-auto snap-x lg:grid lg:grid-cols-X` ao invés de grandes stacks verticais exaustivas.
+* **7.5 Correção de Button Shadcn:** No tema Flat Dark, componentes Shadcn puros podem introduzir constrastes ofensivos (variante `secondary` sendo baseando em `bg-foreground` total branco). Substitua-os no código raiz do componente para usar `bg-muted`/`hover:bg-accent`.
+* **7.6 Sidebar Hambúrguer Overlay:** Em `< lg`, recupere a área horizontal usando um `isMobileMenuOpen` toggle no layout. Insira o menu no `TopNav` e transforme a `Sidebar` principal em um backdrop/slide-over.

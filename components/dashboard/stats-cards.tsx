@@ -22,7 +22,7 @@ interface StatCardProps {
 
 function StatCard({ label, value, subtext, trend, icon: Icon, accentClass }: StatCardProps) {
   return (
-    <Card className="group cursor-default hover:shadow-md">
+    <Card className="group cursor-default hover:shadow-md shrink-0 w-[85vw] sm:w-[280px] lg:w-auto snap-center lg:snap-align-none">
       <CardContent className="p-7">
         <div className="flex items-center justify-between mb-5">
           <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
@@ -68,16 +68,18 @@ function StatCardSkeleton() {
 export function StatsCards({ data, isLoading }: StatsCardsProps) {
   if (isLoading || !data) {
     return (
-      <div className="grid gap-6 grid-cols-4">
+      <div className="flex overflow-x-auto gap-4 pb-2 snap-x lg:snap-none lg:grid lg:gap-6 lg:grid-cols-4 lg:pb-0 lg:overflow-visible">
         {Array.from({ length: 4 }).map((_, i) => (
-          <StatCardSkeleton key={i} />
+          <div key={i} className="shrink-0 w-[85vw] sm:w-[280px] lg:w-auto snap-center lg:snap-align-none">
+            <StatCardSkeleton />
+          </div>
         ))}
       </div>
     );
   }
 
   return (
-    <div className="grid gap-6 grid-cols-4">
+    <div className="flex overflow-x-auto gap-4 pb-2 snap-x lg:snap-none lg:grid lg:gap-6 lg:grid-cols-4 lg:pb-0 lg:overflow-visible">
       <StatCard
         label="Work Time"
         value={`${data.workHours}h`}
