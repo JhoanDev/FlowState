@@ -17,7 +17,7 @@ export async function invokeTauri<T>(
     const { invoke } = await import("@tauri-apps/api/core");
     return await invoke<T>(cmd, args);
   } catch (error) {
-    console.warn(`[Tauri IPC] Failed: ${cmd}`, error);
+    console.error(`[Tauri IPC] Command "${cmd}" failed:`, error);
     return null;
   }
 }

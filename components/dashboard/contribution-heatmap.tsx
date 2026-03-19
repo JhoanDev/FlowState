@@ -40,7 +40,24 @@ interface HeatmapGridProps {
   locale: string;
 }
 
-function HeatmapGrid({ days, selectedDate, onSelectDate, locale }: HeatmapGridProps) {
+function generateEmptyDays(count: number): HeatmapDay[] {
+  const days: HeatmapDay[] = [];
+  const now = new Date();
+  for (let i = count - 1; i >= 0; i--) {
+    const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - i));
+    days.push({
+      date: d.toISOString().split("T")[0],
+      totalSeconds: 0,
+      sessionCount: 0,
+      intensity: 0,
+    });
+  }
+  return days;
+}
+
+function HeatmapGrid({ days: rawDays, selectedDate, onSelectDate, locale }: HeatmapGridProps) {
+  const days = rawDays.length === 0 ? generateEmptyDays(180) : rawDays;
+
   const weeks: (HeatmapDay | null)[][] = [];
   let currentWeek: (HeatmapDay | null)[] = [];
 

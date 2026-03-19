@@ -31,15 +31,21 @@ fn query_activities(
     conn: &rusqlite::Connection,
     where_clause: &str,
     params: &[&dyn rusqlite::types::ToSql],
+    limit: Option<i64>,
 ) -> Result<Vec<ActivityEntry>, String> {
+    let limit_clause = match limit {
+        Some(n) => format!("LIMIT {}", n),
+        None => String::new(),
+    };
     let sql = format!(
         "SELECT s.id, s.type, p.name, p.color,
                 s.duration_seconds, s.started_at, s.rating, s.notes
          FROM sessions s
          LEFT JOIN projects p ON s.project_id = p.id
          WHERE s.status = 'COMPLETED' {}
-         ORDER BY s.started_at DESC",
-        where_clause
+         ORDER BY s.started_at DESC
+         {}",
+        where_clause, limit_clause
     );
 
     let mut stmt = conn.prepare(&sql).map_err(|e| format!("Query error: {}", e))?;
@@ -85,7 +91,7 @@ fn query_activities(
 #[tauri::command]
 pub fn get_recent_activities(db: State<'_, DbPool>) -> Result<Vec<ActivityEntry>, String> {
     let conn = db.0.lock().map_err(|e| format!("Lock error: {}", e))?;
-    query_activities(&conn, "LIMIT 20", &[])
+    query_activities(&conn, "", &[], Some(20))
 }
 
 #[tauri::command]
@@ -98,6 +104,7 @@ pub fn get_activities_by_date(
         &conn,
         "AND DATE(s.started_at) = ?1",
         &[&date as &dyn rusqlite::types::ToSql],
+        None,
     )
 }
 
@@ -111,6 +118,7 @@ pub fn get_activities_by_project(
         &conn,
         "AND s.project_id = ?1",
         &[&project_id as &dyn rusqlite::types::ToSql],
+        None,
     )
 }
 
@@ -124,5 +132,6 @@ pub fn get_activities_by_tag(
         &conn,
         "AND s.id IN (SELECT session_id FROM session_tags WHERE tag_id = ?1)",
         &[&tag_id as &dyn rusqlite::types::ToSql],
+        None,
     )
 }
