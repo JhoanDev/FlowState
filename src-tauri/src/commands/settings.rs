@@ -66,8 +66,15 @@ pub fn update_settings(
 }
 
 #[tauri::command]
-pub fn export_data_vault(app: tauri::AppHandle) -> Result<bool, String> {
+pub fn export_data_vault(app: tauri::AppHandle, db: State<'_, DbPool>, path: String) -> Result<bool, String> {
     use std::fs;
+
+    // Flush WAL to the main database file to avoid exporting incomplete data
+    {
+        let conn = db.0.lock().map_err(|e| format!("Lock error: {}", e))?;
+        conn.execute_batch("PRAGMA wal_checkpoint(TRUNCATE);")
+            .map_err(|e| format!("Checkpoint error: {}", e))?;
+    }
 
     let data_dir = app
         .path()
@@ -79,37 +86,31 @@ pub fn export_data_vault(app: tauri::AppHandle) -> Result<bool, String> {
         return Err("Database file not found".to_string());
     }
 
-    // Use native dialog to pick save location
-    let home = std::env::var("HOME").unwrap_or_else(|_| "/tmp".to_string());
-    let default_name = format!(
-        "flowstate-backup-{}.db",
-        chrono::Utc::now().format("%Y%m%d-%H%M%S")
-    );
-    let dest = std::path::PathBuf::from(&home)
-        .join("Documents")
-        .join(&default_name);
-
-    // Ensure Documents dir exists
-    if let Some(parent) = dest.parent() {
-        let _ = fs::create_dir_all(parent);
-    }
-
-    fs::copy(&db_path, &dest).map_err(|e| format!("Export error: {}", e))?;
+    fs::copy(&db_path, &path).map_err(|e| format!("Export error: {}", e))?;
     Ok(true)
 }
 
+#[allow(unreachable_code)]
 #[tauri::command]
-pub fn import_data_vault(app: tauri::AppHandle) -> Result<bool, String> {
-    // For import, the frontend should handle file selection via dialog
-    // This is a placeholder that returns the expected path
+pub fn import_data_vault(app: tauri::AppHandle, path: String) -> Result<bool, String> {
+    use std::fs;
+
     let data_dir = app
         .path()
         .app_data_dir()
         .map_err(|e| format!("Path error: {}", e))?;
-    let _db_path = data_dir.join("flowstate.db");
+    let db_path = data_dir.join("flowstate.db");
 
-    // Import logic would copy a selected .db file over the current one
-    // This requires the app to restart the DB connection after import
+    // Remove WAL files so they don't corrupt the new DB
+    let _ = fs::remove_file(data_dir.join("flowstate.db-wal"));
+    let _ = fs::remove_file(data_dir.join("flowstate.db-shm"));
+
+    fs::copy(&path, &db_path).map_err(|e| format!("Import error: {}", e))?;
+    
+    // In development (debug), app.restart() kills the Next.js server causing "Connection refused".
+    #[cfg(not(debug_assertions))]
+    app.restart();
+    
     Ok(true)
 }
 

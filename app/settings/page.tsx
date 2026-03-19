@@ -27,14 +27,24 @@ export default function SettingsPage() {
 
   const handleExport = async () => {
     setIsExporting(true);
-    await exportDataVault();
+    const success = await exportDataVault();
     setIsExporting(false);
+    if (!success) {
+      alert("Export failed or cancelled.");
+    }
   };
 
   const handleImport = async () => {
     setIsImporting(true);
-    await importDataVault();
+    const success = await importDataVault();
     setIsImporting(false);
+    if (success) {
+      if (process.env.NODE_ENV === "development") {
+        alert("Backup restored!\n\nPlease close the app and restart the 'npm run tauri dev' terminal to load the new database.");
+      }
+    } else {
+      alert("Restore failed or cancelled.");
+    }
   };
 
   const [showWipeDialog, setShowWipeDialog] = React.useState(false);

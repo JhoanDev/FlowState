@@ -30,6 +30,7 @@ export default function SessionPage() {
   const [sessionState, setSessionState] = React.useState<SessionState>("IDLE");
   const [sessionConfig, setSessionConfig] = React.useState<SessionStartConfig | null>(null);
   const [startedAt, setStartedAt] = React.useState<Date | null>(null);
+  const [finishedAt, setFinishedAt] = React.useState<Date | null>(null);
   const [activePanel, setActivePanel] = React.useState<ActivePanel>("config");
   const { settings } = useSettings();
 
@@ -57,6 +58,7 @@ export default function SessionPage() {
   };
 
   const handleTimerFinished = () => {
+    setFinishedAt(new Date());
     setSessionState("REVIEW");
   };
 
@@ -66,8 +68,8 @@ export default function SessionPage() {
       return;
     }
 
-    const finishedAt = new Date();
-    const durationSeconds = Math.max(1, Math.round((finishedAt.getTime() - startedAt.getTime()) / 1000));
+    const finalFinishedAt = finishedAt || new Date();
+    const durationSeconds = Math.max(1, Math.round((finalFinishedAt.getTime() - startedAt.getTime()) / 1000));
 
     const sessionPayload: Omit<Session, "id" | "createdAt"> = {
       type: sessionConfig.type,
@@ -77,7 +79,7 @@ export default function SessionPage() {
       plannedDurationSeconds: sessionConfig.plannedDurationSeconds || null,
       durationSeconds,
       startedAt: startedAt.toISOString(),
-      finishedAt: finishedAt.toISOString(),
+      finishedAt: finalFinishedAt.toISOString(),
       rating: data.rating,
       notes: data.notes || "",
     };
@@ -93,6 +95,36 @@ export default function SessionPage() {
 
   const handleManualSaved = () => {
     router.push("/");
+  };
+
+  const formatDuration = (secs: number) => {
+    const h = Math.floor(secs / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    const s = secs % 60;
+    if (h > 0) return `${h}h ${m}m ${s}s`;
+    return `${m}m ${s}s`;
+  };
+
+  const getSessionSummary = () => {
+    if (!startedAt || !finishedAt) return null;
+    const duration = Math.max(1, Math.round((finishedAt.getTime() - startedAt.getTime()) / 1000));
+    return (
+      <div className="mb-6 p-4 rounded-lg bg-accent/30 border border-border flex flex-col gap-2.5 text-sm">
+        <div className="flex justify-between items-center">
+          <span className="text-muted-foreground">Started at</span>
+          <span className="font-mono font-medium">{startedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-muted-foreground">Finished at</span>
+          <span className="font-mono font-medium">{finishedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+        </div>
+        <div className="h-px bg-border/50 my-1" />
+        <div className="flex justify-between items-center">
+          <span className="text-muted-foreground">Total Time</span>
+          <span className="font-mono font-semibold text-primary">{formatDuration(duration)}</span>
+        </div>
+      </div>
+    );
   };
 
   const themeClass = sessionState !== "IDLE" && sessionConfig
@@ -235,6 +267,7 @@ export default function SessionPage() {
               className="flex items-center justify-center h-full"
             >
               <div className="w-full max-w-lg">
+                {getSessionSummary()}
                 <SessionReviewForm onSave={handleReviewSaved} />
               </div>
             </motion.div>

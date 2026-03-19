@@ -109,7 +109,7 @@ export function DistributionChartCard({ data, isLoading }: DistributionChartProp
                       />
                       <span className="text-foreground font-medium">{slice.label}</span>
                     </div>
-                    <span className="text-muted-foreground tabular-nums">{slice.value}h ({pct}%)</span>
+                    <span className="text-muted-foreground tabular-nums">{Number(slice.value.toFixed(2))}h ({pct}%)</span>
                   </div>
                 );
               })}

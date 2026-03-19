@@ -1,6 +1,7 @@
 import { AppSettings } from "@/types";
 import { invokeTauri } from "@/services/tauri";
 import { mockSettings } from "@/mocks/settings";
+import { save, open } from '@tauri-apps/plugin-dialog';
 
 const SIMULATED_DELAY = 400;
 
@@ -26,19 +27,26 @@ export async function updateSettings(partialData: Partial<AppSettings>): Promise
 // ─── Data Vault API (Import/Export/Wipe) ─────────────────────────
 
 export async function exportDataVault(): Promise<boolean> {
-  const res = await invokeTauri<boolean>("export_data_vault");
-  if (res !== null) return res;
-
-  await new Promise((resolve) => setTimeout(resolve, 1200));
-  return true;
+  const path = await save({
+    filters: [{ name: 'Database', extensions: ['db', 'sqlite'] }],
+    defaultPath: `flowstate-backup-${new Date().toISOString().split('T')[0]}.db`
+  });
+  if (!path) return false;
+  
+  const res = await invokeTauri<boolean>("export_data_vault", { path });
+  return res !== null ? res : false;
 }
 
 export async function importDataVault(): Promise<boolean> {
-  const res = await invokeTauri<boolean>("import_data_vault");
-  if (res !== null) return res;
+  const path = await open({
+    multiple: false,
+    directory: false,
+    filters: [{ name: 'Database', extensions: ['db', 'sqlite'] }]
+  });
+  if (!path) return false;
 
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-  return true;
+  const res = await invokeTauri<boolean>("import_data_vault", { path });
+  return res !== null ? res : false;
 }
 
 export async function wipeAllData(): Promise<boolean> {
