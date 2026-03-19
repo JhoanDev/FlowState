@@ -11,8 +11,9 @@ import { AppLayout } from "@/components/layout/app-layout";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Play, ClipboardList } from "lucide-react";
-import type { SessionStartConfig, SessionReviewData } from "@/types";
+import type { SessionStartConfig, SessionReviewData, Session } from "@/types";
 import { useSettings } from "@/providers/settings-provider";
+import { saveManualSession } from "@/services/sessions";
 
 type SessionState = "IDLE" | "ACTIVE" | "REVIEW";
 
@@ -28,6 +29,7 @@ export default function SessionPage() {
   const router = useRouter();
   const [sessionState, setSessionState] = React.useState<SessionState>("IDLE");
   const [sessionConfig, setSessionConfig] = React.useState<SessionStartConfig | null>(null);
+  const [startedAt, setStartedAt] = React.useState<Date | null>(null);
   const [activePanel, setActivePanel] = React.useState<ActivePanel>("config");
   const { settings } = useSettings();
 
@@ -50,6 +52,7 @@ export default function SessionPage() {
 
   const handleSessionStarted = (config: SessionStartConfig) => {
     setSessionConfig(config);
+    setStartedAt(new Date());
     setSessionState("ACTIVE");
   };
 
@@ -57,9 +60,35 @@ export default function SessionPage() {
     setSessionState("REVIEW");
   };
 
-  const handleReviewSaved = (data: SessionReviewData) => {
-    console.log("Session Finalized:", { config: sessionConfig, review: data });
-    router.push("/");
+  const handleReviewSaved = async (data: SessionReviewData) => {
+    if (!sessionConfig || !startedAt) {
+      router.push("/");
+      return;
+    }
+
+    const finishedAt = new Date();
+    const durationSeconds = Math.max(1, Math.round((finishedAt.getTime() - startedAt.getTime()) / 1000));
+
+    const sessionPayload: Omit<Session, "id" | "createdAt"> = {
+      type: sessionConfig.type,
+      projectId: sessionConfig.projectId || null,
+      timerMode: sessionConfig.timerMode,
+      status: "COMPLETED",
+      plannedDurationSeconds: sessionConfig.plannedDurationSeconds || null,
+      durationSeconds,
+      startedAt: startedAt.toISOString(),
+      finishedAt: finishedAt.toISOString(),
+      rating: data.rating,
+      notes: data.notes || "",
+    };
+
+    try {
+      await saveManualSession(sessionPayload, sessionConfig.tagIds);
+    } catch (error) {
+      console.error("Failed to save session:", error);
+    } finally {
+      router.push("/");
+    }
   };
 
   const handleManualSaved = () => {

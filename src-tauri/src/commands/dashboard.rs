@@ -102,7 +102,7 @@ pub fn get_activities_by_date(
     let conn = db.0.lock().map_err(|e| format!("Lock error: {}", e))?;
     query_activities(
         &conn,
-        "AND DATE(s.started_at) = ?1",
+        "AND DATE(started_at, 'localtime') = ?1",
         &[&date as &dyn rusqlite::types::ToSql],
         None,
     )

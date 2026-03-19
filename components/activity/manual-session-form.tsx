@@ -24,9 +24,12 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
   const [sessionType, setSessionType] = React.useState<SessionType>("WORK");
   const [projectId, setProjectId] = React.useState<number | null>(null);
   const [tagIds, setTagIds] = React.useState<number[]>([]);
-  const [date, setDate] = React.useState("2026-03-18");
-  const [startTime, setStartTime] = React.useState("09:00");
-  const [endTime, setEndTime] = React.useState("10:30");
+  const [date, setDate] = React.useState(() => {
+    const d = new Date();
+    return new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
+  });
+  const [startTime, setStartTime] = React.useState(() => new Date().toTimeString().slice(0, 5));
+  const [endTime, setEndTime] = React.useState(() => new Date().toTimeString().slice(0, 5));
   const [rating, setRating] = React.useState(0);
   const [hoverRating, setHoverRating] = React.useState(0);
   const [notes, setNotes] = React.useState("");

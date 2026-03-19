@@ -21,7 +21,7 @@ pub fn get_settings(db: State<'_, DbPool>) -> Result<AppSettings, String> {
         language: read_setting(&conn, "language", "en"),
         time_format: read_setting(&conn, "timeFormat", "24h"),
         date_format: read_setting(&conn, "dateFormat", "BR"),
-        strict_mode_default: read_setting(&conn, "strictModeDefault", "true") == "true",
+        strict_mode_default: read_setting(&conn, "strictModeDefault", "false") == "true",
     })
 }
 
@@ -61,7 +61,7 @@ pub fn update_settings(
         language: read_setting(&conn, "language", "en"),
         time_format: read_setting(&conn, "timeFormat", "24h"),
         date_format: read_setting(&conn, "dateFormat", "BR"),
-        strict_mode_default: read_setting(&conn, "strictModeDefault", "true") == "true",
+        strict_mode_default: read_setting(&conn, "strictModeDefault", "false") == "true",
     })
 }
 
@@ -128,7 +128,7 @@ pub fn wipe_all_data(db: State<'_, DbPool>) -> Result<bool, String> {
          INSERT INTO settings (key, value) VALUES ('language', 'en');
          INSERT INTO settings (key, value) VALUES ('timeFormat', '24h');
          INSERT INTO settings (key, value) VALUES ('dateFormat', 'BR');
-         INSERT INTO settings (key, value) VALUES ('strictModeDefault', 'true');",
+         INSERT INTO settings (key, value) VALUES ('strictModeDefault', 'false');",
     )
     .map_err(|e| format!("Wipe error: {}", e))?;
 

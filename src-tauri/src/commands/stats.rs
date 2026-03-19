@@ -12,7 +12,7 @@ fn compute_streak(conn: &rusqlite::Connection) -> Result<StreakInfo, String> {
     // Get all distinct active dates (descending)
     let mut stmt = conn
         .prepare(
-            "SELECT DISTINCT DATE(started_at) AS d
+            "SELECT DISTINCT DATE(started_at, 'localtime') AS d
              FROM sessions
              WHERE status = 'COMPLETED'
              ORDER BY d DESC",
@@ -32,7 +32,7 @@ fn compute_streak(conn: &rusqlite::Connection) -> Result<StreakInfo, String> {
         });
     }
 
-    let today = chrono::Utc::now().date_naive();
+    let today = chrono::Local::now().date_naive();
     let today_str = today.format("%Y-%m-%d").to_string();
 
     let date_set: std::collections::HashSet<&str> = dates.iter().map(|s| s.as_str()).collect();
@@ -114,7 +114,7 @@ pub fn get_dashboard_stats(db: State<'_, DbPool>) -> Result<DashboardStats, Stri
             "SELECT COALESCE(SUM(duration_seconds) / 3600.0, 0)
              FROM sessions
              WHERE status = 'COMPLETED' AND type = 'WORK'
-               AND DATE(started_at) >= DATE('now', '-30 days')",
+               AND DATE(started_at, 'localtime') >= DATE('now', 'localtime', '-30 days')",
             [],
             |row| row.get(0),
         )
@@ -126,8 +126,8 @@ pub fn get_dashboard_stats(db: State<'_, DbPool>) -> Result<DashboardStats, Stri
             "SELECT COALESCE(SUM(duration_seconds) / 3600.0, 0)
              FROM sessions
              WHERE status = 'COMPLETED' AND type = 'WORK'
-               AND DATE(started_at) >= DATE('now', '-60 days')
-               AND DATE(started_at) < DATE('now', '-30 days')",
+               AND DATE(started_at, 'localtime') >= DATE('now', 'localtime', '-60 days')
+               AND DATE(started_at, 'localtime') < DATE('now', 'localtime', '-30 days')",
             [],
             |row| row.get(0),
         )
@@ -139,7 +139,7 @@ pub fn get_dashboard_stats(db: State<'_, DbPool>) -> Result<DashboardStats, Stri
             "SELECT COALESCE(SUM(duration_seconds) / 3600.0, 0)
              FROM sessions
              WHERE status = 'COMPLETED' AND type = 'STUDY'
-               AND DATE(started_at) >= DATE('now', '-30 days')",
+               AND DATE(started_at, 'localtime') >= DATE('now', 'localtime', '-30 days')",
             [],
             |row| row.get(0),
         )
@@ -151,8 +151,8 @@ pub fn get_dashboard_stats(db: State<'_, DbPool>) -> Result<DashboardStats, Stri
             "SELECT COALESCE(SUM(duration_seconds) / 3600.0, 0)
              FROM sessions
              WHERE status = 'COMPLETED' AND type = 'STUDY'
-               AND DATE(started_at) >= DATE('now', '-60 days')
-               AND DATE(started_at) < DATE('now', '-30 days')",
+               AND DATE(started_at, 'localtime') >= DATE('now', 'localtime', '-60 days')
+               AND DATE(started_at, 'localtime') < DATE('now', 'localtime', '-30 days')",
             [],
             |row| row.get(0),
         )
@@ -244,13 +244,13 @@ pub fn get_heatmap(db: State<'_, DbPool>) -> Result<Vec<HeatmapDay>, String> {
 
     let mut stmt = conn
         .prepare(
-            "SELECT DATE(started_at) AS date,
+            "SELECT DATE(started_at, 'localtime') AS date,
                     SUM(duration_seconds) AS total_seconds,
                     COUNT(*) AS session_count
              FROM sessions
              WHERE status = 'COMPLETED'
-               AND started_at >= DATE('now', '-6 months')
-             GROUP BY DATE(started_at)
+               AND started_at >= DATE('now', 'localtime', '-6 months')
+             GROUP BY DATE(started_at, 'localtime')
              ORDER BY date",
         )
         .map_err(|e| format!("Query error: {}", e))?;
@@ -470,10 +470,10 @@ pub fn get_consistency_days(
 
     let mut stmt = conn
         .prepare(
-            "SELECT DISTINCT DATE(started_at)
+            "SELECT DISTINCT DATE(started_at, 'localtime')
              FROM sessions
              WHERE status = 'COMPLETED'
-               AND DATE(started_at) >= DATE('now', ?1)",
+               AND DATE(started_at, 'localtime') >= DATE('now', 'localtime', ?1)",
         )
         .map_err(|e| format!("Query error: {}", e))?;
 
@@ -484,7 +484,7 @@ pub fn get_consistency_days(
         .filter_map(|r| r.ok())
         .collect();
 
-    let today = chrono::Utc::now().date_naive();
+    let today = chrono::Local::now().date_naive();
     let mut result = Vec::new();
     for i in (0..num_days).rev() {
         let d = today - chrono::Duration::days(i);
@@ -519,13 +519,13 @@ pub fn get_calendar_days(
 
     let mut stmt = conn
         .prepare(
-            "SELECT DATE(started_at) AS date,
+            "SELECT DATE(started_at, 'localtime') AS date,
                     SUM(duration_seconds) AS total_seconds
              FROM sessions
              WHERE status = 'COMPLETED'
-               AND DATE(started_at) >= ?1
-               AND DATE(started_at) < ?2
-             GROUP BY DATE(started_at)",
+               AND DATE(started_at, 'localtime') >= ?1
+               AND DATE(started_at, 'localtime') < ?2
+             GROUP BY DATE(started_at, 'localtime')",
         )
         .map_err(|e| format!("Query error: {}", e))?;
 

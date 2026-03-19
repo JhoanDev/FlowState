@@ -21,8 +21,8 @@ interface ContributionHeatmapProps {
   isLoadingSelected?: boolean;
 }
 
-const CELL = 13;
-const GAP = 3;
+const CELL = 14;
+const GAP = 4;
 const LABEL_W = 28;
 
 const intensityClasses: Record<number, string> = {
@@ -56,7 +56,13 @@ function generateEmptyDays(count: number): HeatmapDay[] {
 }
 
 function HeatmapGrid({ days: rawDays, selectedDate, onSelectDate, locale }: HeatmapGridProps) {
-  const days = rawDays.length === 0 ? generateEmptyDays(180) : rawDays;
+  // Always use a continuous timeline (182 days = 26 weeks)
+  const baseDays = generateEmptyDays(182);
+  const rawDaysMap = new Map(rawDays.map((d) => [d.date, d]));
+  
+  const days = baseDays.map((baseDay) => {
+    return rawDaysMap.get(baseDay.date) || baseDay;
+  });
 
   const weeks: (HeatmapDay | null)[][] = [];
   let currentWeek: (HeatmapDay | null)[] = [];
@@ -109,7 +115,7 @@ function HeatmapGrid({ days: rawDays, selectedDate, onSelectDate, locale }: Heat
 
   return (
     <div className="overflow-x-auto">
-      <div style={{ minWidth: LABEL_W + gridW }}>
+      <div style={{ minWidth: `calc(${LABEL_W + gridW}px + 0.625rem)` }}>
         {/* Month labels */}
         <div className="flex" style={{ paddingLeft: LABEL_W, height: 15 }}>
           <div className="relative w-full">
@@ -199,7 +205,7 @@ export function ContributionHeatmap({
   const displaySelectedDate = selectedDate ? new Date(selectedDate + "T12:00:00Z").toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" }) : "";
 
   return (
-    <Card className="flex flex-col w-fit shrink-0 max-h-full overflow-hidden">
+    <Card className="flex flex-col w-fit shrink-0 max-h-full overflow-hidden max-w-[75%]">
       <CardHeader className="pb-0 p-4 shrink-0 border-b border-transparent">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm">Activity</CardTitle>

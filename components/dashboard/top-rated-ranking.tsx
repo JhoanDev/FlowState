@@ -94,7 +94,7 @@ export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRa
                 <div className="flex items-center gap-1.5 bg-accent/40 px-2 py-1 rounded">
                    <Star className="h-3.5 w-3.5 text-orange-400 fill-orange-400" />
                    <span className="text-sm font-bold font-mono text-foreground">
-                      {item.averageRating.toFixed(1)}
+                      {(item.averageRating || 0).toFixed(1)}
                    </span>
                 </div>
              </div>

@@ -6,5 +6,5 @@ export const mockSettings: AppSettings = {
   language: "en",
   timeFormat: "24h",
   dateFormat: "BR",
-  strictModeDefault: true,
+  strictModeDefault: false,
 };

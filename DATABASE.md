@@ -105,7 +105,7 @@ weekly_goals                      settings (chave-valor)
 | `language` | `en` |
 | `timeFormat` | `24h` |
 | `dateFormat` | `BR` |
-| `strictModeDefault` | `true` |
+| `strictModeDefault` | `false` |
 
 ---
 
@@ -200,5 +200,5 @@ INSERT OR IGNORE INTO settings (key, value) VALUES ('theme', 'system');
 INSERT OR IGNORE INTO settings (key, value) VALUES ('language', 'en');
 INSERT OR IGNORE INTO settings (key, value) VALUES ('timeFormat', '24h');
 INSERT OR IGNORE INTO settings (key, value) VALUES ('dateFormat', 'BR');
-INSERT OR IGNORE INTO settings (key, value) VALUES ('strictModeDefault', 'true');
+INSERT OR IGNORE INTO settings (key, value) VALUES ('strictModeDefault', 'false');
 ```

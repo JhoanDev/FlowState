@@ -193,7 +193,7 @@ pub fn get_today_stats(db: State<'_, DbPool>) -> Result<TodayStats, String> {
             "SELECT COUNT(*), COALESCE(SUM(duration_seconds), 0)
              FROM sessions
              WHERE status = 'COMPLETED'
-               AND DATE(started_at) = DATE('now')",
+               AND DATE(started_at, 'localtime') = DATE('now', 'localtime')",
         )
         .map_err(|e| format!("Query error: {}", e))?;
 
