@@ -22,7 +22,7 @@ Um aplicativo desktop nativo e local-first focado no rastreamento de tempo, gest
 * **Timer Híbrido e Maratona:** Suporte a tempo progressivo, regressivo (Pomodoro) e perfil rigoroso para simular tempo limitado.
 * **Mini-Player (PiP):** Janela flutuante minimalista (Always on Top).
 * **Imunidade a Suspensão:** Lógica baseada na diferença de timestamps para prevenir atrasos de suspensão do SO.
-* **Possibilidade de cadastrar sessoẽs anteriores**: 
+* **Formulários Manuais:** Possibilidade de cadastrar sessões anteriores customizadas via React Context Pickers.
 
 **3.3. Metas e Histórico (Logbook)**
 * **Metas Semanais:** Horas-alvo por categoria/projeto com barras de progresso visuais em tempo real.
@@ -35,6 +35,10 @@ Um aplicativo desktop nativo e local-first focado no rastreamento de tempo, gest
 
 **3.5. Controle de Dados e Segurança**
 * **Offline-First & Backup:** App 100% offline com importação/exportação física do arquivo `.db` do SQLite.
+
+**3.6. Configurações Globais (Settings)**
+* **Context API React:** Gereciamento de formato de Data (`US`/`BR`), formato de relógio (`12h`/`24h`), Idioma de interface e Strict Mode nativamente na DOM.
+* **Master-Detail Layouts:** Gerenciadores de Projetos e Tags integrando histórico imbutido (`FilteredSessionsView`).
 
 # FlowState — Estrutura do Banco de Dados
 
@@ -346,6 +350,10 @@ getRecentActivities() → invoke('get_recent_activities', { limit })
 getHeatmap()        → invoke('get_heatmap', { months })
 getWorkDistribution() → invoke('get_work_distribution')
 getStudyDistribution() → invoke('get_study_distribution')
+getSettings()       → invoke('get_settings')
+updateSettings()    → invoke('update_settings', { partial })
+exportData()        → invoke('export_data')
+importData()        → invoke('import_data')
 ```
 
 A UI **não muda** — apenas o corpo das funções de serviço troca de mock para `invoke()`.

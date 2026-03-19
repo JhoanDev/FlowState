@@ -2,7 +2,7 @@
 #### 5. Regras de Frontend (Next.js + Desktop Offline)
 
 * **5.1 DRY Obrigatório:** Antes de codar, verifique `tailwind.config.ts`, `globals.css` e `@/components/ui/`. Reutilize sempre, nunca recrie ou duplique tokens.
-* **5.2 Visual Desktop (Flat):** Foco em densidade de informação. Bordas de 1px (`border`), cores sólidas, sombras funcionais (`shadow-sm`), cantos `rounded-md`. **Zero efeitos custosos** (sem glow ou glassmorphism).
+* **5.2 Visual Desktop (Flat Estrito):** Foco em densidade de informação. Bordas de 1px (`border`), cores sólidas, sombras funcionais (`shadow-sm`), cantos vivamente retos (`--radius: 0rem` global em CSS). **Zero efeitos custosos e zero cantos arredondados** (sem glow ou glassmorphism).
 * **5.3 Sistema de Cores (Tailwind):** Uso exclusivo de classes semânticas nativas (`bg-background`, `text-foreground`, `border-border`, `bg-primary`). **Proibido** cores hardcoded (ex: `#fff`, `gray-500`).
 * **5.4 Arquitetura Local (Static Export):** Sendo um app offline, `"use client"` será padrão nas telas interativas. Evite lógicas que dependam de servidor Node.js.
 * **5.5 Assets e Imagens (⚠️ CRÍTICO):** Sem servidor para otimização, use a tag HTML nativa `<img />` ou o componente do Next com a prop `<Image unoptimized />`. Assets empacotados localmente.
