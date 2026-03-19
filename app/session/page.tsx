@@ -133,7 +133,7 @@ export default function SessionPage() {
 
   return (
     <AppLayout title="Session">
-      <div className={cn("h-full flex flex-col gap-4 transition-colors duration-500", themeClass)}>
+      <div className={cn("h-[calc(100vh-5rem)] lg:h-full overflow-y-auto lg:overflow-hidden pb-4 lg:pb-0 flex flex-col gap-4 transition-colors duration-500 w-full max-w-full", themeClass)}>
         <AnimatePresence mode="wait">
           {sessionState === "IDLE" && (
             <motion.div
@@ -143,9 +143,9 @@ export default function SessionPage() {
               animate="animate"
               exit="exit"
               transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-              className="grid grid-cols-2 gap-6 h-full min-h-0"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 h-auto lg:h-full min-h-0 shrink-0"
             >
-              <div className="min-h-0">
+              <div className="min-h-[400px] lg:min-h-0 flex flex-col">
                 <AnimatePresence mode="wait">
                   {activePanel === "config" ? (
                     <motion.div
@@ -188,7 +188,7 @@ export default function SessionPage() {
                   )}
                 </AnimatePresence>
               </div>
-              <div className="min-h-0">
+              <div className="min-h-[400px] lg:min-h-0 flex flex-col pt-2 lg:pt-0">
                 <AnimatePresence mode="wait">
                   {activePanel === "manual" ? (
                     <motion.div

@@ -75,42 +75,42 @@ export default function SettingsPage() {
              
              <div className="bg-card border border-border rounded-xl divide-y divide-border">
                 {/* Theme Row */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 gap-4 sm:gap-6">
                    <div>
                      <p className="text-base font-semibold text-foreground">Theme</p>
                      <p className="text-sm text-muted-foreground mt-1">Select the color scheme.</p>
                    </div>
-                   <div className="flex bg-accent/30 p-1 rounded-lg shrink-0">
+                   <div className="grid grid-cols-3 sm:flex bg-accent/30 p-1 rounded-lg shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
                       <button 
                         onClick={() => handleUpdate("theme", "light")}
-                        className={cn("flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-md transition-all", settings?.theme === "light" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
+                        className={cn("flex flex-1 items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-md transition-all", settings?.theme === "light" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
                       >
-                        <Sun className="w-4 h-4" /> Light
+                        <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> Light
                       </button>
                       <button 
                         onClick={() => handleUpdate("theme", "dark")}
-                        className={cn("flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-md transition-all", settings?.theme === "dark" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
+                        className={cn("flex flex-1 items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-md transition-all", settings?.theme === "dark" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
                       >
-                        <Moon className="w-4 h-4" /> Dark
+                        <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> Dark
                       </button>
                       <button 
                         onClick={() => handleUpdate("theme", "system")}
-                        className={cn("flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-md transition-all", settings?.theme === "system" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
+                        className={cn("flex flex-1 items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-md transition-all", settings?.theme === "system" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
                       >
-                        <Monitor className="w-4 h-4" /> System
+                        <Monitor className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> System
                       </button>
                    </div>
                 </div>
 
                 {/* Language Row */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 gap-4 sm:gap-6">
                    <div>
                      <p className="text-base font-semibold text-foreground">Language</p>
                      <p className="text-sm text-muted-foreground mt-1">Interface language.</p>
                    </div>
-                   <div className="flex bg-accent/30 p-1 rounded-lg shrink-0">
-                      <button onClick={() => handleUpdate("language", "en")} className={cn("px-4 py-2 text-sm font-bold rounded-md transition-all", settings?.language === "en" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>English</button>
-                      <button onClick={() => handleUpdate("language", "pt")} className={cn("px-4 py-2 text-sm font-bold rounded-md transition-all", settings?.language === "pt" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>Português</button>
+                   <div className="grid grid-cols-2 sm:flex bg-accent/30 p-1 rounded-lg shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+                      <button onClick={() => handleUpdate("language", "en")} className={cn("flex-1 text-center px-4 py-2 text-xs sm:text-sm font-bold rounded-md transition-all", settings?.language === "en" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>English</button>
+                      <button onClick={() => handleUpdate("language", "pt")} className={cn("flex-1 text-center px-4 py-2 text-xs sm:text-sm font-bold rounded-md transition-all", settings?.language === "pt" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>Português</button>
                    </div>
                 </div>
              </div>
@@ -124,38 +124,38 @@ export default function SettingsPage() {
              
              <div className="bg-card border border-border rounded-xl divide-y divide-border">
                 {/* Time Format */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 gap-4 sm:gap-6">
                    <div>
                      <p className="text-base font-semibold text-foreground">Time Format</p>
                      <p className="text-sm text-muted-foreground mt-1">12-hour or 24-hour clocks.</p>
                    </div>
-                   <div className="flex bg-accent/30 p-1 rounded-lg shrink-0">
-                      <button onClick={() => handleUpdate("timeFormat", "12h")} className={cn("px-6 py-2 text-sm font-bold rounded-md transition-all", settings?.timeFormat === "12h" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>12 AM</button>
-                      <button onClick={() => handleUpdate("timeFormat", "24h")} className={cn("px-6 py-2 text-sm font-bold rounded-md transition-all", settings?.timeFormat === "24h" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>24:00</button>
+                   <div className="grid grid-cols-2 sm:flex bg-accent/30 p-1 rounded-lg shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+                      <button onClick={() => handleUpdate("timeFormat", "12h")} className={cn("flex-1 text-center px-2 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-md transition-all whitespace-nowrap", settings?.timeFormat === "12h" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>12 AM</button>
+                      <button onClick={() => handleUpdate("timeFormat", "24h")} className={cn("flex-1 text-center px-2 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-md transition-all whitespace-nowrap", settings?.timeFormat === "24h" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>24:00</button>
                    </div>
                 </div>
 
                 {/* Date Format */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 gap-4 sm:gap-6">
                    <div>
                      <p className="text-base font-semibold text-foreground">Date Format</p>
                      <p className="text-sm text-muted-foreground mt-1">Layout for calendars and histories.</p>
                    </div>
-                   <div className="flex bg-accent/30 p-1 rounded-lg shrink-0">
-                      <button onClick={() => handleUpdate("dateFormat", "US")} className={cn("px-6 py-2 text-sm font-bold rounded-md transition-all", settings?.dateFormat === "US" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>US (MM/DD)</button>
-                      <button onClick={() => handleUpdate("dateFormat", "BR")} className={cn("px-6 py-2 text-sm font-bold rounded-md transition-all", settings?.dateFormat === "BR" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>BR (DD/MM)</button>
+                   <div className="grid grid-cols-2 sm:flex bg-accent/30 p-1 rounded-lg shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+                      <button onClick={() => handleUpdate("dateFormat", "US")} className={cn("flex-1 text-center px-2 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-md transition-all whitespace-nowrap", settings?.dateFormat === "US" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>US (MM/DD)</button>
+                      <button onClick={() => handleUpdate("dateFormat", "BR")} className={cn("flex-1 text-center px-2 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-md transition-all whitespace-nowrap", settings?.dateFormat === "BR" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>BR (DD/MM)</button>
                    </div>
                 </div>
 
                 {/* Strict Mode */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 gap-4 sm:gap-6">
                    <div>
                      <p className="text-base font-semibold text-foreground">Strict Mode</p>
                      <p className="text-sm text-muted-foreground mt-1">Force full-screen focus.</p>
                    </div>
-                   <div className="flex bg-accent/30 p-1 rounded-lg shrink-0">
-                      <button onClick={() => handleUpdate("strictModeDefault", false)} className={cn("px-6 py-2 text-sm font-bold rounded-md transition-all", !settings?.strictModeDefault ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>Off</button>
-                      <button onClick={() => handleUpdate("strictModeDefault", true)} className={cn("px-6 py-2 text-sm font-bold rounded-md transition-all", settings?.strictModeDefault ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>On</button>
+                   <div className="grid grid-cols-2 sm:flex bg-accent/30 p-1 rounded-lg shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+                      <button onClick={() => handleUpdate("strictModeDefault", false)} className={cn("flex-1 text-center px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-md transition-all", !settings?.strictModeDefault ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>Off</button>
+                      <button onClick={() => handleUpdate("strictModeDefault", true)} className={cn("flex-1 text-center px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-md transition-all", settings?.strictModeDefault ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>On</button>
                    </div>
                 </div>
              </div>
@@ -170,40 +170,40 @@ export default function SettingsPage() {
                <ShieldAlert className="w-4 h-4 text-emerald-500" /> Data Vault
              </h3>
              
-             <div className="bg-card border border-border rounded-xl p-6 flex flex-col gap-6 h-[calc(100%-32px)] justify-between">
+             <div className="bg-card border border-border rounded-xl p-4 sm:p-6 flex flex-col gap-4 sm:gap-6 h-[calc(100%-32px)] justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                  <p className="text-sm text-muted-foreground mb-4 sm:mb-6 leading-relaxed">
                     FlowState operates entirely offline. Your data is stored locally on this machine. Backup your progress across devices safely.
                   </p>
                   
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-4">
                      <button 
                        onClick={handleExport} disabled={isExporting}
-                       className="flex items-center justify-center gap-2 h-14 bg-accent/30 hover:bg-accent/60 border border-border rounded-lg text-sm font-semibold transition-colors disabled:opacity-50"
+                       className="flex items-center justify-center gap-1.5 sm:gap-2 h-12 sm:h-14 bg-accent/30 hover:bg-accent/60 border border-border rounded-lg text-xs sm:text-sm font-semibold transition-colors disabled:opacity-50"
                      >
-                       <Upload className="w-5 h-5 text-primary" />
+                       <Upload className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
                        {isExporting ? "Exporting..." : "Export"}
                      </button>
                      
                      <button 
                        onClick={handleImport} disabled={isImporting}
-                       className="flex items-center justify-center gap-2 h-14 bg-accent/30 hover:bg-accent/60 border border-border rounded-lg text-sm font-semibold transition-colors disabled:opacity-50"
+                       className="flex items-center justify-center gap-1.5 sm:gap-2 h-12 sm:h-14 bg-accent/30 hover:bg-accent/60 border border-border rounded-lg text-xs sm:text-sm font-semibold transition-colors disabled:opacity-50"
                      >
-                       <Download className="w-5 h-5 text-primary" />
+                       <Download className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
                        {isImporting ? "Restoring..." : "Restore"}
                      </button>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-border flex flex-col xl:flex-row items-center justify-between gap-4">
-                   <div className="text-sm text-foreground font-medium text-center xl:text-left">
+                <div className="pt-4 sm:pt-6 border-t border-border flex flex-col xl:flex-row items-center justify-between gap-4">
+                   <div className="text-xs sm:text-sm text-foreground font-medium text-center xl:text-left">
                      Irreversible action to wipe DB.
                    </div>
                    <button 
                      onClick={() => setShowWipeDialog(true)}
                      className="flex items-center gap-2 px-6 h-12 bg-destructive/10 hover:bg-destructive text-destructive hover:text-destructive-foreground border border-destructive/20 rounded-lg text-sm font-bold transition-colors shrink-0 w-full xl:w-auto justify-center"
                    >
-                     <Trash2 className="w-4 h-4" />
+                     <Trash2 className="w-4 h-4 shrink-0" />
                      Wipe Local Data
                    </button>
                 </div>
@@ -239,10 +239,10 @@ export default function SettingsPage() {
                  </div>
               </div>
 
-              <div className="flex items-center justify-between gap-3 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3 pt-2">
                  <Button 
                    variant="outline" 
-                   className="flex-1 h-11 border-border" 
+                   className="sm:flex-1 h-11 border-border" 
                    onClick={() => setShowWipeDialog(false)} 
                    disabled={isWiping}
                  >
@@ -250,7 +250,7 @@ export default function SettingsPage() {
                  </Button>
                  <Button 
                    variant="destructive" 
-                   className="flex-1 h-11 bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold" 
+                   className="sm:flex-1 h-11 bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold" 
                    onClick={handleWipeConfirm} 
                    disabled={isWiping}
                  >

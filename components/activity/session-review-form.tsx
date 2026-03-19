@@ -24,7 +24,7 @@ export function SessionReviewForm({ onSave, className }: SessionReviewFormProps)
   };
 
   return (
-    <Card className={cn("flex flex-col h-full", className)}>
+    <Card className={cn("flex flex-col h-auto lg:h-full", className)}>
       <CardHeader className="p-5 pb-0">
         <CardTitle className="text-base">Session Complete</CardTitle>
         <p className="text-sm text-muted-foreground mt-1">

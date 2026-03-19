@@ -16,7 +16,8 @@ function DayCell({ day, locale }: { day: ConsistencyDay, locale: string }) {
   const date = new Date(day.date);
   const dayNum = date.getDate();
   const dayName = date.toLocaleDateString(locale, { weekday: "short" }).slice(0, 2);
-  const isToday = day.date === "2026-03-18";
+  const todayStr = new Date().toISOString().split("T")[0];
+  const isToday = day.date === todayStr;
 
   return (
     <div
@@ -45,7 +46,7 @@ export function ConsistencyGrid({ data, isLoading }: ConsistencyGridProps) {
 
   return (
     <Card>
-      <CardHeader className="p-5 pb-0">
+      <CardHeader className="p-4 sm:p-5 pb-0">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-3 text-lg">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
@@ -61,15 +62,15 @@ export function ConsistencyGrid({ data, isLoading }: ConsistencyGridProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="p-5 pt-4">
+      <CardContent className="p-4 sm:p-5 pt-3 sm:pt-4">
         {isLoading || !data ? (
-          <div className="grid grid-cols-10 gap-1.5">
+          <div className="grid grid-cols-10 gap-1 sm:gap-1.5">
             {Array.from({ length: 30 }).map((_, i) => (
-              <Skeleton key={i} className="h-11 rounded-md" />
+              <Skeleton key={i} className="h-8 sm:h-11 rounded-md" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-10 gap-1.5">
+          <div className="grid grid-cols-10 gap-1 sm:gap-1.5">
             {data.map((day) => (
               <DayCell key={day.date} day={day} locale={locale} />
             ))}

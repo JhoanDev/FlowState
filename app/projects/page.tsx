@@ -99,17 +99,17 @@ export default function ProjectsPage() {
 
   return (
     <AppLayout title="Projects & Tags">
-      <div className="flex gap-6 h-full overflow-hidden">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 h-[calc(100vh-5rem)] lg:h-full overflow-y-auto lg:overflow-hidden pb-4 lg:pb-0 w-full max-w-full">
         {/* Management Left Pane (Master) */}
-        <div className="flex-[3] flex flex-col min-w-0 bg-card rounded-xl border border-border shadow-sm overflow-hidden shrink-0">
+        <div className="flex-none lg:flex-[3] flex flex-col min-w-0 bg-card rounded-xl border border-border shadow-sm shrink-0 lg:overflow-hidden h-auto lg:h-full">
           
           {/* Internal Toggle Header */}
-          <div className="px-6 pt-5 pb-3 border-b border-border/50 shrink-0">
-            <h2 className="text-xl font-bold mb-4">Registry</h2>
+          <div className="px-4 sm:px-6 pt-4 sm:pt-5 pb-3 border-b border-border/50 shrink-0">
+            <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Registry</h2>
             <div className="flex p-1 bg-accent/40 rounded-lg max-w-[400px]">
                <Button
                  variant="ghost"
-                 className={cn("flex-1 h-9 font-bold tracking-wide transition-all", activeTab === "PROJECTS" && "bg-background shadow-sm text-foreground")}
+                 className={cn("flex-1 h-9 text-xs sm:text-sm font-bold tracking-wide transition-all px-2", activeTab === "PROJECTS" && "bg-background shadow-sm text-foreground")}
                  onClick={() => setActiveTab("PROJECTS")}
                >
                  <FolderGit2 className="h-4 w-4 mr-2" />
@@ -117,7 +117,7 @@ export default function ProjectsPage() {
                </Button>
                <Button
                  variant="ghost"
-                 className={cn("flex-1 h-9 font-bold tracking-wide transition-all", activeTab === "TAGS" && "bg-background shadow-sm text-foreground")}
+                 className={cn("flex-1 h-9 text-xs sm:text-sm font-bold tracking-wide transition-all px-2", activeTab === "TAGS" && "bg-background shadow-sm text-foreground")}
                  onClick={() => setActiveTab("TAGS")}
                >
                  <TagIcon className="h-4 w-4 mr-2" />
@@ -164,7 +164,7 @@ export default function ProjectsPage() {
         </div>
 
         {/* Viewing Right Pane (Detail) */}
-        <div className="flex-[4] min-w-0 shrink-0">
+        <div className="flex-none lg:flex-[4] min-w-0 shrink-0 h-auto lg:h-full">
            <FilteredSessionsView 
              type={viewerType} 
              id={viewerId} 

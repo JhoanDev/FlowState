@@ -88,7 +88,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
   return (
     <Card
       className={cn(
-        "flex flex-col h-full transition-colors duration-500",
+        "flex flex-col h-auto lg:h-full transition-colors duration-500",
         sessionType === "STUDY" ? "theme-study" : "theme-work"
       )}
     >
@@ -99,7 +99,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
         </p>
       </CardHeader>
 
-      <CardContent className="p-5 pt-4 flex-1 flex flex-col gap-5 min-h-0 overflow-y-auto">
+      <CardContent className="p-5 pt-4 flex-1 flex flex-col gap-5 min-h-0 lg:overflow-y-auto">
         <SessionTypeToggle value={sessionType} onChange={setSessionType} />
 
         {/* Date & Time */}

@@ -82,7 +82,7 @@ export const statsService = {
     // Mock Fallback
     await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
     const activeDates = getActiveDatesFromSessions();
-    const today = "2026-03-18"; // Simulated current date
+    const today = toDateStr(new Date()); // Dynamic system date
 
     const currentStreak = calculateCurrentStreak(activeDates, today);
     const bestStreak = Math.max(calculateBestStreak(activeDates), currentStreak);
@@ -96,7 +96,7 @@ export const statsService = {
 
     // Mock Fallback
     await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
-    const today = new Date("2026-03-18T00:00:00Z");
+    const today = new Date();
     const activeDateSet = new Set(getActiveDatesFromSessions());
 
     const days: ConsistencyDay[] = [];

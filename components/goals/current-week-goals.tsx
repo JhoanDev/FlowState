@@ -129,7 +129,7 @@ function AddGoalForm({
       </div>
 
       {/* Target hours + actions */}
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Input
           type="number"
           min={1}
@@ -137,11 +137,11 @@ function AddGoalForm({
           value={targetHours}
           onChange={(e) => setTargetHours(e.target.value)}
           placeholder="Hours target"
-          className="w-32 h-9"
+          className="w-24 sm:w-32 h-9 text-xs sm:text-sm"
         />
-        <span className="text-sm text-muted-foreground">hours/week</span>
-        <div className="flex-1" />
-        <Button type="submit" size="sm" className="h-9 gap-2" disabled={selectedId === null || !targetHours}>
+        <span className="text-xs sm:text-sm text-muted-foreground">hours/week</span>
+        <div className="flex-1 min-w-[20px]" />
+        <Button type="submit" size="sm" className="h-9 gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3" disabled={selectedId === null || !targetHours}>
           <Check className="h-4 w-4" />
           Add
         </Button>
@@ -190,8 +190,8 @@ function GoalRow({
 
   return (
     <div className="group p-4 rounded-lg border border-border hover:border-muted-foreground/20 transition-all duration-200">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <span
             className={cn(
               "h-3 w-3 rounded-full shrink-0",
@@ -209,7 +209,7 @@ function GoalRow({
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 self-end sm:self-auto">
           {isEditing ? (
             <div className="flex items-center gap-1.5">
               <Input
@@ -289,8 +289,8 @@ export function CurrentWeekGoals({
   onRemove,
 }: CurrentWeekGoalsProps) {
   return (
-    <Card className="flex flex-col h-full">
-      <CardHeader className="p-5 pb-0">
+    <Card className="flex flex-col h-auto lg:h-full">
+      <CardHeader className="p-4 sm:p-5 pb-0">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-3 text-lg">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
@@ -302,12 +302,12 @@ export function CurrentWeekGoals({
         </div>
       </CardHeader>
 
-      <CardContent className="p-5 pt-4 flex-1 flex flex-col gap-4 min-h-0">
+      <CardContent className="p-4 sm:p-5 pt-3 sm:pt-4 flex-1 flex flex-col gap-4 min-h-0">
         {/* Add form */}
         <AddGoalForm projects={projects} tags={tags} onAdd={onAdd} />
 
         {/* Goals list */}
-        <div className="flex-1 overflow-y-auto min-h-0 space-y-3">
+        <div className="flex-1 lg:overflow-y-auto min-h-0 space-y-3">
           {isLoading || !goals ? (
             Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="p-4 rounded-lg border border-border space-y-3">

@@ -262,20 +262,20 @@ export function ListManager({
   };
 
   return (
-    <Card className={cn("flex flex-col h-full", themeClass, className)}>
-      <CardHeader className="p-5 pb-0">
+    <Card className={cn("flex flex-col h-auto lg:h-full", themeClass, className)}>
+      <CardHeader className="p-4 sm:p-5 pb-0">
         <CardTitle className="flex items-center gap-3 text-lg">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
             <Icon className="h-5 w-5 text-primary" />
           </div>
           {title}
         </CardTitle>
-        <p className="text-sm text-muted-foreground mt-1.5 ml-[52px]">
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 ml-[42px] sm:ml-[52px]">
           {description}
         </p>
       </CardHeader>
 
-      <CardContent className="p-5 pt-4 flex-1 flex flex-col gap-5 min-h-0">
+      <CardContent className="p-4 sm:p-5 pt-3 sm:pt-4 flex-1 flex flex-col gap-4 sm:gap-5 min-h-0">
         {/* Add form */}
         <div className="space-y-3 shrink-0">
           <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
@@ -306,7 +306,7 @@ export function ListManager({
         </div>
 
         {/* Items list */}
-        <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="flex-1 lg:overflow-y-auto min-h-0">
           <div className="flex flex-wrap gap-2.5 content-start">
             {isLoading ? (
               Array.from({ length: 4 }).map((_, i) => (
@@ -321,7 +321,7 @@ export function ListManager({
                 <div key={item.id} className="relative">
                   <span
                     className={cn(
-                      "group inline-flex items-center justify-between gap-3 px-4 py-2.5 text-base font-medium border rounded-lg transition-all duration-200 cursor-pointer min-w-[140px]",
+                      "group inline-flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base font-medium border rounded-lg transition-all duration-200 cursor-pointer min-w-0 sm:min-w-[140px] flex-1 sm:flex-none",
                       editingId === item.id
                         ? "bg-accent/50 ring-2 ring-primary/30"
                         : selectedId === item.id

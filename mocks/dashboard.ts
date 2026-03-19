@@ -55,7 +55,7 @@ export function getMockStats(): DashboardStats {
   
   let currentStreak = 0;
   if (sorted.length > 0) {
-    const today = "2026-03-18";
+    const today = new Date().toISOString().split("T")[0];
     const dateSet = new Set(sorted);
     const checkDate = new Date(today + "T00:00:00Z");
 
@@ -164,7 +164,7 @@ export function getMockActivitiesByTag(tagId: number): ActivityEntry[] {
 export function getMockHeatmap(): HeatmapDay[] {
   const completedSessions = mockSessions.filter((s) => s.status === "COMPLETED");
   const days: HeatmapDay[] = [];
-  const now = new Date("2026-03-18T00:00:00Z"); // Use exact UTC midnight
+    const now = new Date(); // Use current system date
 
   for (let i = 365; i >= 0; i--) {
     const date = new Date(now);

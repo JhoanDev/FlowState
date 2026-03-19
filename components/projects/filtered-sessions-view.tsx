@@ -72,7 +72,7 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
 
   if (!type || id === null) {
     return (
-      <Card className="flex flex-col h-full border-dashed items-center justify-center bg-transparent">
+      <Card className="flex flex-col min-h-[300px] lg:min-h-0 h-auto lg:h-full py-12 lg:py-0 border-dashed items-center justify-center bg-transparent">
         <div className="text-center space-y-3 px-6 max-w-sm">
            <div className="h-14 w-14 rounded-2xl bg-accent/50 flex items-center justify-center mx-auto mb-2 text-muted-foreground/50 border border-border">
              <Activity className="h-6 w-6" />
@@ -97,8 +97,8 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
     : "N/A";
 
   return (
-    <Card className="flex flex-col h-full overflow-hidden border-border bg-card shadow-sm">
-      <CardHeader className="p-5 border-b border-border/50 shrink-0 bg-transparent flex flex-row items-center justify-between">
+    <Card className="flex flex-col h-auto lg:h-full lg:overflow-hidden border-border bg-card shadow-sm">
+      <CardHeader className="p-4 sm:p-5 border-b border-border/50 shrink-0 bg-transparent flex flex-row items-start sm:items-center justify-between gap-2">
         <div className="flex items-center gap-3">
            <div className="h-10 w-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${itemColor}20` }}>
              {type === "PROJECT" ? (
@@ -108,7 +108,7 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
              )}
            </div>
            <div>
-             <CardTitle className="text-xl font-bold truncate max-w-[200px] xl:max-w-[300px]">
+             <CardTitle className="text-lg sm:text-xl font-bold truncate max-w-[150px] sm:max-w-[200px] xl:max-w-[300px]">
                {itemName}
              </CardTitle>
              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mt-0.5">
@@ -124,31 +124,31 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
       <CardContent className="p-0 flex-1 flex flex-col min-h-0 bg-accent/5">
         {/* Top Stats Banner */}
         <div className="grid grid-cols-3 divide-x divide-border/50 border-b border-border/50 bg-card shrink-0">
-           <div className="p-4 flex flex-col items-center justify-center">
-             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Time</span>
-             <div className="flex items-center gap-1.5 text-foreground font-mono">
-               <Clock className="w-4 h-4 text-primary" />
-               <span className="text-xl font-bold">{exactHours}h</span>
+           <div className="p-2 sm:p-4 flex flex-col items-center justify-center">
+             <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1 text-center">Time</span>
+             <div className="flex items-center gap-1 sm:gap-1.5 text-foreground font-mono">
+               <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+               <span className="text-lg sm:text-xl font-bold">{exactHours}h</span>
              </div>
            </div>
-           <div className="p-4 flex flex-col items-center justify-center">
-             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Sessions</span>
-             <div className="flex items-center gap-1.5 text-foreground font-mono">
-               <CalendarIcon className="w-4 h-4 text-primary" />
-               <span className="text-xl font-bold">{sessionCount}</span>
+           <div className="p-2 sm:p-4 flex flex-col items-center justify-center">
+             <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1 text-center">Sessions</span>
+             <div className="flex items-center gap-1 sm:gap-1.5 text-foreground font-mono">
+               <CalendarIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+               <span className="text-lg sm:text-xl font-bold">{sessionCount}</span>
              </div>
            </div>
-           <div className="p-4 flex flex-col items-center justify-center">
-             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Avg Rating</span>
-             <div className="flex items-center gap-1.5 text-foreground font-mono">
-               <Star className="w-4 h-4 text-orange-400 fill-orange-400" />
-               <span className="text-xl font-bold">{avgRating}</span>
+           <div className="p-2 sm:p-4 flex flex-col items-center justify-center">
+             <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1 text-center">Avg</span>
+             <div className="flex items-center gap-1 sm:gap-1.5 text-foreground font-mono">
+               <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-400 fill-orange-400" />
+               <span className="text-lg sm:text-xl font-bold">{avgRating}</span>
              </div>
            </div>
         </div>
 
         {/* Scrollable list */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-3 min-h-0">
+        <div className="flex-1 lg:overflow-y-auto p-4 sm:p-5 space-y-3 min-h-0">
           <h4 className="text-sm font-bold text-foreground mb-4">Historical Records</h4>
           
           {isLoading ? (
@@ -163,7 +163,7 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
           ) : (
             activities.map((activity) => (
               <div key={activity.id} className="p-3 rounded-lg border border-border/60 bg-card flex flex-col gap-2 hover:border-primary/40 transition-colors">
-                 <div className="flex items-center justify-between">
+                 <div className="flex items-start justify-between gap-2">
                     <div className="flex flex-wrap items-center gap-1.5">
                       {/* Project Badge */}
                       {activity.projectName && (
@@ -200,7 +200,7 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
                       })}
                     </div>
 
-                    <div className="flex items-center gap-2.5 shrink-0">
+                    <div className="flex flex-col items-end gap-1 shrink-0 mt-0.5 sm:mt-0 sm:flex-row sm:items-center sm:gap-2.5">
                        {activity.rating && (
                           <span className="text-[11px] font-bold flex items-center gap-0.5 text-orange-400">
                              {activity.rating} <Star className="w-3 h-3 fill-orange-400" />

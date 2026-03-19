@@ -52,8 +52,8 @@ export function LogbookCalendar({
   const maxSeconds = Math.max(...days.map(d => d.totalSeconds || 0), 1);
 
   return (
-    <Card className="flex flex-col shrink-0 w-full h-full min-h-0 overflow-hidden shadow-none border-border">
-      <CardHeader className="p-4 pb-3 border-b border-border/50 shrink-0">
+    <Card className="flex flex-col shrink-0 w-full h-auto lg:h-full min-h-0 lg:overflow-hidden shadow-none border-border">
+      <CardHeader className="p-4 sm:p-5 pb-3 sm:pb-4 border-b border-border/50 shrink-0">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-bold flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
@@ -75,28 +75,29 @@ export function LogbookCalendar({
         </div>
       </CardHeader>
       
-      <CardContent className="p-4 flex-1 flex flex-col min-h-0">
-        <div className="grid grid-cols-7 gap-2 mb-2 shrink-0">
+      <CardContent className="p-4 sm:p-5 flex-1 flex flex-col min-h-0">
+        <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 shrink-0">
           {DAY_LABELS.map((day) => (
-            <div key={day} className="text-center text-xs font-semibold tracking-wide text-muted-foreground uppercase py-1">
-              {day}
+            <div key={day} className="text-center text-[10px] sm:text-xs font-semibold tracking-wide text-muted-foreground uppercase py-1">
+              <span className="sm:hidden">{day.slice(0, 1)}</span>
+              <span className="hidden sm:inline">{day.slice(0, 3)}</span>
             </div>
           ))}
         </div>
 
-        <div className="flex-1 min-h-0 relative">
+        <div className="flex-1 lg:overflow-y-auto min-h-0 relative px-0.5">
           {isLoading ? (
-            <Skeleton className="absolute inset-0 rounded-lg" />
+            <Skeleton className="absolute inset-0 rounded-lg aspect-[7/6]" />
           ) : (
-            <div className="grid grid-cols-7 gap-2 grid-rows-6 h-full">
+            <div className="grid grid-cols-7 gap-1 sm:gap-2">
               {Array.from({ length: startPad }).map((_, i) => (
-                <div key={`pad-${i}`} className="rounded-lg border border-dashed border-border/40 bg-transparent" />
+                <div key={`pad-${i}`} className="aspect-square rounded-lg border border-dashed border-border/40 bg-transparent" />
               ))}
 
               {days.map((day) => {
                 const dayNum = parseInt(day.date.split("-")[2], 10);
                 const isSelected = day.date === selectedDate;
-                const isToday = day.date === "2026-03-18"; // Hardcoded mock today
+                const isToday = day.date === new Date().toISOString().split("T")[0];
 
                 // The highest working day of the month takes 100% of the bar!
                 const percentage = day.hasActivity ? Math.min(100, Math.round(((day.totalSeconds || 0) / maxSeconds) * 100)) : 0;
@@ -109,7 +110,7 @@ export function LogbookCalendar({
                     key={day.date}
                     onClick={() => onSelectDate(day.date)}
                     className={cn(
-                      "group flex flex-col p-3 rounded-xl transition-all duration-200 cursor-pointer min-h-0 overflow-hidden relative border",
+                      "aspect-square group flex flex-col p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl transition-all duration-200 cursor-pointer overflow-hidden relative border",
                       isSelected
                         ? "border-primary ring-2 ring-primary/20 bg-primary/5 z-10 shadow-sm"
                         : day.hasActivity
@@ -118,38 +119,44 @@ export function LogbookCalendar({
                       isToday && !isSelected && "border-foreground/30",
                     )}
                   >
-                    <div className="flex items-start justify-between mb-1 z-10">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-1 z-10 gap-0.5 sm:gap-1">
                       <span className={cn(
-                         "text-base font-bold font-mono tracking-tight",
+                         "text-xs sm:text-base font-bold font-mono tracking-tight leading-none",
                          day.hasActivity ? "text-foreground" : "text-muted-foreground",
                          isSelected && "text-primary"
                       )}>
                         {dayNum}
                       </span>
                       {isToday && (
-                         <span className={cn(
-                           "text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-sm",
-                           isSelected ? "bg-primary text-primary-foreground" : "bg-foreground text-background"
-                         )}>
-                           Today
-                         </span>
+                         <div className="flex justify-start">
+                           <span className={cn(
+                             "hidden sm:inline-block text-[8px] sm:text-[9px] uppercase font-bold tracking-widest px-1 sm:px-1.5 py-0.5 rounded-sm",
+                             isSelected ? "bg-primary text-primary-foreground" : "bg-foreground text-background"
+                           )}>
+                             Today
+                           </span>
+                           <span className={cn(
+                             "sm:hidden block h-1 w-1 rounded-full shrink-0",
+                             isSelected ? "bg-primary" : "bg-foreground"
+                           )} />
+                         </div>
                       )}
                     </div>
                     
                     <div className="flex-1" />
                     
                     {day.hasActivity && (
-                       <div className="flex flex-col gap-1.5 w-full mt-auto z-10">
+                       <div className="flex flex-col justify-end w-full h-full z-10">
                          {/* Intensity Progress Bar */}
-                         <div className="h-1.5 w-full bg-primary/10 rounded-full overflow-hidden" title={`${exactHours} horas`}>
+                         <div className="h-1 sm:h-1.5 w-full bg-primary/10 rounded-full overflow-hidden shrink-0 mt-auto mb-0.5 sm:mb-1" title={`${exactHours} horas`}>
                             <div 
                               className="h-full bg-primary transition-all duration-300 ease-out" 
                               style={{ width: `${percentage}%` }}
                             />
                          </div>
-                         <div className="text-[10px] font-semibold text-muted-foreground group-hover:text-primary transition-colors flex justify-between items-center">
-                           <span>{percentage === 100 ? "Max Flow" : `${exactHours}h`}</span>
-                           <span className="opacity-0 group-hover:opacity-100 transition-opacity">&rarr;</span>
+                         <div className="hidden sm:flex text-[9px] sm:text-[10px] font-semibold text-muted-foreground group-hover:text-primary transition-colors justify-between items-center leading-none">
+                           <span className="truncate">{percentage === 100 ? "Max Flow" : `${exactHours}h`}</span>
+                           <span className="opacity-0 group-hover:opacity-100 transition-opacity hidden sm:inline">&rarr;</span>
                          </div>
                        </div>
                     )}

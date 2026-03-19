@@ -13,7 +13,7 @@ interface StreakCardProps {
 export function StreakCard({ data, isLoading }: StreakCardProps) {
   return (
     <Card>
-      <CardHeader className="p-5 pb-0">
+      <CardHeader className="p-4 sm:p-5 pb-0">
         <CardTitle className="flex items-center gap-3 text-lg">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
             <Flame className="h-5 w-5 text-primary" />
@@ -22,14 +22,14 @@ export function StreakCard({ data, isLoading }: StreakCardProps) {
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="p-5 pt-4">
+      <CardContent className="p-4 sm:p-5 pt-3 sm:pt-4">
         {isLoading || !data ? (
-          <div className="flex gap-6">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <Skeleton className="h-20 flex-1 rounded-lg" />
             <Skeleton className="h-20 flex-1 rounded-lg" />
           </div>
         ) : (
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             {/* Current Streak */}
             <div className="flex-1 p-4 rounded-lg bg-muted/50 text-center space-y-1">
               <Flame className="h-6 w-6 text-work mx-auto" />

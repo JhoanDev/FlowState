@@ -21,9 +21,9 @@ export default function LogbookPage() {
 
   return (
     <AppLayout title="Logbook & Diary">
-      <div className="flex gap-4 h-full overflow-hidden">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 h-[calc(100vh-5rem)] lg:h-full overflow-y-auto lg:overflow-hidden pb-4 lg:pb-0 w-full max-w-full">
         {/* Left Column: Calendar (Flexible width to keep big modern squares) */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-none lg:flex-1 min-w-0 h-auto lg:h-full">
           <LogbookCalendar
             currentMonth={currentMonth}
             days={calendarDays}
@@ -37,7 +37,7 @@ export default function LogbookPage() {
         </div>
 
         {/* Right Column: Diary Review (Equal width panel) */}
-        <div className="flex-1 min-w-0 flex flex-col">
+        <div className="flex-none lg:flex-[1.2] min-w-0 flex flex-col h-auto lg:h-full">
           <SessionReviewList
             date={selectedDate}
             activities={selectedActivities}

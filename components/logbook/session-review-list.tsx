@@ -45,9 +45,9 @@ function formatTime(isoDate: string, use12h: boolean): string {
 
 function EntryCard({ activity, use12h }: { activity: ActivityEntry, use12h: boolean }) {
   return (
-    <div className="flex flex-col gap-3 p-4 rounded-lg border border-border bg-card hover:border-muted-foreground/30 transition-colors">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-col gap-3 p-3 sm:p-4 rounded-lg border border-border bg-card hover:border-muted-foreground/30 transition-colors">
+      <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           {/* Main Badge */}
           <Badge variant={activity.type === "WORK" ? "work" : "study"} className="text-[10px] font-bold px-1.5 py-0.5">
             {activity.type}
@@ -76,19 +76,19 @@ function EntryCard({ activity, use12h }: { activity: ActivityEntry, use12h: bool
         </div>
 
         {/* Meta info right */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex flex-col items-end gap-1.5 sm:flex-row sm:items-center sm:gap-3 shrink-0">
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Clock className="h-3.5 w-3.5" />
             <span className="font-medium">{formatDuration(activity.durationSeconds)}</span>
             <span className="opacity-50">({formatTime(activity.startedAt, use12h)})</span>
           </div>
-          <div className="h-4 w-[1px] bg-border" />
+          <div className="hidden sm:block h-4 w-[1px] bg-border" />
           <StarRating rating={activity.rating} />
         </div>
       </div>
 
       {/* Diary Notes */}
-      <div className="mt-1 p-3 rounded-md bg-muted/50 border border-border/50 text-sm leading-relaxed text-foreground whitespace-pre-wrap">
+      <div className="mt-1 p-2 sm:p-3 rounded-md bg-muted/50 border border-border/50 text-xs sm:text-sm leading-relaxed text-foreground whitespace-pre-wrap">
         {activity.notes ? (
           activity.notes
         ) : (
@@ -105,7 +105,7 @@ export function SessionReviewList({ date, activities, isLoading }: SessionReview
 
   if (!date) {
     return (
-      <Card className="flex flex-col h-full items-center justify-center border-dashed">
+      <Card className="flex flex-col h-auto min-h-[250px] lg:min-h-0 lg:h-full items-center justify-center border-dashed">
         <div className="text-center space-y-2">
           <BookOpen className="h-8 w-8 text-muted-foreground mx-auto opacity-50" />
           <p className="text-sm font-medium text-muted-foreground">Select a day from the calendar to view its diary</p>
@@ -115,8 +115,8 @@ export function SessionReviewList({ date, activities, isLoading }: SessionReview
   }
 
   return (
-    <Card className="flex flex-col h-full min-h-0 bg-accent/10">
-      <CardHeader className="p-5 pb-4 border-b border-border shrink-0 bg-card">
+    <Card className="flex flex-col h-auto lg:h-full min-h-0 bg-accent/10">
+      <CardHeader className="p-4 sm:p-5 pb-3 sm:pb-4 border-b border-border shrink-0 bg-card">
         <CardTitle className="text-lg flex items-center gap-2">
           Session Diary
           <span className="text-sm font-normal text-muted-foreground ml-2">
@@ -124,7 +124,7 @@ export function SessionReviewList({ date, activities, isLoading }: SessionReview
           </span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-5 flex-1 min-h-0 overflow-y-auto space-y-4">
+      <CardContent className="p-4 sm:p-5 flex-1 min-h-0 lg:overflow-y-auto space-y-4">
         {isLoading ? (
           Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="p-4 rounded-lg border border-border space-y-4">

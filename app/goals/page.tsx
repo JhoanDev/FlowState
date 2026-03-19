@@ -57,15 +57,15 @@ export default function GoalsPage() {
 
   return (
     <AppLayout title="Goals & Streaks">
-      <div className="flex flex-col gap-4 h-full overflow-hidden">
+      <div className="flex flex-col gap-4 lg:gap-6 h-[calc(100vh-5rem)] lg:h-full overflow-y-auto lg:overflow-hidden pb-4 lg:pb-0 w-full max-w-full">
         {/* Row 1 — Streak + Consistency */}
-        <div className="grid grid-cols-2 gap-4 shrink-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 shrink-0">
           <StreakCard data={streakInfo} isLoading={isLoadingStats} />
           <ConsistencyGrid data={consistencyDays} isLoading={isLoadingStats} />
         </div>
 
         {/* Row 2 — Current Week Goals + History */}
-        <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 h-auto lg:h-full lg:flex-1 min-h-0">
           <CurrentWeekGoals
             goals={goals}
             projects={projectsQuery.data ?? []}
