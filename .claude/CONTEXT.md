@@ -1,359 +1,67 @@
-### Documento de Especificação Atualizado
+# FlowState — Contexto do Produto
 
-Abaixo está a especificação do seu produto refatorada. Substituí a antiga seção de UI pelas suas **Novas Regras de Frontend** e adicionei a seção de **Integração e Dados (Tauri)** para refletir a arquitetura focada em mocks e isolamento.
+## Visão Geral
 
-#### 1. Visão Geral do Produto
-Um aplicativo desktop nativo e local-first focado no rastreamento de tempo, gestão de produtividade e análise de dados para desenvolvedores. O sistema diferencia horas de estudo e horas de trabalho, fornecendo relatórios detalhados, metas semanais e um histórico completo de atividades sem depender de servidores em nuvem.
+App desktop nativo e local-first para rastreamento de tempo, gestão de produtividade e análise de dados para desenvolvedores. Diferencia horas de estudo e trabalho, com relatórios, metas semanais e histórico completo. Sem cloud.
 
-#### 2. Stack Tecnológica
-* **Interface (UI/UX):** Next.js (configurado com `output: 'export'` para SSG) e React.
-* **Estilização:** Tailwind CSS (componentes otimizados para desktop, sem seleção de texto indesejada).
-* **Motor Nativo:** Tauri v2 (Rust) para integração com o sistema operacional (foco em Pop!_OS/Linux).
-* **Banco de Dados:** SQLite (via `tauri-plugin-sql`), operando 100% localmente.
+## Stack
 
-#### 3. Requisitos Funcionais
+| Camada       | Tecnologia                                          |
+|--------------|-----------------------------------------------------|
+| UI           | Next.js (`output: 'export'`, SSG) + React           |
+| Estilização  | Tailwind CSS (desktop-first, flat design)            |
+| Runtime      | Tauri v2 (Rust)                                      |
+| Banco        | SQLite via rusqlite (local, empacotado no binário)   |
 
-**3.1. Gestão de Atividades (Core)**
-* **Tipos de Sessão:** O sistema deve suportar no mínimo duas categorias raízes: ESTUDO e TRABALHO.
-* **Categorização por Tags:** Capacidade de taguear sessões por linguagem, tecnologia ou atividade.
-* **Rastreamento de Projetos:** Capacidade de vincular o tempo de trabalho a projetos específicos.
+## Funcionalidades Core
 
-**3.2. Módulo de Cronômetro e Foco**
-* **Timer Híbrido e Maratona:** Suporte a tempo progressivo, regressivo (Pomodoro) e perfil rigoroso para simular tempo limitado.
-* **Mini-Player (PiP):** Janela flutuante minimalista (Always on Top).
-* **Imunidade a Suspensão:** Lógica baseada na diferença de timestamps para prevenir atrasos de suspensão do SO.
-* **Formulários Manuais:** Possibilidade de cadastrar sessões anteriores customizadas via React Context Pickers.
+- **Sessões:** WORK e STUDY com tags, projetos e timer híbrido (progressivo/regressivo)
+- **Mini-Player PiP:** Janela flutuante always-on-top
+- **Metas Semanais:** Horas-alvo por categoria/projeto com progresso em tempo real
+- **Logbook:** Drill-down por tag, feed cronológico, calendário interativo
+- **Dashboard:** Heatmap, gráficos de distribuição, streaks, top rated
+- **Backup:** Import/export do `.db` (offline-first)
+- **Settings:** Formato de data (US/BR), relógio (12h/24h), idioma, strict mode
 
-**3.3. Metas e Histórico (Logbook)**
-* **Metas Semanais:** Horas-alvo por categoria/projeto com barras de progresso visuais em tempo real.
-* **Diário Isolado e Linha do Tempo:** Drill-down por tag e feed cronológico de anotações por sessão.
-* **Calendário Interativo:** Visão mensal para bloqueio visual e revisão.
-
-**3.4. Relatórios e Dashboards**
-* **Heatmap e Gráficos:** Gráfico de contribuições diárias, gráficos de pizza (foco vs estudo) e distribuição de esforço.
-* **Métricas de Consistência:** Sistema de Streaks.
-
-**3.5. Controle de Dados e Segurança**
-* **Offline-First & Backup:** App 100% offline com importação/exportação física do arquivo `.db` do SQLite.
-
-**3.6. Configurações Globais (Settings)**
-* **Context API React:** Gereciamento de formato de Data (`US`/`BR`), formato de relógio (`12h`/`24h`), Idioma de interface e Strict Mode nativamente na DOM.
-* **Master-Detail Layouts:** Gerenciadores de Projetos e Tags integrando histórico imbutido (`FilteredSessionsView`).
-
-# FlowState — Estrutura do Banco de Dados
-
-SQLite local via `tauri-plugin-sql`. Sem servidor, sem cloud. Tudo roda no disco do usuário.
-
----
-
-## Diagrama de Relações
+## Schema do Banco
 
 ```
-┌──────────────┐       ┌──────────────────┐       ┌──────────────┐
-│   projects   │       │     sessions     │       │     tags     │
-├──────────────┤       ├──────────────────┤       ├──────────────┤
-│ id       PK  │◄──────│ project_id    FK │       │ id       PK  │
-│ name         │       │ id            PK │       │ name         │
-│ color        │       │ type             │       │ color        │
-│ archived     │       │ timer_mode       │       │ created_at   │
-│ created_at   │       │ status           │       └──────┬───────┘
-└──────────────┘       │ planned_dur_sec  │              │
-                       │ duration_seconds │       ┌──────┴───────┐
-                       │ started_at       │       │ session_tags │
-                       │ finished_at      │       ├──────────────┤
-                       │ rating           │       │ session_id FK│──┐
-                       │ notes            │       │ tag_id     FK│  │
-                       │ created_at       │       └──────────────┘  │
-                       └────────┬─────────┘                         │
-                                │                                   │
-                                └───────────────────────────────────┘
-
-┌──────────────────┐
-│   weekly_goals   │
-├──────────────────┤
-│ id            PK │
-│ type             │
-│ label            │
-│ target_hours     │
-│ week_start       │
-│ created_at       │
-└──────────────────┘
+projects ──< sessions >── session_tags >── tags
+                              weekly_goals (standalone)
 ```
 
----
+### Tabelas
 
-## Schema SQL Completo
+| Tabela         | PK   | Campos principais                                                      |
+|----------------|------|------------------------------------------------------------------------|
+| `projects`     | `id` | name (UNIQUE), color, archived (0/1), created_at                       |
+| `tags`         | `id` | name (UNIQUE), color, created_at                                       |
+| `sessions`     | `id` | type (WORK/STUDY), project_id FK, timer_mode, status, duration_seconds, started_at, finished_at, rating (1-5), notes |
+| `session_tags` | PK composta | session_id FK, tag_id FK                                        |
+| `weekly_goals` | `id` | type, label, target_hours, project_id, tag_id, week_start             |
 
-### `projects`
+### Campos Computados (nunca armazenados)
 
-Repositórios ou iniciativas de trabalho do usuário.
+`currentHours`, `heatmap.intensity`, `streaks`, `distribution` — derivados via queries em runtime.
 
-```sql
-CREATE TABLE projects (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    name        TEXT    NOT NULL UNIQUE,
-    color       TEXT    NOT NULL DEFAULT '#8b5cf6',  -- hex para identificação visual
-    archived    INTEGER NOT NULL DEFAULT 0,          -- 0 = ativo, 1 = arquivado
-    created_at  DATETIME NOT NULL DEFAULT (datetime('now'))
-);
-```
+### Status Lifecycle
 
-| Coluna     | Tipo     | Descrição                                    |
-|------------|----------|----------------------------------------------|
-| id         | INTEGER  | PK auto-increment                            |
-| name       | TEXT     | Nome único do projeto                        |
-| color      | TEXT     | Cor hex para UI (badges, gráficos)           |
-| archived   | INTEGER  | Soft delete — projetos arquivados não aparecem |
-| created_at | DATETIME | Timestamp de criação                         |
-
----
-
-### `tags`
-
-Tecnologias, linguagens ou tópicos de estudo.
-
-```sql
-CREATE TABLE tags (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    name        TEXT    NOT NULL UNIQUE,
-    color       TEXT    NOT NULL DEFAULT '#a78bfa',
-    created_at  DATETIME NOT NULL DEFAULT (datetime('now'))
-);
-```
-
-| Coluna     | Tipo     | Descrição                          |
-|------------|----------|------------------------------------|
-| id         | INTEGER  | PK auto-increment                  |
-| name       | TEXT     | Nome único da tag                  |
-| color      | TEXT     | Cor hex para UI                    |
-| created_at | DATETIME | Timestamp de criação               |
-
----
-
-### `sessions`
-
-Tabela central. Cada registro é uma sessão de trabalho ou estudo completa.
-
-```sql
-CREATE TABLE sessions (
-    id                      INTEGER PRIMARY KEY AUTOINCREMENT,
-    type                    TEXT    NOT NULL CHECK (type IN ('WORK', 'STUDY')),
-    project_id              INTEGER REFERENCES projects(id) ON DELETE SET NULL,
-    timer_mode              TEXT    NOT NULL CHECK (timer_mode IN ('PROGRESSIVE', 'REGRESSIVE')),
-    status                  TEXT    NOT NULL DEFAULT 'ACTIVE'
-                                   CHECK (status IN ('ACTIVE', 'PAUSED', 'COMPLETED', 'CANCELLED')),
-    planned_duration_seconds INTEGER,          -- usado apenas no modo REGRESSIVE
-    duration_seconds        INTEGER NOT NULL DEFAULT 0,
-    started_at              DATETIME NOT NULL,
-    finished_at             DATETIME,
-    rating                  INTEGER CHECK (rating BETWEEN 1 AND 5),
-    notes                   TEXT    NOT NULL DEFAULT '',
-    created_at              DATETIME NOT NULL DEFAULT (datetime('now'))
-);
-
-CREATE INDEX idx_sessions_type       ON sessions(type);
-CREATE INDEX idx_sessions_project    ON sessions(project_id);
-CREATE INDEX idx_sessions_started_at ON sessions(started_at);
-CREATE INDEX idx_sessions_status     ON sessions(status);
-```
-
-| Coluna                   | Tipo     | Descrição                                           |
-|--------------------------|----------|-----------------------------------------------------|
-| id                       | INTEGER  | PK auto-increment                                   |
-| type                     | TEXT     | `'WORK'` ou `'STUDY'`                               |
-| project_id               | INTEGER  | FK → projects. NULL para sessões de estudo           |
-| timer_mode               | TEXT     | `'PROGRESSIVE'` (contagem ↑) ou `'REGRESSIVE'` (↓)  |
-| status                   | TEXT     | Estado do ciclo de vida da sessão                    |
-| planned_duration_seconds | INTEGER  | Duração alvo em modo regressivo (Pomodoro)           |
-| duration_seconds         | INTEGER  | Duração real em segundos                             |
-| started_at               | DATETIME | Início real (para imunidade a suspensão do SO)       |
-| finished_at              | DATETIME | Fim da sessão (NULL enquanto ativa)                  |
-| rating                   | INTEGER  | Autoavaliação 1-5 (preenchida no review)             |
-| notes                    | TEXT     | Anotações livres da sessão                           |
-| created_at               | DATETIME | Timestamp de criação do registro                     |
-
-**Status lifecycle:**
 ```
 ACTIVE → PAUSED → ACTIVE → COMPLETED
 ACTIVE → CANCELLED
 ```
 
----
+## Mapeamento IPC (Frontend → Backend)
 
-### `session_tags`
+Cada função em `services/*.ts` mapeia para um `#[tauri::command]` via `invoke()`.
+O service layer abstrai isso — a UI nunca chama `invoke()` diretamente.
 
-Tabela de junção N:N entre sessions e tags. Uma sessão pode ter múltiplas tags.
+## Versionamento
 
-```sql
-CREATE TABLE session_tags (
-    session_id  INTEGER NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,
-    tag_id      INTEGER NOT NULL REFERENCES tags(id)     ON DELETE CASCADE,
-    PRIMARY KEY (session_id, tag_id)
-);
+A versão do app é mantida em **3 arquivos** que devem estar sincronizados:
 
-CREATE INDEX idx_session_tags_tag ON session_tags(tag_id);
-```
-
-| Coluna     | Tipo    | Descrição         |
-|------------|---------|-------------------|
-| session_id | INTEGER | FK → sessions     |
-| tag_id     | INTEGER | FK → tags         |
-
----
-
-### `weekly_goals`
-
-Metas semanais de horas por categoria/projeto.
-
-```sql
-CREATE TABLE weekly_goals (
-    id           INTEGER PRIMARY KEY AUTOINCREMENT,
-    type         TEXT    NOT NULL CHECK (type IN ('WORK', 'STUDY')),
-    label        TEXT    NOT NULL,           -- nome descritivo (ex: "FlowState App")
-    target_hours INTEGER NOT NULL,
-    week_start   DATE    NOT NULL,           -- sempre uma segunda-feira (YYYY-MM-DD)
-    created_at   DATETIME NOT NULL DEFAULT (datetime('now'))
-);
-
-CREATE INDEX idx_weekly_goals_week ON weekly_goals(week_start);
-```
-
-| Coluna       | Tipo     | Descrição                                     |
-|--------------|----------|-----------------------------------------------|
-| id           | INTEGER  | PK auto-increment                             |
-| type         | TEXT     | `'WORK'` ou `'STUDY'`                         |
-| label        | TEXT     | Rótulo da meta (projeto ou tag)                |
-| target_hours | INTEGER  | Horas-alvo da semana                           |
-| week_start   | DATE     | Segunda-feira da semana (YYYY-MM-DD)           |
-| created_at   | DATETIME | Timestamp de criação                           |
-
-> **Nota:** `current_hours` é **computado** via query nas sessions da semana, nunca armazenado.
-
----
-
-## Campos Computados (Views / Queries)
-
-Estes dados são derivados no runtime, não armazenados:
-
-| Dado                    | Fonte                                                     |
-|-------------------------|------------------------------------------------------------|
-| `currentHours` (goals)  | `SUM(duration_seconds)` de sessions na semana do goal      |
-| `heatmap.intensity`     | Calculado a partir de `SUM(duration_seconds)` por dia      |
-| `heatmap.totalSeconds`  | `SUM(duration_seconds)` agrupado por `DATE(started_at)`    |
-| `heatmap.sessionCount`  | `COUNT(*)` agrupado por `DATE(started_at)`                 |
-| `stats.workHours`       | `SUM(duration_seconds)/3600` WHERE type = 'WORK'           |
-| `stats.studyHours`      | `SUM(duration_seconds)/3600` WHERE type = 'STUDY'          |
-| `stats.currentStreak`   | Dias consecutivos com pelo menos 1 session COMPLETED       |
-| `distribution`          | `GROUP BY project_id` ou `GROUP BY tag_id` com JOIN        |
-
----
-
-## Queries Úteis
-
-### Heatmap dos últimos 6 meses
-```sql
-SELECT
-    DATE(started_at)    AS date,
-    SUM(duration_seconds) AS total_seconds,
-    COUNT(*)            AS session_count
-FROM sessions
-WHERE status = 'COMPLETED'
-  AND started_at >= DATE('now', '-6 months')
-GROUP BY DATE(started_at)
-ORDER BY date;
-```
-
-### Streak atual
-```sql
-WITH days AS (
-    SELECT DISTINCT DATE(started_at) AS d
-    FROM sessions
-    WHERE status = 'COMPLETED'
-    ORDER BY d DESC
-),
-streak AS (
-    SELECT d, ROW_NUMBER() OVER (ORDER BY d DESC) AS rn
-    FROM days
-)
-SELECT COUNT(*) AS current_streak
-FROM streak
-WHERE JULIANDAY(DATE('now')) - JULIANDAY(d) = rn - 1;
-```
-
-### Progresso semanal de um goal
-```sql
-SELECT COALESCE(SUM(s.duration_seconds) / 3600.0, 0) AS current_hours
-FROM sessions s
-JOIN session_tags st ON s.id = st.session_id
-WHERE s.status = 'COMPLETED'
-  AND s.started_at >= :week_start
-  AND s.started_at < DATE(:week_start, '+7 days')
-  AND st.tag_id IN (SELECT id FROM tags WHERE name = :label);
-```
-
-### Distribuição de trabalho por projeto
-```sql
-SELECT
-    p.name  AS label,
-    p.color AS color,
-    SUM(s.duration_seconds) / 3600.0 AS hours
-FROM sessions s
-LEFT JOIN projects p ON s.project_id = p.id
-WHERE s.type = 'WORK' AND s.status = 'COMPLETED'
-GROUP BY s.project_id
-ORDER BY hours DESC;
-```
-
----
-
-## Mapeamento TypeScript ↔ SQLite
-
-| TypeScript Type     | Tabela SQLite   | Notas                                      |
-|---------------------|-----------------|---------------------------------------------|
-| `Project`           | `projects`      | `archived: boolean` → `INTEGER 0/1`        |
-| `Tag`               | `tags`          | Mapeamento direto                           |
-| `Session`           | `sessions`      | `projectId` → `project_id` (snake_case)     |
-| `SessionTag`        | `session_tags`  | Tabela de junção, sem ID próprio            |
-| `WeeklyGoal`        | `weekly_goals`  | `currentHours` é computado, não armazenado  |
-| `SessionWithRelations` | JOIN query   | View que junta sessions + project + tags    |
-| `ActivityEntry`     | VIEW / query    | Projeção simplificada para o dashboard      |
-| `HeatmapDay`        | Aggregation     | `GROUP BY DATE(started_at)`                 |
-| `DashboardStats`    | Aggregation     | Múltiplos `SUM/COUNT` em sessions           |
-| `DistributionChart` | Aggregation     | `GROUP BY project_id` ou `tag_id`           |
-
----
-
-## Migração Futura (Tauri IPC)
-
-Cada função em `front-end/services/*.ts` mapeia para um comando Tauri:
-
-```
-getProjects()       → invoke('get_projects')
-createProject()     → invoke('create_project', { name, color })
-deleteProject()     → invoke('delete_project', { id })
-getTags()           → invoke('get_tags')
-createTag()         → invoke('create_tag', { name, color })
-deleteTag()         → invoke('delete_tag', { id })
-saveSession()       → invoke('save_session', { session })
-saveSessionReview() → invoke('update_session_review', { sessionId, rating, notes })
-getStats()          → invoke('get_dashboard_stats')
-getWeeklyGoals()    → invoke('get_weekly_goals', { weekStart })
-createWeeklyGoal()  → invoke('create_weekly_goal', { type, label, targetHours, referenceId })
-updateWeeklyGoal()  → invoke('update_weekly_goal', { id, targetHours, label })
-deleteWeeklyGoal()  → invoke('delete_weekly_goal', { id })
-getGoalProgress()   → invoke('get_goal_progress', { goalId })
-getGoalsSummary()   → invoke('get_goals_summary')
-getGoalsHistory()   → invoke('get_goals_history')
-getStreakInfo()      → invoke('get_streak_info')
-getConsistencyDays() → invoke('get_consistency_days', { days: 30 })
-getRecentActivities() → invoke('get_recent_activities', { limit })
-getHeatmap()        → invoke('get_heatmap', { months })
-getWorkDistribution() → invoke('get_work_distribution')
-getStudyDistribution() → invoke('get_study_distribution')
-getSettings()       → invoke('get_settings')
-updateSettings()    → invoke('update_settings', { partial })
-exportData()        → invoke('export_data')
-importData()        → invoke('import_data')
-```
-
-A UI **não muda** — apenas o corpo das funções de serviço troca de mock para `invoke()`.
+| Arquivo                    | Campo       |
+|----------------------------|-------------|
+| `package.json`             | `version`   |
+| `src-tauri/Cargo.toml`     | `version`   |
+| `src-tauri/tauri.conf.json`| `version`   |
