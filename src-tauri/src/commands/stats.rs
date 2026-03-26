@@ -398,10 +398,10 @@ pub fn get_top_rated_work(db: State<'_, DbPool>) -> Result<Vec<TopRatedItem>, St
         .query_map([], |row| {
             Ok(TopRatedItem {
                 id: row.get(0)?,
-                label: row.get(1)?,
+                name: row.get(1)?,
                 color: row.get(2)?,
-                avg_rating: row.get(3)?,
-                session_count: row.get(4)?,
+                average_rating: row.get(3)?,
+                total_sessions: row.get(4)?,
             })
         })
         .map_err(|e| format!("Query error: {}", e))?;
@@ -437,10 +437,10 @@ pub fn get_top_rated_study(db: State<'_, DbPool>) -> Result<Vec<TopRatedItem>, S
         .query_map([], |row| {
             Ok(TopRatedItem {
                 id: row.get(0)?,
-                label: row.get(1)?,
+                name: row.get(1)?,
                 color: row.get(2)?,
-                avg_rating: row.get(3)?,
-                session_count: row.get(4)?,
+                average_rating: row.get(3)?,
+                total_sessions: row.get(4)?,
             })
         })
         .map_err(|e| format!("Query error: {}", e))?;

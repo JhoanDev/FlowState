@@ -80,10 +80,10 @@ pub struct ConsistencyDay {
 #[serde(rename_all = "camelCase")]
 pub struct TopRatedItem {
     pub id: i64,
-    pub label: String,
+    pub name: String,
     pub color: String,
-    pub avg_rating: f64,
-    pub session_count: i64,
+    pub average_rating: f64,
+    pub total_sessions: i64,
 }
 
 #[derive(Debug, Serialize)]
