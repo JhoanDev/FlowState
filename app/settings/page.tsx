@@ -7,6 +7,7 @@ import { useAsync } from "@/hooks/use-async";
 import { getSettings, exportDataVault, importDataVault, wipeAllData } from "@/services/settingsService";
 import type { ThemeOption, LanguageOption, TimeFormatOption } from "@/types";
 import { Palette, Globe, Clock, ShieldAlert, Monitor, Moon, Sun, Download, Upload, Trash2, CheckCircle2 } from "lucide-react";
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useSettings } from "@/providers/settings-provider";
 
@@ -80,24 +81,27 @@ export default function SettingsPage() {
                      <p className="text-base font-semibold text-foreground">Theme</p>
                      <p className="text-sm text-muted-foreground mt-1">Select the color scheme.</p>
                    </div>
-                   <div className="grid grid-cols-3 sm:flex bg-accent/30 p-1 rounded-lg shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+                   <div className="relative flex p-0.5 xl:p-1 bg-accent/30 rounded-[10px] shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
                       <button 
                         onClick={() => handleUpdate("theme", "light")}
-                        className={cn("flex flex-1 items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-md transition-all", settings?.theme === "light" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
+                        className={cn("relative z-10 flex flex-1 items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200", settings?.theme === "light" ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
                       >
                         <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> Light
+                        {settings?.theme === "light" && <motion.span layoutId="settings-theme" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
                       </button>
                       <button 
                         onClick={() => handleUpdate("theme", "dark")}
-                        className={cn("flex flex-1 items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-md transition-all", settings?.theme === "dark" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
+                        className={cn("relative z-10 flex flex-1 items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200", settings?.theme === "dark" ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
                       >
                         <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> Dark
+                        {settings?.theme === "dark" && <motion.span layoutId="settings-theme" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
                       </button>
                       <button 
                         onClick={() => handleUpdate("theme", "system")}
-                        className={cn("flex flex-1 items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-md transition-all", settings?.theme === "system" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
+                        className={cn("relative z-10 flex flex-1 items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200", settings?.theme === "system" ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
                       >
                         <Monitor className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> System
+                        {settings?.theme === "system" && <motion.span layoutId="settings-theme" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
                       </button>
                    </div>
                 </div>
@@ -108,9 +112,21 @@ export default function SettingsPage() {
                      <p className="text-base font-semibold text-foreground">Language</p>
                      <p className="text-sm text-muted-foreground mt-1">Interface language.</p>
                    </div>
-                   <div className="grid grid-cols-2 sm:flex bg-accent/30 p-1 rounded-lg shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
-                      <button onClick={() => handleUpdate("language", "en")} className={cn("flex-1 text-center px-4 py-2 text-xs sm:text-sm font-bold rounded-md transition-all", settings?.language === "en" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>English</button>
-                      <button onClick={() => handleUpdate("language", "pt")} className={cn("flex-1 text-center px-4 py-2 text-xs sm:text-sm font-bold rounded-md transition-all", settings?.language === "pt" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>Português</button>
+                   <div className="relative flex p-0.5 xl:p-1 bg-accent/30 rounded-[10px] shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+                      <button 
+                        onClick={() => handleUpdate("language", "en")} 
+                        className={cn("relative z-10 flex-1 text-center px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200", settings?.language === "en" ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
+                      >
+                        English
+                        {settings?.language === "en" && <motion.span layoutId="settings-language" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
+                      </button>
+                      <button 
+                        onClick={() => handleUpdate("language", "pt")} 
+                        className={cn("relative z-10 flex-1 text-center px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200", settings?.language === "pt" ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
+                      >
+                        Português
+                        {settings?.language === "pt" && <motion.span layoutId="settings-language" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
+                      </button>
                    </div>
                 </div>
              </div>
@@ -129,9 +145,21 @@ export default function SettingsPage() {
                      <p className="text-base font-semibold text-foreground">Time Format</p>
                      <p className="text-sm text-muted-foreground mt-1">12-hour or 24-hour clocks.</p>
                    </div>
-                   <div className="grid grid-cols-2 sm:flex bg-accent/30 p-1 rounded-lg shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
-                      <button onClick={() => handleUpdate("timeFormat", "12h")} className={cn("flex-1 text-center px-2 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-md transition-all whitespace-nowrap", settings?.timeFormat === "12h" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>12 AM</button>
-                      <button onClick={() => handleUpdate("timeFormat", "24h")} className={cn("flex-1 text-center px-2 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-md transition-all whitespace-nowrap", settings?.timeFormat === "24h" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>24:00</button>
+                   <div className="relative flex p-0.5 xl:p-1 bg-accent/30 rounded-[10px] shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+                      <button 
+                        onClick={() => handleUpdate("timeFormat", "12h")} 
+                        className={cn("relative z-10 flex-1 text-center px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200 whitespace-nowrap", settings?.timeFormat === "12h" ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
+                      >
+                        12 AM
+                        {settings?.timeFormat === "12h" && <motion.span layoutId="settings-time" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
+                      </button>
+                      <button 
+                        onClick={() => handleUpdate("timeFormat", "24h")} 
+                        className={cn("relative z-10 flex-1 text-center px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200 whitespace-nowrap", settings?.timeFormat === "24h" ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
+                      >
+                        24:00
+                        {settings?.timeFormat === "24h" && <motion.span layoutId="settings-time" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
+                      </button>
                    </div>
                 </div>
 
@@ -141,9 +169,21 @@ export default function SettingsPage() {
                      <p className="text-base font-semibold text-foreground">Date Format</p>
                      <p className="text-sm text-muted-foreground mt-1">Layout for calendars and histories.</p>
                    </div>
-                   <div className="grid grid-cols-2 sm:flex bg-accent/30 p-1 rounded-lg shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
-                      <button onClick={() => handleUpdate("dateFormat", "US")} className={cn("flex-1 text-center px-2 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-md transition-all whitespace-nowrap", settings?.dateFormat === "US" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>US (MM/DD)</button>
-                      <button onClick={() => handleUpdate("dateFormat", "BR")} className={cn("flex-1 text-center px-2 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-md transition-all whitespace-nowrap", settings?.dateFormat === "BR" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>BR (DD/MM)</button>
+                   <div className="relative flex p-0.5 xl:p-1 bg-accent/30 rounded-[10px] shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+                      <button 
+                        onClick={() => handleUpdate("dateFormat", "US")} 
+                        className={cn("relative z-10 flex-1 text-center px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200 whitespace-nowrap", settings?.dateFormat === "US" ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
+                      >
+                        US (MM/DD)
+                        {settings?.dateFormat === "US" && <motion.span layoutId="settings-date" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
+                      </button>
+                      <button 
+                        onClick={() => handleUpdate("dateFormat", "BR")} 
+                        className={cn("relative z-10 flex-1 text-center px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200 whitespace-nowrap", settings?.dateFormat === "BR" ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
+                      >
+                        BR (DD/MM)
+                        {settings?.dateFormat === "BR" && <motion.span layoutId="settings-date" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
+                      </button>
                    </div>
                 </div>
 
@@ -153,9 +193,21 @@ export default function SettingsPage() {
                      <p className="text-base font-semibold text-foreground">Strict Mode</p>
                      <p className="text-sm text-muted-foreground mt-1">Force full-screen focus.</p>
                    </div>
-                   <div className="grid grid-cols-2 sm:flex bg-accent/30 p-1 rounded-lg shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
-                      <button onClick={() => handleUpdate("strictModeDefault", false)} className={cn("flex-1 text-center px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-md transition-all", !settings?.strictModeDefault ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>Off</button>
-                      <button onClick={() => handleUpdate("strictModeDefault", true)} className={cn("flex-1 text-center px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-md transition-all", settings?.strictModeDefault ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>On</button>
+                   <div className="relative flex p-0.5 xl:p-1 bg-accent/30 rounded-[10px] shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+                      <button 
+                        onClick={() => handleUpdate("strictModeDefault", false)} 
+                        className={cn("relative z-10 flex-1 text-center px-6 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200", !settings?.strictModeDefault ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
+                      >
+                        Off
+                        {!settings?.strictModeDefault && <motion.span layoutId="settings-strict" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
+                      </button>
+                      <button 
+                        onClick={() => handleUpdate("strictModeDefault", true)} 
+                        className={cn("relative z-10 flex-1 text-center px-6 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200", settings?.strictModeDefault ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
+                      >
+                        On
+                        {settings?.strictModeDefault && <motion.span layoutId="settings-strict" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
+                      </button>
                    </div>
                 </div>
              </div>

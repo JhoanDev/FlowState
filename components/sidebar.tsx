@@ -11,6 +11,7 @@ import {
   Folder,
   Flame,
 } from "lucide-react";
+import { motion } from "motion/react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -28,12 +29,14 @@ function NavLink({
   icon: Icon,
   label,
   isActive,
+  layoutIdPrefix,
   onClick,
 }: {
   href: string;
   icon: React.ElementType;
   label: string;
   isActive: boolean;
+  layoutIdPrefix?: string;
   onClick?: () => void;
 }) {
   return (
@@ -43,29 +46,36 @@ function NavLink({
       className={cn(
         "relative flex items-center gap-3.5 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ease-out group",
         isActive
-          ? "bg-accent text-foreground"
-          : "text-muted-foreground hover:bg-accent/60 hover:text-foreground"
+          ? "text-primary"
+          : "text-muted-foreground hover:text-foreground"
       )}
     >
       <Icon className={cn(
-        "h-5 w-5 shrink-0 transition-all duration-200",
+        "relative z-10 h-5 w-5 shrink-0 transition-all duration-200",
         isActive ? "text-primary" : "group-hover:text-foreground group-hover:scale-110"
       )} />
-      {label}
+      <span className={cn("relative z-10", isActive && "font-bold")}>{label}</span>
       {isActive && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 bg-primary rounded-r-full" />
+        <motion.span 
+          layoutId={`sidebar-active-${layoutIdPrefix}`}
+          className="absolute inset-0 bg-primary/10 rounded-lg -z-10"
+          transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+        />
+      )}
+      {!isActive && (
+        <span className="absolute inset-0 bg-transparent group-hover:bg-accent rounded-lg -z-10 transition-colors duration-200" />
       )}
     </Link>
   );
 }
 
-export function Sidebar({ className, onNavClick }: { className?: string; onNavClick?: () => void }) {
+export function Sidebar({ className, onNavClick, layoutIdPrefix = "desktop" }: { className?: string; onNavClick?: () => void; layoutIdPrefix?: string }) {
   const pathname = usePathname();
 
   return (
     <aside
       className={cn(
-        "flex w-[280px] flex-col bg-card border-r border-border shrink-0",
+        "flex w-[240px] flex-col bg-card border-r border-border shrink-0",
         className
       )}
     >
@@ -90,6 +100,7 @@ export function Sidebar({ className, onNavClick }: { className?: string; onNavCl
             icon={item.icon}
             label={item.label}
             isActive={pathname === item.href}
+            layoutIdPrefix={layoutIdPrefix}
             onClick={onNavClick}
           />
         ))}
@@ -102,6 +113,7 @@ export function Sidebar({ className, onNavClick }: { className?: string; onNavCl
           icon={Settings}
           label="Settings"
           isActive={pathname === "/settings"}
+          layoutIdPrefix={layoutIdPrefix}
           onClick={onNavClick}
         />
       </div>

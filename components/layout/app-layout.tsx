@@ -34,7 +34,11 @@ export function AppLayout({ children, title, subtitle }: AppLayoutProps) {
         "fixed inset-y-0 left-0 z-50 w-[280px] transform transition-transform duration-200 ease-in-out lg:hidden",
         isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
       )}>
-        <Sidebar className="w-full h-full shadow-2xl lg:shadow-none" onNavClick={() => setIsMobileMenuOpen(false)} />
+        <Sidebar 
+          className="w-full h-full shadow-2xl lg:shadow-none" 
+          onNavClick={() => setIsMobileMenuOpen(false)} 
+          layoutIdPrefix="mobile"
+        />
       </div>
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
@@ -44,7 +48,7 @@ export function AppLayout({ children, title, subtitle }: AppLayoutProps) {
           onMenuClick={() => setIsMobileMenuOpen(true)} 
         />
 
-        <main className="flex-1 min-h-0 overflow-y-auto px-4 md:px-6 pb-4">
+        <main className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 pb-4">
           {children}
         </main>
       </div>

@@ -116,15 +116,16 @@ export function SessionReviewList({ date, activities, isLoading }: SessionReview
 
   return (
     <Card className="flex flex-col h-auto lg:h-full min-h-0 bg-accent/10">
-      <CardHeader className="p-4 sm:p-5 pb-3 sm:pb-4 border-b border-border shrink-0 bg-card">
-        <CardTitle className="text-lg flex items-center gap-2">
+      <CardHeader className="p-3 xl:p-4 pb-0 shrink-0 border-b border-border bg-card">
+        <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
+          <BookOpen className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
           Session Diary
-          <span className="text-sm font-normal text-muted-foreground ml-2">
+          <span className="text-[10px] xl:text-xs font-normal text-muted-foreground ml-2">
             ({date})
           </span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-4 sm:p-5 flex-1 min-h-0 lg:overflow-y-auto space-y-4">
+      <CardContent className="p-3 xl:p-4 pt-3 flex-1 min-h-0 md:overflow-y-auto space-y-3 xl:space-y-4">
         {isLoading ? (
           Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="p-4 rounded-lg border border-border space-y-4">

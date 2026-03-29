@@ -4,8 +4,10 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star, Trophy, Briefcase, BookOpen } from "lucide-react";
+import { Trophy, Briefcase, BookOpen, Star } from "lucide-react";
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export interface TopRatedItem {
   id: string;
@@ -23,6 +25,7 @@ interface TopRatedRankingProps {
 
 export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRankingProps) {
   const [activeTab, setActiveTab] = useState<"WORK" | "STUDY">("WORK");
+  const router = useRouter();
 
   const items = activeTab === "WORK" ? workItems : studyItems;
   const isWork = activeTab === "WORK";
@@ -35,25 +38,34 @@ export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRa
             <Trophy className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
             Top Rated
           </CardTitle>
-          <div className="flex gap-0.5 xl:gap-1 bg-accent/30 p-0.5 xl:p-1 rounded-md">
-            <Button
-              variant={isWork ? "secondary" : "ghost"}
-              size="sm"
-              className={cn("h-6 xl:h-7 px-2 xl:px-3 text-[10px] xl:text-xs font-semibold hover:text-foreground", isWork && "bg-background text-foreground shadow-sm hover:bg-background/80 hover:text-foreground")}
-              onClick={() => setActiveTab("WORK")}
-            >
-              <Briefcase className="w-2.5 h-2.5 xl:w-3 xl:h-3 mr-1 xl:mr-1.5" />
-              Work
-            </Button>
-            <Button
-              variant={!isWork ? "secondary" : "ghost"}
-              size="sm"
-              className={cn("h-6 xl:h-7 px-2 xl:px-3 text-[10px] xl:text-xs font-semibold hover:text-foreground", !isWork && "bg-background text-foreground shadow-sm hover:bg-background/80 hover:text-foreground")}
-              onClick={() => setActiveTab("STUDY")}
-            >
-               <BookOpen className="w-2.5 h-2.5 xl:w-3 xl:h-3 mr-1 xl:mr-1.5" />
-               Study
-            </Button>
+          <div className={cn("relative flex p-0.5 bg-accent/30 rounded-[10px]", activeTab === "WORK" ? "theme-work" : "theme-study")}>
+            {(["WORK", "STUDY"] as const).map((tab) => {
+              const isActive = activeTab === tab;
+              const isWorkTab = tab === "WORK";
+              const Icon = isWorkTab ? Briefcase : BookOpen;
+              return (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={cn(
+                    "relative z-10 flex items-center justify-center h-6 xl:h-7 px-2 xl:px-3 text-[10px] xl:text-xs font-bold transition-colors duration-200 rounded-lg",
+                    isActive
+                      ? "text-primary-foreground cursor-default"
+                      : "text-muted-foreground hover:text-foreground cursor-pointer"
+                  )}
+                >
+                  <Icon className="w-2.5 h-2.5 xl:w-3 xl:h-3 mr-1 xl:mr-1.5" />
+                  {isWorkTab ? "Work" : "Study"}
+                  {isActive && (
+                    <motion.span
+                      layoutId="top-rated-toggle-bg"
+                      className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10"
+                      transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                    />
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
       </CardHeader>
@@ -71,7 +83,8 @@ export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRa
            items.map((item, index) => (
              <div 
                key={item.id}
-               className="flex items-center group justify-between p-2 xl:p-3 rounded-md border border-border/60 bg-transparent hover:border-border transition-colors cursor-default"
+               onClick={() => router.push('/projects')}
+               className="flex items-center group justify-between p-2 xl:p-3 rounded-md border border-border/60 bg-transparent hover:border-border hover:bg-accent/40 hover:shadow-sm active:scale-[0.98] transition-all cursor-pointer"
              >
                 <div className="flex items-center gap-2 xl:gap-3">
                    <span className="text-[10px] xl:text-xs font-bold text-muted-foreground w-3 xl:w-4 text-center">

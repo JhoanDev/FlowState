@@ -4,7 +4,9 @@ import * as React from "react";
 import { AppLayout } from "@/components/layout/app-layout";
 import { ListManager } from "@/components/projects/list-manager";
 import { FilteredSessionsView } from "@/components/projects/filtered-sessions-view";
-import { FolderGit2, Tag as TagIcon } from "lucide-react";
+import { CardHeader, CardTitle } from "@/components/ui/card";
+import { FolderGit2, Tag as TagIcon, Database } from "lucide-react";
+import { motion } from "motion/react";
 import { useAsync } from "@/hooks/use-async";
 import { getProjects, createProject, updateProject, deleteProject } from "@/services/projects";
 import { getTags, createTag, updateTag, deleteTag } from "@/services/tags";
@@ -104,29 +106,43 @@ export default function ProjectsPage() {
         <div className="flex-none lg:flex-[3] flex flex-col min-w-0 bg-card rounded-xl border border-border shadow-sm shrink-0 lg:overflow-hidden h-auto lg:h-full">
           
           {/* Internal Toggle Header */}
-          <div className="px-4 sm:px-6 pt-4 sm:pt-5 pb-3 border-b border-border/50 shrink-0">
-            <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Registry</h2>
-            <div className="flex p-1 bg-accent/40 rounded-lg max-w-[400px]">
-               <Button
-                 variant="ghost"
-                 className={cn("flex-1 h-9 text-xs sm:text-sm font-bold tracking-wide transition-all px-2", activeTab === "PROJECTS" && "bg-background shadow-sm text-foreground")}
-                 onClick={() => setActiveTab("PROJECTS")}
-               >
-                 <FolderGit2 className="h-4 w-4 mr-2" />
-                 Work Projects
-               </Button>
-               <Button
-                 variant="ghost"
-                 className={cn("flex-1 h-9 text-xs sm:text-sm font-bold tracking-wide transition-all px-2", activeTab === "TAGS" && "bg-background shadow-sm text-foreground")}
-                 onClick={() => setActiveTab("TAGS")}
-               >
-                 <TagIcon className="h-4 w-4 mr-2" />
-                 Study Tags
-               </Button>
+          <CardHeader className="p-3 xl:p-4 pb-0 shrink-0 flex flex-col xl:flex-row xl:items-center justify-between gap-3 xl:gap-4 w-full border-none px-4">
+            <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
+              <Database className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
+              Registry
+            </CardTitle>
+            <div className={cn("relative flex p-0.5 bg-accent/30 rounded-[10px] xl:max-w-[280px] w-full", activeTab === "PROJECTS" ? "theme-work" : "theme-study")}>
+               {(["PROJECTS", "TAGS"] as const).map((tab) => {
+                 const isActive = activeTab === tab;
+                 const isWork = tab === "PROJECTS";
+                 const Icon = isWork ? FolderGit2 : TagIcon;
+                 return (
+                   <button
+                     key={tab}
+                     onClick={() => setActiveTab(tab)}
+                     className={cn(
+                       "relative z-10 flex-1 flex items-center justify-center h-6 xl:h-7 text-[10px] xl:text-xs font-bold tracking-wide transition-colors duration-200 px-2 rounded-lg",
+                       isActive
+                         ? "text-primary-foreground cursor-default"
+                         : "text-muted-foreground hover:text-foreground cursor-pointer"
+                     )}
+                   >
+                     <Icon className="h-2.5 w-2.5 xl:h-3 xl:w-3 mr-1.5" />
+                     {isWork ? "Projects" : "Tags"}
+                     {isActive && (
+                       <motion.span
+                         layoutId="registry-toggle-bg"
+                         className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10"
+                         transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                       />
+                     )}
+                   </button>
+                 );
+               })}
             </div>
-          </div>
+          </CardHeader>
 
-          <div className="flex-1 min-h-0 relative">
+          <div className="flex-1 min-h-0 relative mt-4">
              {activeTab === "PROJECTS" ? (
                 <ListManager
                   title="Projects"
@@ -142,6 +158,7 @@ export default function ProjectsPage() {
                   onRemove={handleRemoveProject}
                   selectedId={selectedProjectId}
                   onSelect={handleProjectSelect}
+                  hideHeader
                 />
              ) : (
                 <ListManager
@@ -158,6 +175,7 @@ export default function ProjectsPage() {
                   onRemove={handleRemoveTag}
                   selectedId={selectedTagId}
                   onSelect={handleTagSelect}
+                  hideHeader
                 />
              )}
           </div>

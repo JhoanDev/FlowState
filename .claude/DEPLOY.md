@@ -2,20 +2,23 @@
 
 ## Runner
 
-- Todas as builds Linux **devem rodar em Ubuntu 22.04** (`ubuntu-22.04`) para garantir compatibilidade com distribuições baseadas em Ubuntu 22+.
+- Todas as builds Linux **devem rodar em Ubuntu 22.04** (`ubuntu-22.04`) para
+  garantir compatibilidade com distribuições baseadas em Ubuntu 22+.
 - macOS e Windows usam os runners padrão mais recentes.
 
 ## Versionamento
 
-Antes de qualquer release, a versão deve ser atualizada nos **3 arquivos** simultaneamente:
+Antes de qualquer release, a versão deve ser atualizada nos **3 arquivos**
+simultaneamente:
 
-| Arquivo                     | Campo     | Exemplo     |
-|-----------------------------|-----------|-------------|
-| `package.json`              | `version` | `"1.2.0"`   |
-| `src-tauri/Cargo.toml`      | `version` | `"1.2.0"`   |
-| `src-tauri/tauri.conf.json` | `version` | `"1.2.0"`   |
+| Arquivo                     | Campo     | Exemplo   |
+| --------------------------- | --------- | --------- |
+| `package.json`              | `version` | `"1.2.0"` |
+| `src-tauri/Cargo.toml`      | `version` | `"1.2.0"` |
+| `src-tauri/tauri.conf.json` | `version` | `"1.2.0"` |
 
 Seguir **SemVer** (`MAJOR.MINOR.PATCH`):
+
 - `PATCH` — bugfixes, ajustes visuais
 - `MINOR` — novas features, melhorias
 - `MAJOR` — breaking changes no schema do banco ou na estrutura de dados
@@ -41,11 +44,11 @@ npx tauri build           # empacotar (.deb, .AppImage, etc.)
 
 ## Artefatos
 
-| Plataforma | Formato              | Path relativo                              |
-|------------|----------------------|--------------------------------------------|
-| Linux      | `.deb`, `.AppImage`  | `src-tauri/target/release/bundle/`         |
-| macOS      | `.dmg`, `.app`       | `src-tauri/target/release/bundle/macos/`   |
-| Windows    | `.msi`, `.exe`       | `src-tauri/target/release/bundle/nsis/`    |
+| Plataforma | Formato             | Path relativo                            |
+| ---------- | ------------------- | ---------------------------------------- |
+| Linux      | `.deb`, `.AppImage` | `src-tauri/target/release/bundle/`       |
+| macOS      | `.dmg`, `.app`      | `src-tauri/target/release/bundle/macos/` |
+| Windows    | `.msi`, `.exe`      | `src-tauri/target/release/bundle/nsis/`  |
 
 ## Checklist Pré-Release
 

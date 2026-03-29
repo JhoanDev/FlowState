@@ -18,15 +18,15 @@ export function TopNav({
   return (
     <header
       className={cn(
-        "flex h-[72px] items-center px-4 lg:px-10 bg-background shrink-0 gap-3 lg:gap-0 border-b lg:border-none border-border",
+        "flex h-14 items-center px-4 bg-background shrink-0 gap-3 border-b border-border lg:hidden",
         className
       )}
     >
-      <Button variant="ghost" size="sm" className="lg:hidden shrink-0 px-2" onClick={onMenuClick}>
+      <Button variant="ghost" size="sm" className="shrink-0 mr-2 -ml-2" onClick={onMenuClick}>
         <Menu className="h-5 w-5" />
       </Button>
       <div className="flex flex-col">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+        <h1 className="text-base font-semibold tracking-tight text-foreground">
           {title}
         </h1>
         {subtitle && (

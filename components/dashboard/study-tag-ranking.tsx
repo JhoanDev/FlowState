@@ -46,7 +46,10 @@ export function StudyTagRanking({ data, isLoading }: StudyTagRankingProps) {
             {data.map((item) => {
               const pct = maxHours > 0 ? (item.hours / maxHours) * 100 : 0;
               return (
-                <div key={item.label} className="space-y-1">
+                <div 
+                  key={item.label} 
+                  className="space-y-1 p-2 -mx-2 rounded-md hover:bg-accent/40 cursor-default hover:shadow-sm transition-all"
+                >
                   <div className="flex items-center justify-between text-[10px] xl:text-xs">
                     <div className="flex items-center gap-1.5 min-w-0">
                       <span

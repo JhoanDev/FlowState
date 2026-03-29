@@ -1,6 +1,6 @@
 [package]
 name = "flowstate"
-version = "1.0.1"
+version = "1.1.0"
 description = "FlowState — Desktop productivity & time management app"
 authors = ["jhoanoliveira"]
 license = "MIT"

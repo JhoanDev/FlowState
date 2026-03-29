@@ -74,11 +74,11 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
     return (
       <Card className="flex flex-col min-h-[300px] lg:min-h-0 h-auto lg:h-full py-12 lg:py-0 border-dashed items-center justify-center bg-transparent">
         <div className="text-center space-y-3 px-6 max-w-sm">
-           <div className="h-14 w-14 rounded-2xl bg-accent/50 flex items-center justify-center mx-auto mb-2 text-muted-foreground/50 border border-border">
-             <Activity className="h-6 w-6" />
+           <div className="h-10 w-10 xl:h-12 xl:w-12 rounded-xl xl:rounded-2xl bg-accent/50 flex items-center justify-center mx-auto mb-2 text-muted-foreground/50 border border-border">
+             <Activity className="h-5 w-5 xl:h-6 xl:w-6" />
            </div>
-           <h3 className="text-lg font-bold text-foreground">Explore Data</h3>
-           <p className="text-sm text-muted-foreground">
+           <h3 className="text-sm xl:text-base font-bold text-foreground">Explore Data</h3>
+           <p className="text-[10px] xl:text-xs text-muted-foreground">
               Select a project or a tag from the left panel to filter your sessions and explore your historical tracking.
            </p>
         </div>
@@ -98,25 +98,21 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
 
   return (
     <Card className="flex flex-col h-auto lg:h-full lg:overflow-hidden border-border bg-card shadow-sm">
-      <CardHeader className="p-4 sm:p-5 border-b border-border/50 shrink-0 bg-transparent flex flex-row items-start sm:items-center justify-between gap-2">
-        <div className="flex items-center gap-3">
-           <div className="h-10 w-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${itemColor}20` }}>
+      <CardHeader className="p-3 xl:p-4 pb-0 flex flex-row items-center justify-between gap-2 shrink-0 border-b border-border/50 bg-transparent">
+        <div className="flex items-center gap-2 xl:gap-3">
+           <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5 truncate max-w-[150px] xl:max-w-[300px]">
              {type === "PROJECT" ? (
-               <Layers className="h-5 w-5" style={{ color: itemColor }} />
+               <Layers className="h-3.5 w-3.5 xl:h-4 xl:w-4 shrink-0" style={{ color: itemColor }} />
              ) : (
-               <BookOpen className="h-5 w-5" style={{ color: itemColor }} />
+               <BookOpen className="h-3.5 w-3.5 xl:h-4 xl:w-4 shrink-0" style={{ color: itemColor }} />
              )}
-           </div>
-           <div>
-             <CardTitle className="text-lg sm:text-xl font-bold truncate max-w-[150px] sm:max-w-[200px] xl:max-w-[300px]">
-               {itemName}
-             </CardTitle>
-             <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mt-0.5">
-               {type === "PROJECT" ? "Work Project" : "Study Tag"}
-             </div>
-           </div>
+             <span className="truncate">{itemName}</span>
+             <span className="text-[10px] xl:text-xs font-normal uppercase tracking-wider text-muted-foreground ml-1 xl:ml-2 shrink-0">
+               ({type === "PROJECT" ? "Work Project" : "Study Tag"})
+             </span>
+           </CardTitle>
         </div>
-        <Button variant="ghost" size="sm" onClick={onClear} className="text-xs h-8 px-3 text-muted-foreground hover:text-foreground">
+        <Button variant="ghost" size="sm" onClick={onClear} className="h-6 xl:h-7 px-2 xl:px-3 text-[10px] xl:text-xs font-semibold text-muted-foreground hover:text-foreground">
           Clear Filter
         </Button>
       </CardHeader>
@@ -124,32 +120,32 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
       <CardContent className="p-0 flex-1 flex flex-col min-h-0 bg-accent/5">
         {/* Top Stats Banner */}
         <div className="grid grid-cols-3 divide-x divide-border/50 border-b border-border/50 bg-card shrink-0">
-           <div className="p-2 sm:p-4 flex flex-col items-center justify-center">
-             <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1 text-center">Time</span>
-             <div className="flex items-center gap-1 sm:gap-1.5 text-foreground font-mono">
-               <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-               <span className="text-lg sm:text-xl font-bold">{exactHours}h</span>
+           <div className="p-2 xl:p-3 flex flex-col items-center justify-center">
+             <span className="text-[9px] xl:text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-0.5 xl:mb-1 text-center">Time</span>
+             <div className="flex items-center gap-1 xl:gap-1.5 text-foreground font-mono">
+               <Clock className="w-3.5 h-3.5 xl:w-4 xl:w-4 text-primary" />
+               <span className="text-sm xl:text-base font-bold">{exactHours}h</span>
              </div>
            </div>
-           <div className="p-2 sm:p-4 flex flex-col items-center justify-center">
-             <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1 text-center">Sessions</span>
-             <div className="flex items-center gap-1 sm:gap-1.5 text-foreground font-mono">
-               <CalendarIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-               <span className="text-lg sm:text-xl font-bold">{sessionCount}</span>
+           <div className="p-2 xl:p-3 flex flex-col items-center justify-center">
+             <span className="text-[9px] xl:text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-0.5 xl:mb-1 text-center">Sessions</span>
+             <div className="flex items-center gap-1 xl:gap-1.5 text-foreground font-mono">
+               <CalendarIcon className="w-3.5 h-3.5 xl:w-4 xl:w-4 text-primary" />
+               <span className="text-sm xl:text-base font-bold">{sessionCount}</span>
              </div>
            </div>
-           <div className="p-2 sm:p-4 flex flex-col items-center justify-center">
-             <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1 text-center">Avg</span>
-             <div className="flex items-center gap-1 sm:gap-1.5 text-foreground font-mono">
-               <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-400 fill-orange-400" />
-               <span className="text-lg sm:text-xl font-bold">{avgRating}</span>
+           <div className="p-2 xl:p-3 flex flex-col items-center justify-center">
+             <span className="text-[9px] xl:text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-0.5 xl:mb-1 text-center">Avg</span>
+             <div className="flex items-center gap-1 xl:gap-1.5 text-foreground font-mono">
+               <Star className="w-3.5 h-3.5 xl:w-4 xl:w-4 text-orange-400 fill-orange-400" />
+               <span className="text-sm xl:text-base font-bold">{avgRating}</span>
              </div>
            </div>
         </div>
 
         {/* Scrollable list */}
-        <div className="flex-1 lg:overflow-y-auto p-4 sm:p-5 space-y-3 min-h-0">
-          <h4 className="text-sm font-bold text-foreground mb-4">Historical Records</h4>
+        <div className="flex-1 md:overflow-y-auto p-3 xl:p-4 space-y-3 xl:space-y-4 min-h-0">
+          <h4 className="text-xs xl:text-sm font-bold text-foreground mb-3 xl:mb-4">Historical Records</h4>
           
           {isLoading ? (
             Array.from({ length: 4 }).map((_, i) => (
@@ -157,8 +153,8 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
             ))
           ) : activities.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 opacity-60">
-               <PlusCircle className="w-8 h-8 text-muted-foreground mb-3" />
-               <p className="text-sm font-semibold">No records explicitly mapped to this {type.toLowerCase()}.</p>
+               <PlusCircle className="w-6 h-6 xl:w-8 xl:h-8 text-muted-foreground mb-2 xl:mb-3" />
+               <p className="text-[10px] xl:text-xs font-semibold">No records explicitly mapped to this {type.toLowerCase()}.</p>
             </div>
           ) : (
             activities.map((activity) => (

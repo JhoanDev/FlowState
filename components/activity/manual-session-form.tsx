@@ -92,14 +92,17 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
         sessionType === "STUDY" ? "theme-study" : "theme-work"
       )}
     >
-      <CardHeader className="p-5 pb-0">
-        <CardTitle className="text-base">Log Past Session</CardTitle>
-        <p className="text-sm text-muted-foreground mt-1">
+      <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
+        <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
+          <Check className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
+          Log Past Session
+        </CardTitle>
+        <p className="text-[10px] xl:text-xs text-muted-foreground mt-1 xl:mt-1.5 ml-5 max-w-[90%]">
           Record a session you forgot to track.
         </p>
       </CardHeader>
 
-      <CardContent className="p-5 pt-4 flex-1 flex flex-col gap-5 min-h-0 lg:overflow-y-auto">
+      <CardContent className="p-3 xl:p-4 pt-3 flex-1 flex flex-col gap-4 min-h-0 md:overflow-y-auto">
         <SessionTypeToggle value={sessionType} onChange={setSessionType} />
 
         {/* Date & Time */}

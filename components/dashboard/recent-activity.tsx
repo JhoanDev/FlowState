@@ -39,7 +39,7 @@ function formatTimeAgo(isoDate: string): string {
 
 function ActivityItem({ activity }: { activity: ActivityEntry }) {
   return (
-    <div className="flex items-start gap-2 xl:gap-3 py-1.5 xl:py-2.5 px-2 xl:px-3 rounded-md border-b border-border last:border-0 transition-all duration-200 hover:bg-accent group cursor-default">
+    <div className="flex items-start gap-2 xl:gap-3 py-1.5 xl:py-2.5 px-2 xl:px-3 rounded-md border-b border-border/50 last:border-0 hover:border-transparent transition-all duration-200 hover:bg-accent hover:shadow-sm group cursor-default">
       <Badge
         variant={activity.type === "WORK" ? "work" : "study"}
         className="mt-0.5 shrink-0 text-[8px] xl:text-[10px] font-bold px-1 xl:px-1.5 py-0 xl:py-0.5 leading-none"
