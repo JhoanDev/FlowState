@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Briefcase } from "lucide-react";
 import type { DistributionChart } from "@/types";
 
 interface DistributionChartProps {
@@ -80,7 +81,7 @@ function DonutRing({
         className="fill-foreground text-xl font-bold"
         dominantBaseline="middle"
       >
-        {data.total}h
+        {Number(data.total.toFixed(1))}h
       </text>
       <text
         x={center}
@@ -102,8 +103,11 @@ export function DistributionChartCard({ data, isLoading }: DistributionChartProp
 
   return (
     <Card className="flex flex-col overflow-hidden h-full min-h-0 border-border bg-card shadow-sm">
-      <CardHeader className="p-3 xl:p-4 pb-0 shrink-0 border-b border-transparent">
-        <CardTitle className="text-xs xl:text-sm">{data?.title ?? "Distribution"}</CardTitle>
+      <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
+        <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
+          <Briefcase className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-work" />
+          {data?.title ?? "Distribution"}
+        </CardTitle>
       </CardHeader>
 
       {/* Chart Section */}
@@ -137,7 +141,7 @@ export function DistributionChartCard({ data, isLoading }: DistributionChartProp
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-baseline gap-2">
-                        <span className="text-3xl xl:text-4xl font-black tracking-tighter leading-none text-foreground">{selectedData.value}h</span>
+                        <span className="text-3xl xl:text-4xl font-black tracking-tighter leading-none text-foreground">{Number(selectedData.value.toFixed(1))}h</span>
                       </div>
                       <span className="text-[10px] xl:text-xs font-medium text-muted-foreground">
                         <span className="text-foreground">{pct}%</span> of total
@@ -189,7 +193,7 @@ export function DistributionChartCard({ data, isLoading }: DistributionChartProp
                       {slice.label}
                     </span>
                   </div>
-                  <span className="text-foreground tabular-nums shrink-0 ml-1.5 font-medium">{Number(slice.value.toFixed(2))}h <span className="text-muted-foreground">({pct}%)</span></span>
+                  <span className="text-foreground tabular-nums shrink-0 ml-1.5 font-medium">{Number(slice.value.toFixed(1))}h <span className="text-muted-foreground">({pct}%)</span></span>
                 </div>
               );
             })}

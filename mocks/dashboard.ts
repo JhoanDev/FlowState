@@ -3,6 +3,7 @@ import type {
   ActivityEntry,
   HeatmapDay,
   DistributionChart,
+  StudyTagRankingItem,
 } from "@/types";
 import { mockSessions, mockSessionTags } from "./sessions";
 import { mockProjects } from "./projects";
@@ -228,47 +229,31 @@ export function getMockWorkDistribution(): DistributionChart {
   };
 }
 
-export function getMockStudyDistribution(): DistributionChart {
+export function getMockStudyTagRanking(): StudyTagRankingItem[] {
   const completedSessions = mockSessions.filter((s) => s.status === "COMPLETED");
   const studySessions = completedSessions.filter((s) => s.type === "STUDY");
   const byTag = new Map<string, { seconds: number; color: string }>();
 
-  let totalStudySeconds = 0;
-
   for (const s of studySessions) {
-    totalStudySeconds += s.durationSeconds;
     const tags = mockSessionTags
       .filter((st) => st.sessionId === s.id)
       .map((st) => mockTags.find((t) => t.id === st.tagId))
       .filter(Boolean);
 
-    if (tags.length === 0) {
-      const prev = byTag.get("Other") ?? { seconds: 0, color: "#71717a" };
-      byTag.set("Other", { seconds: prev.seconds + s.durationSeconds, color: "#71717a" });
-    } else {
-      const perTag = s.durationSeconds / tags.length;
-      for (const tag of tags) {
-        if (!tag) continue;
-        const prev = byTag.get(tag.name) ?? { seconds: 0, color: tag.color };
-        byTag.set(tag.name, { seconds: prev.seconds + perTag, color: tag.color });
-      }
+    for (const tag of tags) {
+      if (!tag) continue;
+      const prev = byTag.get(tag.name) ?? { seconds: 0, color: tag.color };
+      byTag.set(tag.name, { seconds: prev.seconds + s.durationSeconds, color: tag.color });
     }
   }
 
-  const slices = Array.from(byTag.entries())
+  return Array.from(byTag.entries())
     .sort((a, b) => b[1].seconds - a[1].seconds)
     .map(([label, { seconds, color }]) => ({
       label,
-      value: secondsToHours(seconds),
+      hours: secondsToHours(seconds),
       color,
-      type: "STUDY" as const,
     }));
-
-  return {
-    title: "Study Focus",
-    total: secondsToHours(totalStudySeconds),
-    slices,
-  };
 }
 
 // ─── Top Rated Rankings ─────────────────────────────────────────

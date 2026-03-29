@@ -11,18 +11,19 @@ import {
   getActivitiesByDate,
   getHeatmap,
   getWorkDistribution,
-  getStudyDistribution,
+  getStudyTagRanking,
   getTopRatedWork,
   getTopRatedStudy,
 } from "@/services/dashboard";
 import { TopRatedRanking } from "@/components/dashboard/top-rated-ranking";
+import { StudyTagRanking } from "@/components/dashboard/study-tag-ranking";
 import type { ActivityEntry } from "@/types";
 
 export default function Dashboard() {
   const activities = useAsync(getRecentActivities);
   const heatmap = useAsync(getHeatmap);
   const workDist = useAsync(getWorkDistribution);
-  const studyDist = useAsync(getStudyDistribution);
+  const studyTags = useAsync(getStudyTagRanking);
   const topRatedWork = useAsync(getTopRatedWork);
   const topRatedStudy = useAsync(getTopRatedStudy);
 
@@ -71,7 +72,7 @@ export default function Dashboard() {
         {/* Row 2 — Distribution Charts & Ranking (45% height) */}
         <div className="grid gap-3 xl:gap-4 grid-cols-1 md:grid-cols-3 md:flex-[0.45] h-auto md:h-full min-h-0 shrink-0">
           <DistributionChartCard data={workDist.data} isLoading={workDist.isLoading} />
-          <DistributionChartCard data={studyDist.data} isLoading={studyDist.isLoading} />
+          <StudyTagRanking data={studyTags.data} isLoading={studyTags.isLoading} />
           <TopRatedRanking
             workItems={topRatedWork.data || []}
             studyItems={topRatedStudy.data || []}

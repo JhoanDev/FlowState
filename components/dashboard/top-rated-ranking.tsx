@@ -29,10 +29,10 @@ export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRa
 
   return (
     <Card className="flex flex-col h-full bg-card shadow-none border-border">
-      <CardHeader className="p-3 xl:p-4 border-b border-border/50 shrink-0">
+      <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
         <div className="flex items-center gap-2 xl:gap-3 justify-between">
-          <CardTitle className="text-sm xl:text-base font-bold flex items-center gap-1.5 xl:gap-2">
-            <Trophy className="h-3 w-3 xl:h-4 xl:w-4 text-primary" />
+          <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
+            <Trophy className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
             Top Rated
           </CardTitle>
           <div className="flex gap-0.5 xl:gap-1 bg-accent/30 p-0.5 xl:p-1 rounded-md">
@@ -58,7 +58,7 @@ export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRa
         </div>
       </CardHeader>
       
-      <CardContent className="p-3 xl:p-4 flex-1 min-h-0 md:overflow-y-auto space-y-1.5 xl:space-y-3 shrink-0">
+      <CardContent className="p-3 xl:p-4 pt-3 flex-1 min-h-0 md:overflow-y-auto space-y-1.5 xl:space-y-3">
         {isLoading ? (
            Array.from({ length: 4 }).map((_, i) => (
              <Skeleton key={i} className="h-12 w-full rounded-md" />

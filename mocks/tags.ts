@@ -14,4 +14,6 @@ export const mockTags: Tag[] = [
     color: "#ef4444",
     createdAt: "2026-01-22T10:00:00Z",
   },
+  { id: 9, name: "TypeScript", color: "#3178c6", createdAt: "2026-01-25T10:00:00Z" },
+  { id: 10, name: "Docker", color: "#0db7ed", createdAt: "2026-02-01T10:00:00Z" },
 ];

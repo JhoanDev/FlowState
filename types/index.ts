@@ -127,6 +127,12 @@ export interface DistributionChart {
   slices: DistributionSlice[];
 }
 
+export interface StudyTagRankingItem {
+  label: string;
+  hours: number; // full session time attributed to this tag (no splitting)
+  color: string; // hex from tag color
+}
+
 // ─── Weekly Goals Management ────────────────────────────────────
 
 export interface WeeklyGoalInput {

@@ -3,6 +3,7 @@ import type {
   ActivityEntry,
   HeatmapDay,
   DistributionChart,
+  StudyTagRankingItem,
 } from "@/types";
 import {
   getMockStats,
@@ -12,7 +13,7 @@ import {
   getMockActivitiesByTag,
   getMockHeatmap,
   getMockWorkDistribution,
-  getMockStudyDistribution,
+  getMockStudyTagRanking,
   getMockTopRatedWork,
   getMockTopRatedStudy,
   type TopRatedItem,
@@ -70,11 +71,11 @@ export async function getWorkDistribution(): Promise<DistributionChart> {
   return getMockWorkDistribution();
 }
 
-export async function getStudyDistribution(): Promise<DistributionChart> {
-  const res = await invokeTauri<DistributionChart>("get_study_distribution");
+export async function getStudyTagRanking(): Promise<StudyTagRankingItem[]> {
+  const res = await invokeTauri<StudyTagRankingItem[]>("get_study_tag_ranking");
   if (res) return res;
   await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
-  return getMockStudyDistribution();
+  return getMockStudyTagRanking();
 }
 
 export async function getTopRatedWork(): Promise<TopRatedItem[]> {

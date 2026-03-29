@@ -27,25 +27,25 @@ function SummaryBar({ summary }: { summary: WeeklyGoalSummary }) {
       : 0;
 
   return (
-    <div className="flex gap-1.5 sm:gap-4 p-2 sm:p-3 rounded-lg bg-muted/50 overflow-x-auto sm:overflow-x-visible">
-      <div className="flex-1 text-center shrink-0 min-w-[60px] sm:min-w-0">
-        <div className="text-base sm:text-lg font-bold tabular-nums">{summary.totalCreated}</div>
-        <div className="text-[9px] sm:text-xs text-muted-foreground">Goals Created</div>
+    <div className="flex gap-1.5 xl:gap-4 p-2 xl:p-3 rounded-lg bg-muted/50 overflow-x-auto md:overflow-x-visible">
+      <div className="flex-1 text-center shrink-0 min-w-[60px] md:min-w-0">
+        <div className="text-sm xl:text-base font-bold tabular-nums">{summary.totalCreated}</div>
+        <div className="text-[10px] xl:text-xs text-muted-foreground">Goals Created</div>
       </div>
       <div className="w-px bg-border shrink-0" />
-      <div className="flex-1 text-center shrink-0 min-w-[60px] sm:min-w-0">
-        <div className="text-base sm:text-lg font-bold tabular-nums text-success">{summary.totalMet}</div>
-        <div className="text-[9px] sm:text-xs text-muted-foreground">Goals Met</div>
+      <div className="flex-1 text-center shrink-0 min-w-[60px] md:min-w-0">
+        <div className="text-sm xl:text-base font-bold tabular-nums text-success">{summary.totalMet}</div>
+        <div className="text-[10px] xl:text-xs text-muted-foreground">Goals Met</div>
       </div>
       <div className="w-px bg-border shrink-0" />
-      <div className="flex-1 text-center shrink-0 min-w-[60px] sm:min-w-0">
-        <div className="text-base sm:text-lg font-bold tabular-nums">{successRate}%</div>
-        <div className="text-[9px] sm:text-xs text-muted-foreground">Success Rate</div>
+      <div className="flex-1 text-center shrink-0 min-w-[60px] md:min-w-0">
+        <div className="text-sm xl:text-base font-bold tabular-nums">{successRate}%</div>
+        <div className="text-[10px] xl:text-xs text-muted-foreground">Success Rate</div>
       </div>
       <div className="w-px bg-border shrink-0" />
-      <div className="flex-1 text-center shrink-0 min-w-[60px] sm:min-w-0">
-        <div className="text-base sm:text-lg font-bold tabular-nums">{summary.avgHoursPerWeek}h</div>
-        <div className="text-[9px] sm:text-xs text-muted-foreground">Avg/Week</div>
+      <div className="flex-1 text-center shrink-0 min-w-[60px] md:min-w-0">
+        <div className="text-sm xl:text-base font-bold tabular-nums">{summary.avgHoursPerWeek}h</div>
+        <div className="text-[10px] xl:text-xs text-muted-foreground">Avg/Week</div>
       </div>
     </div>
   );
@@ -70,8 +70,8 @@ function WeekBlock({ weekStart, goals, locale }: { weekStart: string; goals: Wee
   return (
     <div className="space-y-2.5">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-0">
-        <span className="text-xs sm:text-sm font-medium">{formatWeekLabel(weekStart, locale)}</span>
-        <span className="text-[10px] sm:text-xs text-muted-foreground">
+        <span className="text-xs xl:text-sm font-medium">{formatWeekLabel(weekStart, locale)}</span>
+        <span className="text-[10px] xl:text-xs text-muted-foreground">
           {totalMet}/{goals.length} met
         </span>
       </div>
@@ -132,16 +132,14 @@ export function GoalsHistory({ history, summary, isLoading }: GoalsHistoryProps)
 
   return (
     <Card className="flex flex-col h-auto lg:h-full">
-      <CardHeader className="p-4 sm:p-5 pb-0">
-        <CardTitle className="flex items-center gap-3 text-lg">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-            <History className="h-5 w-5 text-primary" />
-          </div>
+      <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
+        <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
+          <History className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
           Goals History
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="p-4 sm:p-5 pt-3 sm:pt-4 flex-1 flex flex-col gap-4 min-h-0">
+      <CardContent className="p-3 xl:p-4 pt-3 flex-1 flex flex-col gap-4 min-h-0">
         {/* Summary */}
         {isLoading || !summary ? (
           <Skeleton className="h-16 w-full rounded-lg" />
@@ -150,7 +148,7 @@ export function GoalsHistory({ history, summary, isLoading }: GoalsHistoryProps)
         )}
 
         {/* Past weeks */}
-        <div className="flex-1 lg:overflow-y-auto min-h-0 space-y-5">
+        <div className="flex-1 md:overflow-y-auto min-h-0 space-y-5">
           {isLoading || !history ? (
             Array.from({ length: 2 }).map((_, i) => (
               <div key={i} className="space-y-2">

@@ -82,7 +82,7 @@ export function StatsCards({ data, isLoading }: StatsCardsProps) {
     <div className="flex overflow-x-auto gap-4 pb-2 snap-x lg:snap-none lg:grid lg:gap-6 lg:grid-cols-4 lg:pb-0 lg:overflow-visible">
       <StatCard
         label="Work Time"
-        value={`${data.workHours}h`}
+        value={`${Number(data.workHours.toFixed(1))}h`}
         subtext="from last month"
         trend={data.workTrend}
         icon={Clock}
@@ -90,7 +90,7 @@ export function StatsCards({ data, isLoading }: StatsCardsProps) {
       />
       <StatCard
         label="Study Time"
-        value={`${data.studyHours}h`}
+        value={`${Number(data.studyHours.toFixed(1))}h`}
         subtext="from last month"
         trend={data.studyTrend}
         icon={Clock}

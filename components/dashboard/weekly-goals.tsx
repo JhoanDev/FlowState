@@ -9,6 +9,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { Target } from "lucide-react";
 import type { WeeklyGoal } from "@/types";
 
 interface WeeklyGoalsProps {
@@ -33,7 +34,7 @@ function GoalItem({ goal }: { goal: WeeklyGoal }) {
           </span>
         </div>
         <span className="text-xs tabular-nums text-muted-foreground">
-          {goal.currentHours}/{goal.targetHours}h
+          {Number(goal.currentHours.toFixed(1))}/{Number(goal.targetHours.toFixed(1))}h
         </span>
       </div>
       <Progress
@@ -48,10 +49,13 @@ function GoalItem({ goal }: { goal: WeeklyGoal }) {
 export function WeeklyGoals({ data, isLoading }: WeeklyGoalsProps) {
   return (
     <Card>
-      <CardHeader className="p-4 pb-0">
-        <CardTitle className="text-sm">Weekly Goals</CardTitle>
+      <CardHeader className="p-3 xl:p-4 pb-0">
+        <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
+          <Target className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
+          Weekly Goals
+        </CardTitle>
       </CardHeader>
-      <CardContent className="p-4 pt-2">
+      <CardContent className="p-3 xl:p-4 pt-2">
         {isLoading || !data ? (
           <div className="flex overflow-x-auto gap-4 snap-x pb-2 lg:pb-0">
             {Array.from({ length: 2 }).map((_, i) => (

@@ -30,7 +30,7 @@ projects ──< sessions >── session_tags >── tags
                               weekly_goals (standalone)
 ```
 
-### Tabelas
+### TabelasQ
 
 | Tabela         | PK   | Campos principais                                                      |
 |----------------|------|------------------------------------------------------------------------|

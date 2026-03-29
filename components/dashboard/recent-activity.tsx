@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { List } from "lucide-react";
 import type { ActivityEntry } from "@/types";
 
 interface RecentActivityProps {
@@ -115,7 +116,10 @@ export function RecentActivity({
   const content = (
     <>
       <div className="p-3 xl:p-4 pb-0 shrink-0">
-        <h3 className="text-xs xl:text-sm font-semibold leading-none tracking-tight">{title}</h3>
+        <h3 className="text-xs xl:text-sm font-semibold leading-none tracking-tight flex items-center gap-1.5">
+          <List className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-muted-foreground" />
+          {title}
+        </h3>
       </div>
       <div className="p-3 xl:p-4 pt-1.5 xl:pt-2 flex-1 min-h-0 md:overflow-y-auto">
         {isLoading || !data ? (

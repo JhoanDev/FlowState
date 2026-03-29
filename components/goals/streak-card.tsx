@@ -13,16 +13,14 @@ interface StreakCardProps {
 export function StreakCard({ data, isLoading }: StreakCardProps) {
   return (
     <Card>
-      <CardHeader className="p-4 sm:p-5 pb-0">
-        <CardTitle className="flex items-center gap-3 text-lg">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-            <Flame className="h-5 w-5 text-primary" />
-          </div>
+      <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
+        <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
+          <Flame className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
           Streaks
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="p-4 sm:p-5 pt-3 sm:pt-4">
+      <CardContent className="p-3 xl:p-4 pt-3">
         {isLoading || !data ? (
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <Skeleton className="h-20 flex-1 rounded-lg" />

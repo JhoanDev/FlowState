@@ -290,24 +290,22 @@ export function CurrentWeekGoals({
 }: CurrentWeekGoalsProps) {
   return (
     <Card className="flex flex-col h-auto lg:h-full">
-      <CardHeader className="p-4 sm:p-5 pb-0">
+      <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-3 text-lg">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-              <Target className="h-5 w-5 text-primary" />
-            </div>
+          <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
+            <Target className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
             Weekly Goals
           </CardTitle>
-          <span className="text-sm text-muted-foreground">Current Week</span>
+          <span className="text-[10px] xl:text-xs text-muted-foreground">Current Week</span>
         </div>
       </CardHeader>
 
-      <CardContent className="p-4 sm:p-5 pt-3 sm:pt-4 flex-1 flex flex-col gap-4 min-h-0">
+      <CardContent className="p-3 xl:p-4 pt-3 flex-1 flex flex-col gap-4 min-h-0">
         {/* Add form */}
         <AddGoalForm projects={projects} tags={tags} onAdd={onAdd} />
 
         {/* Goals list */}
-        <div className="flex-1 lg:overflow-y-auto min-h-0 space-y-3">
+        <div className="flex-1 md:overflow-y-auto min-h-0 space-y-3">
           {isLoading || !goals ? (
             Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="p-4 rounded-lg border border-border space-y-3">

@@ -29,4 +29,18 @@ export const mockProjects: Project[] = [
     archived: false,
     createdAt: "2026-02-10T10:00:00Z",
   },
+  {
+    id: 5,
+    name: "DevBlog",
+    color: "#ec4899",
+    archived: false,
+    createdAt: "2026-02-20T10:00:00Z",
+  },
+  {
+    id: 6,
+    name: "Dotfiles",
+    color: "#84cc16",
+    archived: true,
+    createdAt: "2026-01-05T10:00:00Z",
+  },
 ];

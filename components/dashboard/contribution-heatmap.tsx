@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { Activity } from "lucide-react";
 import type { HeatmapDay, ActivityEntry } from "@/types";
 import { RecentActivity } from "./recent-activity";
 import { useSettings } from "@/providers/settings-provider";
@@ -162,9 +163,12 @@ export function ContributionHeatmap({
 
   return (
     <Card className="flex flex-col w-full md:flex-[0.55] shrink-0 h-auto md:h-full md:overflow-hidden min-h-0 border-border">
-      <CardHeader className="pb-0 p-3 xl:p-4 shrink-0 border-b border-transparent">
+      <CardHeader className="pb-0 p-3 xl:p-4 shrink-0">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-xs xl:text-sm">Activity</CardTitle>
+          <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
+            <Activity className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
+            Activity
+          </CardTitle>
           <div className="flex items-center gap-1.5 text-[8px] xl:text-[10px] text-muted-foreground">
             <span>Less</span>
             {[0, 1, 2, 3, 4].map((level) => (
