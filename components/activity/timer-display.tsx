@@ -4,12 +4,48 @@ import { useSessionTimer } from "@/hooks/use-session-timer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Play, Pause, Square } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "motion/react";
 import type { TimerMode } from "@/types";
 
 interface TimerDisplayProps {
   initialSeconds?: number;
   mode?: TimerMode;
   onFinish?: () => void;
+}
+
+function AnimatedDigit({ digit, isActive }: { digit: string; isActive: boolean }) {
+  return (
+    <span className="relative inline-block w-[1ch] overflow-hidden">
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span
+          key={digit}
+          initial={{ y: "-100%", opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: "100%", opacity: 0 }}
+          transition={{ type: "spring", bounce: 0.1, duration: 0.35 }}
+          className={cn(
+            "block tabular-nums transition-colors duration-500",
+            isActive ? "text-foreground" : "text-muted-foreground"
+          )}
+        >
+          {digit}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
+
+function TimerSeparator({ isActive }: { isActive: boolean }) {
+  return (
+    <span
+      className={cn(
+        "inline-block w-[0.5ch] text-center transition-colors duration-500",
+        isActive ? "text-foreground" : "text-muted-foreground"
+      )}
+    >
+      :
+    </span>
+  );
 }
 
 export function TimerDisplay({
@@ -27,20 +63,25 @@ export function TimerDisplay({
     stop,
   } = useSessionTimer({ initialSeconds, mode, onTimerComplete: onFinish });
 
+  const running = isActive && !isPaused;
+
   return (
     <Card className="w-full max-w-3xl">
       <CardContent className="p-0">
         {/* Time Display */}
         <div className="flex flex-col items-center justify-center py-20 px-8 border-b border-border">
-          <span className={cn(
-            "text-[8rem] font-bold tabular-nums tracking-tighter leading-none transition-colors duration-500",
-            isActive && !isPaused ? "text-foreground" : "text-muted-foreground"
-          )}>
-            {formattedTime}
-          </span>
+          <div className="text-[8rem] font-bold tabular-nums tracking-tighter leading-none flex items-center">
+            {formattedTime.split("").map((char, i) =>
+              char === ":" ? (
+                <TimerSeparator key={`sep-${i}`} isActive={running} />
+              ) : (
+                <AnimatedDigit key={`pos-${i}`} digit={char} isActive={running} />
+              )
+            )}
+          </div>
           <span className={cn(
             "mt-6 text-xs font-medium tracking-widest uppercase transition-colors duration-300",
-            isActive && !isPaused ? "text-primary" : "text-muted-foreground"
+            running ? "text-primary" : "text-muted-foreground"
           )}>
             {isActive
               ? isPaused
