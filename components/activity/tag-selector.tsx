@@ -50,7 +50,7 @@ export function TagSelector({
               className={cn(
                 "inline-flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium cursor-pointer border rounded-lg transition-all duration-200",
                 isSelected
-                  ? "shadow-sm"
+                  ? ""
                   : "border-border bg-transparent text-muted-foreground hover:bg-accent hover:text-foreground"
               )}
               style={isSelected ? {

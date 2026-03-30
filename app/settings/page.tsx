@@ -215,7 +215,7 @@ export default function SettingsPage() {
           {/* Section: Data Vault */}
           <section className="space-y-4 flex-1">
              <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-               <ShieldAlert className="w-4 h-4 text-emerald-500" /> Data Vault
+               <ShieldAlert className="w-4 h-4 text-success" /> Data Vault
              </h3>
              
              <div className="bg-card border border-border rounded-xl p-4 sm:p-6 flex flex-col gap-4 sm:gap-6 h-[calc(100%-32px)] justify-between">
@@ -260,7 +260,7 @@ export default function SettingsPage() {
 
           {/* Action Footer */}
           <div className="flex justify-end items-center gap-4 pt-2">
-             <span className={cn("text-sm font-bold text-green-500 flex items-center gap-2 transition-opacity duration-300", saveSuccess ? "opacity-100" : "opacity-0")}>
+             <span className={cn("text-sm font-bold text-success flex items-center gap-2 transition-opacity duration-300", saveSuccess ? "opacity-100" : "opacity-0")}>
                 <CheckCircle2 className="w-5 h-5" /> Saved instantly
              </span>
              {/* Note: Save button is removed because updates happen instantly via handleUpdate */}

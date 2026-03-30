@@ -327,7 +327,7 @@ export function ListManager({
                       editingId === item.id
                         ? "bg-accent/50 ring-2 ring-primary/30"
                         : selectedId === item.id
-                          ? "shadow-sm"
+                          ? ""
                           : "hover:bg-accent/40 bg-transparent"
                     )}
                     style={{ 

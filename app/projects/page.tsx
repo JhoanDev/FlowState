@@ -150,7 +150,7 @@ export default function ProjectsPage() {
                   icon={FolderGit2}
                   placeholder="Ex: API Backend, Web Frontend"
                   themeClass="theme-work"
-                  className="border-none shadow-none rounded-none"
+                  className="border-none rounded-none"
                   items={projects}
                   isLoading={projectsQuery.isLoading}
                   onAdd={handleAddProject}
@@ -167,7 +167,7 @@ export default function ProjectsPage() {
                   icon={TagIcon}
                   placeholder="Ex: Rust, Next.js, Algorithms"
                   themeClass="theme-study"
-                  className="border-none shadow-none rounded-none"
+                  className="border-none rounded-none"
                   items={tags}
                   isLoading={tagsQuery.isLoading}
                   onAdd={handleAddTag}

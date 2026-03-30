@@ -97,7 +97,7 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
     : "N/A";
 
   return (
-    <Card className="flex flex-col h-auto lg:h-full lg:overflow-hidden border-border bg-card shadow-sm">
+    <Card className="flex flex-col h-auto lg:h-full lg:overflow-hidden border-border bg-card">
       <CardHeader className="p-3 xl:p-4 pb-0 flex flex-row items-center justify-between gap-2 shrink-0 border-b border-border/50 bg-transparent">
         <div className="flex items-center gap-2 xl:gap-3">
            <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5 truncate max-w-[150px] xl:max-w-[300px]">
@@ -165,7 +165,7 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
                       {activity.projectName && (
                          <span 
                            className={cn("text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-sm", 
-                             type === "PROJECT" ? "text-background shadow-sm" : "bg-accent/40 text-muted-foreground"
+                             type === "PROJECT" ? "text-background" : "bg-accent/40 text-muted-foreground"
                            )} 
                            style={{ 
                              backgroundColor: type === "PROJECT" ? (activity.projectColor || "currentColor") : undefined,
@@ -183,7 +183,7 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
                            <span 
                              key={t.name} 
                              className={cn("text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-sm", 
-                               isTarget ? "text-background shadow-sm" : "bg-accent/40 text-muted-foreground"
+                               isTarget ? "text-background" : "bg-accent/40 text-muted-foreground"
                              )} 
                              style={{ 
                                backgroundColor: isTarget ? t.color : undefined,

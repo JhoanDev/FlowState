@@ -119,7 +119,7 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
                       className={cn(
                         "flex-1 py-1.5 xl:py-2 text-[10px] xl:text-xs font-bold border rounded-md transition-all duration-200",
                         plannedSeconds === preset.seconds
-                          ? "border-primary bg-primary text-primary-foreground shadow-sm cursor-default"
+                          ? "border-primary bg-primary text-primary-foreground cursor-default"
                           : "border-border bg-card text-muted-foreground hover:bg-accent focus:outline-none cursor-pointer"
                       )}
                     >

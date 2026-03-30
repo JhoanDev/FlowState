@@ -19,7 +19,7 @@ export function StudyTagRanking({ data, isLoading }: StudyTagRankingProps) {
   const maxHours = data && data.length > 0 ? data[0].hours : 0;
 
   return (
-    <Card className="flex flex-col overflow-hidden h-full min-h-0 border-border bg-card shadow-sm">
+    <Card className="flex flex-col overflow-hidden h-full min-h-0 border-border bg-card">
       <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
         <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
           <BookOpen className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-study" />
@@ -48,7 +48,7 @@ export function StudyTagRanking({ data, isLoading }: StudyTagRankingProps) {
               return (
                 <div 
                   key={item.label} 
-                  className="space-y-1 p-2 -mx-2 rounded-md hover:bg-accent/40 cursor-default hover:shadow-sm transition-all"
+                  className="space-y-1 p-2 -mx-2 rounded-md hover:bg-accent/40 cursor-default transition-all"
                 >
                   <div className="flex items-center justify-between text-[10px] xl:text-xs">
                     <div className="flex items-center gap-1.5 min-w-0">

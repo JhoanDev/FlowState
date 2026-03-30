@@ -31,7 +31,7 @@ export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRa
   const isWork = activeTab === "WORK";
 
   return (
-    <Card className="flex flex-col h-full bg-card shadow-none border-border">
+    <Card className="flex flex-col h-full bg-card border-border">
       <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
         <div className="flex items-center gap-2 xl:gap-3 justify-between">
           <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
@@ -84,7 +84,7 @@ export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRa
              <div 
                key={item.id}
                onClick={() => router.push('/projects')}
-               className="flex items-center group justify-between p-2 xl:p-3 rounded-md border border-border/60 bg-transparent hover:border-border hover:bg-accent/40 hover:shadow-sm active:scale-[0.98] transition-all cursor-pointer"
+               className="flex items-center group justify-between p-2 xl:p-3 rounded-md border border-border/60 bg-transparent hover:border-border hover:bg-accent/40 active:scale-[0.98] transition-all cursor-pointer"
              >
                 <div className="flex items-center gap-2 xl:gap-3">
                    <span className="text-[10px] xl:text-xs font-bold text-muted-foreground w-3 xl:w-4 text-center">

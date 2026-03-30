@@ -102,7 +102,7 @@ export function DistributionChartCard({ data, isLoading }: DistributionChartProp
   const selectedData = data?.slices.find((s) => s.label === selectedSlice);
 
   return (
-    <Card className="flex flex-col overflow-hidden h-full min-h-0 border-border bg-card shadow-sm">
+    <Card className="flex flex-col overflow-hidden h-full min-h-0 border-border bg-card">
       <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
         <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
           <Briefcase className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-work" />

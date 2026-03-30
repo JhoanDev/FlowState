@@ -22,7 +22,7 @@ interface StatCardProps {
 
 function StatCard({ label, value, subtext, trend, icon: Icon, accentClass }: StatCardProps) {
   return (
-    <Card className="group cursor-default hover:shadow-md shrink-0 w-[85vw] sm:w-[280px] lg:w-auto snap-center lg:snap-align-none">
+    <Card className="group cursor-default shrink-0 w-[85vw] sm:w-[280px] lg:w-auto snap-center lg:snap-align-none">
       <CardContent className="p-7">
         <div className="flex items-center justify-between mb-5">
           <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">

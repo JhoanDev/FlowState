@@ -52,7 +52,7 @@ export function LogbookCalendar({
   const maxSeconds = Math.max(...days.map(d => d.totalSeconds || 0), 1);
 
   return (
-    <Card className="flex flex-col shrink-0 w-full h-auto lg:h-full min-h-0 lg:overflow-hidden shadow-none border-border">
+    <Card className="flex flex-col shrink-0 w-full h-auto lg:h-full min-h-0 lg:overflow-hidden border-border">
       <CardHeader className="p-3 xl:p-4 pb-0 shrink-0 border-b border-border/50">
         <div className="flex items-center justify-between">
           <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
@@ -110,7 +110,7 @@ export function LogbookCalendar({
                     className={cn(
                       "aspect-square group flex flex-col p-1.5 xl:p-2.5 rounded-lg xl:rounded-xl transition-all duration-200 cursor-pointer overflow-hidden relative border",
                       isSelected
-                        ? "border-primary ring-2 ring-primary/20 bg-primary/5 z-10 shadow-sm"
+                        ? "border-primary ring-2 ring-primary/20 bg-primary/5 z-10"
                         : day.hasActivity
                           ? "border-primary/20 bg-card hover:border-primary/50 hover:bg-accent/40"
                           : "border-border/60 bg-card hover:border-border",
