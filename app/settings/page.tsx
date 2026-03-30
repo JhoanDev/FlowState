@@ -63,15 +63,12 @@ export default function SettingsPage() {
         
         {/* Left Column */}
         <div className="space-y-8">
-          {/* Section: Appearance (DISABLED/COMING SOON) */}
-          <section className="space-y-4 relative opacity-50 select-none grayscale-[0.2]" aria-disabled="true">
-             <div className="absolute inset-0 z-10 cursor-not-allowed"></div>
-             
+          {/* Section: Appearance */}
+          <section className="space-y-4">
              <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                   <Palette className="w-4 h-4" /> Appearance & Localization
                 </h3>
-                <span className="text-[10px] uppercase font-bold bg-accent text-muted-foreground px-2 py-0.5 rounded-sm">Coming Soon</span>
              </div>
              
              <div className="bg-card border border-border rounded-xl divide-y divide-border">
@@ -82,21 +79,21 @@ export default function SettingsPage() {
                      <p className="text-sm text-muted-foreground mt-1">Select the color scheme.</p>
                    </div>
                    <div className="relative flex p-0.5 xl:p-1 bg-accent/30 rounded-[10px] shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
-                      <button 
+                      <button
                         onClick={() => handleUpdate("theme", "light")}
                         className={cn("relative z-10 flex flex-1 items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200", settings?.theme === "light" ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
                       >
                         <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> Light
                         {settings?.theme === "light" && <motion.span layoutId="settings-theme" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleUpdate("theme", "dark")}
                         className={cn("relative z-10 flex flex-1 items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200", settings?.theme === "dark" ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
                       >
                         <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> Dark
                         {settings?.theme === "dark" && <motion.span layoutId="settings-theme" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleUpdate("theme", "system")}
                         className={cn("relative z-10 flex flex-1 items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200", settings?.theme === "system" ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
                       >
@@ -106,23 +103,22 @@ export default function SettingsPage() {
                    </div>
                 </div>
 
-                {/* Language Row */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 gap-4 sm:gap-6">
+                {/* Language Row (disabled until i18n) */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 gap-4 sm:gap-6 opacity-50 select-none relative">
+                   <div className="absolute inset-0 z-10 cursor-not-allowed" />
                    <div>
                      <p className="text-base font-semibold text-foreground">Language</p>
-                     <p className="text-sm text-muted-foreground mt-1">Interface language.</p>
+                     <p className="text-sm text-muted-foreground mt-1">Interface language. <span className="text-[10px] uppercase font-bold bg-accent text-muted-foreground px-1.5 py-0.5 rounded-sm ml-1">Soon</span></p>
                    </div>
                    <div className="relative flex p-0.5 xl:p-1 bg-accent/30 rounded-[10px] shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
-                      <button 
-                        onClick={() => handleUpdate("language", "en")} 
-                        className={cn("relative z-10 flex-1 text-center px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200", settings?.language === "en" ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
+                      <button
+                        className={cn("relative z-10 flex-1 text-center px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200", settings?.language === "en" ? "text-primary-foreground cursor-default" : "text-muted-foreground")}
                       >
                         English
                         {settings?.language === "en" && <motion.span layoutId="settings-language" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
                       </button>
-                      <button 
-                        onClick={() => handleUpdate("language", "pt")} 
-                        className={cn("relative z-10 flex-1 text-center px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200", settings?.language === "pt" ? "text-primary-foreground cursor-default" : "text-muted-foreground hover:text-foreground cursor-pointer")}
+                      <button
+                        className={cn("relative z-10 flex-1 text-center px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors duration-200", settings?.language === "pt" ? "text-primary-foreground cursor-default" : "text-muted-foreground")}
                       >
                         Português
                         {settings?.language === "pt" && <motion.span layoutId="settings-language" className="absolute inset-0 rounded-lg bg-primary shadow-md -z-10" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
@@ -275,8 +271,8 @@ export default function SettingsPage() {
 
       {/* Custom Wipe Confirmation Modal */}
       {showWipeDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
-           <div className="bg-card border border-border w-full max-w-md p-6 rounded-xl shadow-xl flex flex-col gap-6 animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-md p-4">
+           <div className="bg-card/95 backdrop-blur-md border border-border w-full max-w-md p-6 rounded-xl emissive-border flex flex-col gap-6 animate-in fade-in zoom-in-95 duration-200">
               
               <div className="flex flex-col items-center text-center gap-4">
                  <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center text-destructive border border-destructive/20">

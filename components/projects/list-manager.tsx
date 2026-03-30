@@ -163,7 +163,7 @@ function EditPopover({
   return (
     <div
       ref={popoverRef}
-      className="absolute left-0 top-full mt-2 z-50 w-80 space-y-4 p-5 rounded-lg border border-border bg-card shadow-lg"
+      className="absolute left-0 top-full mt-2 z-50 w-80 space-y-4 p-5 rounded-lg border border-border bg-card/95 backdrop-blur-md emissive-border"
     >
       {/* Name input + action buttons */}
       <div className="flex gap-2">

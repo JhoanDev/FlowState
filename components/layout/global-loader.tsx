@@ -34,7 +34,7 @@ export function GlobalLoader() {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex flex-col items-center gap-6"
           >
-            <div className="relative w-28 h-28 shadow-2xl rounded-3xl overflow-hidden border border-border/50">
+            <div className="relative w-28 h-28 rounded-3xl overflow-hidden border border-border/50 emissive-border">
               <Image 
                 src="/logo.png" 
                 alt="FlowState Logo" 
