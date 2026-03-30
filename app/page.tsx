@@ -19,6 +19,7 @@ import { TopRatedRanking } from "@/components/dashboard/top-rated-ranking";
 import { StudyTagRanking } from "@/components/dashboard/study-tag-ranking";
 import { motion } from "motion/react";
 import type { ActivityEntry } from "@/types";
+import { useTranslation } from "react-i18next";
 
 const containerVariants = {
   hidden: {},
@@ -43,6 +44,7 @@ export default function Dashboard() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedActivities, setSelectedActivities] = useState<ActivityEntry[] | null>(null);
   const [isLoadingSelected, setIsLoadingSelected] = useState(false);
+  const { t } = useTranslation();
 
   const handleSelectDate = useCallback(async (date: string) => {
     if (selectedDate === date) {
@@ -65,12 +67,12 @@ export default function Dashboard() {
   }, [selectedDate]);
 
   return (
-    <AppLayout title="Overview">
+    <AppLayout title={t("dashboard.title")}>
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="grid gap-3 xl:gap-4 h-[calc(100vh-5rem)] md:h-full overflow-y-auto md:overflow-hidden pb-4 md:pb-0 w-full max-w-full grid-cols-1 md:grid-cols-3 md:grid-rows-[1.2fr_1fr]"
+        className="grid auto-rows-max md:auto-rows-auto gap-3 xl:gap-4 h-[calc(100vh-5rem)] md:h-full overflow-y-auto md:overflow-hidden pb-4 md:pb-0 w-full max-w-full grid-cols-1 md:grid-cols-3 md:grid-rows-[1.2fr_1fr]"
       >
         {/* Heatmap — 1 column, row 1 */}
         <motion.div variants={itemVariants} className="min-h-0 flex flex-col">

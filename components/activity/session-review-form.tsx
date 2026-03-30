@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Star } from "lucide-react";
 import type { SessionReviewData } from "@/types";
+import { useTranslation } from "react-i18next";
 
 export type { SessionReviewData };
 
@@ -18,6 +19,7 @@ export function SessionReviewForm({ onSave, className }: SessionReviewFormProps)
   const [rating, setRating] = React.useState(0);
   const [hoverRating, setHoverRating] = React.useState(0);
   const [notes, setNotes] = React.useState("");
+  const { t } = useTranslation();
 
   const handleSave = () => {
     if (rating > 0) onSave({ rating, notes });
@@ -28,10 +30,10 @@ export function SessionReviewForm({ onSave, className }: SessionReviewFormProps)
       <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
         <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
           <Check className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
-          Session Complete
+          {t("session.review")}
         </CardTitle>
         <p className="text-[10px] xl:text-xs text-muted-foreground mt-1 xl:mt-1.5 ml-5 max-w-[90%]">
-          How would you rate your focus?
+          {t("session.rating")}
         </p>
       </CardHeader>
 
@@ -61,12 +63,12 @@ export function SessionReviewForm({ onSave, className }: SessionReviewFormProps)
         {/* Notes */}
         <div className="flex-1 flex flex-col min-h-0">
           <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
-            Notes
+            {t("session.notes")}
           </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Log your thoughts, learnings, or blockers... (optional)"
+            placeholder={`${t("session.notes")}... (${t("common.optional")})`}
             className="flex-1 min-h-0 bg-transparent p-4 text-sm rounded-lg border border-input focus:ring-2 focus:ring-ring/50 focus:border-ring outline-none placeholder:text-muted-foreground resize-none transition-all duration-200"
           />
         </div>
@@ -80,7 +82,7 @@ export function SessionReviewForm({ onSave, className }: SessionReviewFormProps)
             size="lg"
           >
             <Check className="h-4 w-4" />
-            Save to Logbook
+            {t("session.save")}
           </Button>
         </div>
       </CardContent>

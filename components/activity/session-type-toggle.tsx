@@ -4,18 +4,19 @@ import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import { Briefcase, BookOpen } from "lucide-react";
 import type { SessionType } from "@/types";
+import { useTranslation } from "react-i18next";
 
 interface SessionTypeToggleProps {
   value: SessionType;
   onChange: (value: SessionType) => void;
 }
 
-const options = [
-  { value: "WORK" as SessionType, label: "Work", Icon: Briefcase },
-  { value: "STUDY" as SessionType, label: "Study", Icon: BookOpen },
-];
-
 export function SessionTypeToggle({ value, onChange }: SessionTypeToggleProps) {
+  const { t } = useTranslation();
+  const options = [
+    { value: "WORK" as SessionType, label: t("session.work"), Icon: Briefcase },
+    { value: "STUDY" as SessionType, label: t("session.study"), Icon: BookOpen },
+  ];
   return (
     <div className="relative flex w-full items-center p-0.5 xl:p-1 rounded-[10px] border border-border bg-muted">
       {options.map((opt) => {

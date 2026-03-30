@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, X, Target, Check, Pencil } from "lucide-react";
 import type { WeeklyGoal, WeeklyGoalInput, SessionType, Project, Tag } from "@/types";
+import { useTranslation } from "react-i18next";
 
 // ─── Types ──────────────────────────────────────────────────────
 
@@ -38,6 +39,7 @@ function AddGoalForm({
   const [type, setType] = React.useState<SessionType>("WORK");
   const [selectedId, setSelectedId] = React.useState<number | null>(null);
   const [targetHours, setTargetHours] = React.useState("");
+  const { t } = useTranslation();
 
   const options = type === "WORK"
     ? projects.map((p) => ({ id: p.id, name: p.name, color: p.color }))
@@ -68,7 +70,7 @@ function AddGoalForm({
         onClick={() => setIsOpen(true)}
       >
         <Plus className="h-4 w-4" />
-        New Goal
+        {t("goals.addGoal")}
       </Button>
     );
   }
@@ -87,7 +89,7 @@ function AddGoalForm({
               : "bg-transparent text-muted-foreground border-border hover:bg-accent"
           )}
         >
-          Work
+          {t("session.work")}
         </button>
         <button
           type="button"
@@ -99,7 +101,7 @@ function AddGoalForm({
               : "bg-transparent text-muted-foreground border-border hover:bg-accent"
           )}
         >
-          Study
+          {t("session.study")}
         </button>
       </div>
 
@@ -136,14 +138,14 @@ function AddGoalForm({
           max={168}
           value={targetHours}
           onChange={(e) => setTargetHours(e.target.value)}
-          placeholder="Hours target"
+          placeholder={t("goals.targetHours")}
           className="w-24 sm:w-32 h-9 text-xs sm:text-sm"
         />
-        <span className="text-xs sm:text-sm text-muted-foreground">hours/week</span>
+        <span className="text-xs sm:text-sm text-muted-foreground">{t("dashboard.hours")} / {t("goals.days").replace("dias", "semana").replace("days", "week")}</span>
         <div className="flex-1 min-w-[20px]" />
         <Button type="submit" size="sm" className="h-9 gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3" disabled={selectedId === null || !targetHours}>
           <Check className="h-4 w-4" />
-          Add
+          {t("common.add")}
         </Button>
         <Button
           type="button"
@@ -172,6 +174,7 @@ function GoalRow({
 }) {
   const [isEditing, setIsEditing] = React.useState(false);
   const [editTarget, setEditTarget] = React.useState(String(goal.targetHours));
+  const { t } = useTranslation();
 
   const percentage = Math.min(
     100,
@@ -200,11 +203,11 @@ function GoalRow({
           />
           <span className="text-sm font-medium">{goal.label}</span>
           <Badge variant={isWork ? "work" : "study"}>
-            {isWork ? "Work" : "Study"}
+            {isWork ? t("session.work") : t("session.study")}
           </Badge>
           {isComplete && (
             <Badge variant="default" className="bg-success/10 text-success border-success/30">
-              Complete
+              {t("common.confirm")}
             </Badge>
           )}
         </div>
@@ -288,15 +291,16 @@ export function CurrentWeekGoals({
   onEdit,
   onRemove,
 }: CurrentWeekGoalsProps) {
+  const { t } = useTranslation();
   return (
     <Card className="flex flex-col h-auto lg:h-full">
       <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
         <div className="flex items-center justify-between">
           <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
             <Target className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
-            Weekly Goals
+            {t("goals.weeklyGoals")}
           </CardTitle>
-          <span className="text-[10px] xl:text-xs text-muted-foreground">Current Week</span>
+          <span className="text-[10px] xl:text-xs text-muted-foreground">{t("dashboard.today") || "Current Week"}</span>
         </div>
       </CardHeader>
 
@@ -318,7 +322,7 @@ export function CurrentWeekGoals({
             ))
           ) : goals.length === 0 ? (
             <p className="text-base text-muted-foreground py-8 text-center">
-              No goals set for this week. Create one above.
+              {t("goals.noGoals")}
             </p>
           ) : (
             goals.map((goal) => (

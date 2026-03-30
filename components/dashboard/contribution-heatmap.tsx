@@ -12,6 +12,10 @@ import { Activity } from "lucide-react";
 import type { HeatmapDay, ActivityEntry } from "@/types";
 import { RecentActivity } from "./recent-activity";
 import { useSettings } from "@/providers/settings-provider";
+import { useTranslation } from "react-i18next";
+
+// silence unused CardContent import
+void CardContent;
 
 interface ContributionHeatmapProps {
   data: HeatmapDay[] | null;
@@ -158,8 +162,11 @@ export function ContributionHeatmap({
   isLoadingSelected
 }: ContributionHeatmapProps) {
   const { settings } = useSettings();
+  const { t } = useTranslation();
   const locale = settings?.dateFormat === "BR" ? "pt-BR" : "en-US";
-  const displaySelectedDate = selectedDate ? new Date(selectedDate + "T12:00:00Z").toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" }) : "";
+  const displaySelectedDate = selectedDate
+    ? new Date(selectedDate + "T12:00:00Z").toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" })
+    : "";
 
   return (
     <Card className="flex flex-col w-full h-full md:overflow-hidden min-h-0 border-border">
@@ -167,17 +174,16 @@ export function ContributionHeatmap({
         <div className="flex items-center justify-between">
           <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
             <Activity className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
-            Activity
+            {t("dashboard.heatmap")}
           </CardTitle>
           <div className="flex items-center gap-1.5 text-[8px] xl:text-[10px] text-muted-foreground">
-            <span>Less</span>
+            <span>◦</span>
             {[0, 1, 2, 3, 4].map((level) => (
               <div
                 key={level}
                 className={cn("rounded-sm w-2 h-2 xl:w-3 xl:h-3", intensityClasses[level])}
               />
             ))}
-            <span>More</span>
           </div>
         </div>
       </CardHeader>
@@ -191,17 +197,17 @@ export function ContributionHeatmap({
 
       <div className="flex-1 min-h-[220px] md:min-h-0 border-t border-border bg-accent/30 flex flex-col">
         {selectedDate ? (
-          <RecentActivity 
-            data={selectedActivities ?? null} 
-            isLoading={isLoadingSelected ?? false} 
-            title={`Sessions on ${displaySelectedDate}`} 
-            emptyMessage={`No sessions found for this day`}
+          <RecentActivity
+            data={selectedActivities ?? null}
+            isLoading={isLoadingSelected ?? false}
+            title={`${t("dashboard.sessions")} · ${displaySelectedDate}`}
+            emptyMessage={t("dashboard.noSessions")}
             hideCard={true}
           />
         ) : (
           <div className="flex-1 flex items-center justify-center p-4 min-h-0">
             <span className="text-xs xl:text-sm text-muted-foreground italic select-none">
-              Select a day on the heatmap to view its sessions
+              {t("dashboard.noActivity")}
             </span>
           </div>
         )}

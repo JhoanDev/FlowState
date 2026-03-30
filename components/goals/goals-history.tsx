@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { History, CheckCircle2, XCircle } from "lucide-react";
 import type { WeeklyGoal, WeeklyGoalSummary } from "@/types";
 import { useSettings } from "@/providers/settings-provider";
+import { useTranslation } from "react-i18next";
 
 // ─── Types ──────────────────────────────────────────────────────
 
@@ -21,6 +22,7 @@ interface GoalsHistoryProps {
 // ─── Summary Stats ──────────────────────────────────────────────
 
 function SummaryBar({ summary }: { summary: WeeklyGoalSummary }) {
+  const { t } = useTranslation();
   const successRate =
     summary.totalCreated > 0
       ? Math.round((summary.totalMet / summary.totalCreated) * 100)
@@ -30,22 +32,22 @@ function SummaryBar({ summary }: { summary: WeeklyGoalSummary }) {
     <div className="flex gap-1.5 xl:gap-4 p-2 xl:p-3 rounded-lg bg-muted/50 overflow-x-auto md:overflow-x-visible">
       <div className="flex-1 text-center shrink-0 min-w-[60px] md:min-w-0">
         <div className="text-sm xl:text-base font-bold tabular-nums">{summary.totalCreated}</div>
-        <div className="text-[10px] xl:text-xs text-muted-foreground">Goals Created</div>
+        <div className="text-[10px] xl:text-xs text-muted-foreground">{t("goals.weeklyGoals")}</div>
       </div>
       <div className="w-px bg-border shrink-0" />
       <div className="flex-1 text-center shrink-0 min-w-[60px] md:min-w-0">
         <div className="text-sm xl:text-base font-bold tabular-nums text-success">{summary.totalMet}</div>
-        <div className="text-[10px] xl:text-xs text-muted-foreground">Goals Met</div>
+        <div className="text-[10px] xl:text-xs text-muted-foreground">{t("dashboard.goalsMet") || "Goals Met"}</div>
       </div>
       <div className="w-px bg-border shrink-0" />
       <div className="flex-1 text-center shrink-0 min-w-[60px] md:min-w-0">
         <div className="text-sm xl:text-base font-bold tabular-nums">{successRate}%</div>
-        <div className="text-[10px] xl:text-xs text-muted-foreground">Success Rate</div>
+        <div className="text-[10px] xl:text-xs text-muted-foreground">{t("goals.progress") || "Success Rate"}</div>
       </div>
       <div className="w-px bg-border shrink-0" />
       <div className="flex-1 text-center shrink-0 min-w-[60px] md:min-w-0">
         <div className="text-sm xl:text-base font-bold tabular-nums">{summary.avgHoursPerWeek}h</div>
-        <div className="text-[10px] xl:text-xs text-muted-foreground">Avg/Week</div>
+        <div className="text-[10px] xl:text-xs text-muted-foreground">{t("dashboard.hours")} / {t("goals.days").replace("dias", "sem").replace("days", "wk")}</div>
       </div>
     </div>
   );
@@ -125,6 +127,7 @@ function WeekBlock({ weekStart, goals, locale }: { weekStart: string; goals: Wee
 
 export function GoalsHistory({ history, summary, isLoading }: GoalsHistoryProps) {
   const { settings } = useSettings();
+  const { t } = useTranslation();
   const locale = settings?.dateFormat === "BR" ? "pt-BR" : "en-US";
 
   // Skip current week — show only past weeks
@@ -135,7 +138,7 @@ export function GoalsHistory({ history, summary, isLoading }: GoalsHistoryProps)
       <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
         <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
           <History className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
-          Goals History
+          {t("projects.sessionHistory")}
         </CardTitle>
       </CardHeader>
 
@@ -159,7 +162,7 @@ export function GoalsHistory({ history, summary, isLoading }: GoalsHistoryProps)
             ))
           ) : pastWeeks.length === 0 ? (
             <p className="text-sm text-muted-foreground py-6 text-center">
-              No past goals yet.
+              {t("common.empty")}
             </p>
           ) : (
             pastWeeks.map(({ weekStart, goals }) => (

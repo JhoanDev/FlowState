@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, X, Check, Pencil, type LucideIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const COLOR_PRESETS = [
   "#ef4444", // red
@@ -221,6 +222,7 @@ export function ListManager({
 }: ListManagerProps) {
   const [inputValue, setInputValue] = React.useState("");
   const [editingId, setEditingId] = React.useState<number | null>(null);
+  const { t } = useTranslation();
 
   const usedColors = new Set(items.map((i) => i.color));
   const availableColors = COLOR_PRESETS.filter((c) => !usedColors.has(c));
@@ -281,7 +283,7 @@ export function ListManager({
         {/* Add form */}
         <div className="space-y-2 xl:space-y-3 shrink-0">
           <label className="text-[10px] xl:text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            New {title.toLowerCase().replace(/s$/, "")}
+            {t("common.add")} {title.replace(/s$/, "")}
           </label>
           <form onSubmit={handleSubmit} className="flex gap-2.5">
             <Input
@@ -292,13 +294,13 @@ export function ListManager({
             />
             <Button type="submit" size="sm" className="h-8 xl:h-9 px-3 xl:px-4 gap-1.5 xl:gap-2 text-[10px] xl:text-xs font-semibold">
               <Plus className="h-3.5 w-3.5 xl:h-4 xl:w-4" />
-              Add
+              {t("common.add")}
             </Button>
           </form>
 
           {/* Color picker */}
           <div className="flex items-center gap-2">
-            <span className="text-[10px] xl:text-xs font-medium text-muted-foreground shrink-0">Color:</span>
+            <span className="text-[10px] xl:text-xs font-medium text-muted-foreground shrink-0">{t("projects.color") || "Color"}:</span>
             <ColorPicker
               selected={selectedColor}
               usedColors={usedColors}
@@ -316,7 +318,7 @@ export function ListManager({
               ))
             ) : items.length === 0 ? (
               <p className="text-base text-muted-foreground py-6 w-full text-center">
-                No items yet.
+                {t("common.empty")}
               </p>
             ) : (
               items.map((item) => (

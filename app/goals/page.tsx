@@ -14,6 +14,8 @@ import { useAsync } from "@/hooks/use-async";
 import { getProjects } from "@/services/projects";
 import { getTags } from "@/services/tags";
 import type { SessionType } from "@/types";
+import { useTranslation } from "react-i18next";
+
 
 export default function GoalsPage() {
   const { 
@@ -25,6 +27,7 @@ export default function GoalsPage() {
     editGoal, 
     removeGoal 
   } = useGoals();
+  const { t } = useTranslation();
   
   const { 
     streakInfo, 
@@ -56,7 +59,7 @@ export default function GoalsPage() {
   };
 
   return (
-    <AppLayout title="Goals & Streaks">
+    <AppLayout title={t("goals.title")}>
       <div className="flex flex-col gap-4 lg:gap-6 h-[calc(100vh-5rem)] lg:h-full overflow-y-auto lg:overflow-hidden pb-4 lg:pb-0 w-full max-w-full">
         {/* Row 1 — Streak + Consistency */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 shrink-0">

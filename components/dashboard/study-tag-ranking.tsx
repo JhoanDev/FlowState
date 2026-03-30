@@ -9,6 +9,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { BookOpen } from "lucide-react";
 import type { StudyTagRankingItem } from "@/types";
+import { useTranslation } from "react-i18next";
 
 interface StudyTagRankingProps {
   data: StudyTagRankingItem[] | null;
@@ -17,13 +18,14 @@ interface StudyTagRankingProps {
 
 export function StudyTagRanking({ data, isLoading }: StudyTagRankingProps) {
   const maxHours = data && data.length > 0 ? data[0].hours : 0;
+  const { t } = useTranslation();
 
   return (
     <Card className="flex flex-col overflow-hidden h-full min-h-0 border-border bg-card">
       <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
         <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
           <BookOpen className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-study" />
-          Study Focus
+          {t("dashboard.studyFocus")}
         </CardTitle>
       </CardHeader>
 
@@ -39,7 +41,7 @@ export function StudyTagRanking({ data, isLoading }: StudyTagRankingProps) {
           </div>
         ) : data.length === 0 ? (
           <div className="flex h-full items-center justify-center text-sm text-muted-foreground italic">
-            No study sessions yet.
+            {t("common.empty")}
           </div>
         ) : (
           <div className="space-y-3 xl:space-y-4">

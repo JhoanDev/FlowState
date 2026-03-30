@@ -15,6 +15,7 @@ import { getProjects } from "@/services/projects";
 import { getTags } from "@/services/tags";
 import { saveManualSession } from "@/services/sessions";
 import type { SessionType } from "@/types";
+import { useTranslation } from "react-i18next";
 
 interface ManualSessionFormProps {
   onSaved?: () => void;
@@ -34,6 +35,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
   const [hoverRating, setHoverRating] = React.useState(0);
   const [notes, setNotes] = React.useState("");
   const [isSaving, setIsSaving] = React.useState(false);
+  const { t } = useTranslation();
 
   const projects = useAsync(getProjects);
   const tags = useAsync(getTags);
@@ -95,10 +97,10 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
       <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
         <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
           <Check className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
-          Log Past Session
+          {t("session.logPastSession")}
         </CardTitle>
         <p className="text-[10px] xl:text-xs text-muted-foreground mt-1 xl:mt-1.5 ml-5 max-w-[90%]">
-          Record a session you forgot to track.
+          {t("session.recordPast")}
         </p>
       </CardHeader>
 
@@ -109,7 +111,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0">
           <div className="space-y-2">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Date
+              {t("common.date")}
             </label>
             <DatePicker 
               value={date} 
@@ -118,7 +120,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
           </div>
           <div className="space-y-2">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Start Time
+              {t("session.startedAt")}
             </label>
             <TimePicker 
               value={startTime} 
@@ -127,7 +129,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
           </div>
           <div className="space-y-2">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              End Time
+              {t("session.finishedAt")}
             </label>
             <TimePicker 
               value={endTime} 
@@ -138,7 +140,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
 
         {durationSeconds > 0 && (
           <div className="text-sm text-muted-foreground shrink-0">
-            Duration: <span className="font-semibold text-foreground tabular-nums">{formatDuration(durationSeconds)}</span>
+            {t("logbook.duration")}: <span className="font-semibold text-foreground tabular-nums">{formatDuration(durationSeconds)}</span>
           </div>
         )}
 
@@ -146,7 +148,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
         {sessionType === "WORK" && (
           <div className="space-y-2.5 shrink-0">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Project
+              {t("session.project")}
             </label>
             <ProjectSelector
               value={projectId}
@@ -160,7 +162,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
         {/* Tags */}
         <div className="space-y-2.5 shrink-0">
           <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Tags
+            {t("session.tags")}
           </label>
           <TagSelector
             selectedIds={tagIds}
@@ -173,7 +175,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
         {/* Rating */}
         <div className="space-y-2 shrink-0">
           <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Focus Rating
+            {t("logbook.rating")}
           </label>
           <div className="flex items-center gap-1.5">
             {[1, 2, 3, 4, 5].map((num) => (
@@ -201,12 +203,12 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
         {/* Notes */}
         <div className="flex-1 flex flex-col min-h-[80px]">
           <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
-            Notes
+            {t("session.notes")}
           </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="What did you work on? (optional)"
+            placeholder={`${t("session.notes")}... (${t("common.optional")})`}
             className="flex-1 min-h-0 bg-transparent p-3 text-sm rounded-lg border border-input focus:ring-2 focus:ring-ring/50 focus:border-ring outline-none placeholder:text-muted-foreground resize-none transition-all duration-200"
           />
         </div>
@@ -219,7 +221,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
             disabled={!canSave || isSaving}
           >
             <Check className="h-4 w-4" />
-            {isSaving ? "Saving..." : "Log Session"}
+            {isSaving ? t("common.saving") : t("session.logPastSession")}
           </Button>
         </div>
       </CardContent>

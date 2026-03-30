@@ -31,7 +31,7 @@ export function AppLayout({ children, title, subtitle }: AppLayoutProps) {
 
       {/* Mobile Sidebar Panel */}
       <div className={cn(
-        "fixed inset-y-0 left-0 z-50 w-[280px] transform transition-transform duration-200 ease-in-out lg:hidden",
+        "fixed inset-y-0 left-0 z-50 w-[280px] transform transition-transform duration-200 ease-in-out lg:hidden min-w-0",
         isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <Sidebar 
@@ -48,10 +48,11 @@ export function AppLayout({ children, title, subtitle }: AppLayoutProps) {
           onMenuClick={() => setIsMobileMenuOpen(true)} 
         />
 
-        <main className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 pb-4">
+        <main className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 pb-4 w-full min-w-0">
           {children}
         </main>
       </div>
     </div>
   );
 }
+

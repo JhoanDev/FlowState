@@ -4,6 +4,7 @@ import { AppLayout } from "@/components/layout/app-layout";
 import { LogbookCalendar } from "@/components/logbook/logbook-calendar";
 import { SessionReviewList } from "@/components/logbook/session-review-list";
 import { useLogbook } from "@/hooks/useLogbook";
+import { useTranslation } from "react-i18next";
 
 export default function LogbookPage() {
   const {
@@ -18,9 +19,10 @@ export default function LogbookPage() {
     prevMonth,
     goToToday,
   } = useLogbook();
+  const { t } = useTranslation();
 
   return (
-    <AppLayout title="Logbook & Diary">
+    <AppLayout title={t("logbook.title")}>
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 h-[calc(100vh-5rem)] lg:h-full overflow-y-auto lg:overflow-hidden pb-4 lg:pb-0 w-full max-w-full">
         {/* Left Column: Calendar (Flexible width to keep big modern squares) */}
         <div className="flex-none lg:flex-1 min-w-0 h-auto lg:h-full">

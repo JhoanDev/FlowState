@@ -12,6 +12,8 @@ import { getProjects, createProject, updateProject, deleteProject } from "@/serv
 import { getTags, createTag, updateTag, deleteTag } from "@/services/tags";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
+
 
 export default function ProjectsPage() {
   const projectsQuery = useAsync(getProjects);
@@ -23,6 +25,7 @@ export default function ProjectsPage() {
   const [activeTab, setActiveTab] = React.useState<"PROJECTS" | "TAGS">("PROJECTS");
   const [selectedProjectId, setSelectedProjectId] = React.useState<number | null>(null);
   const [selectedTagId, setSelectedTagId] = React.useState<number | null>(null);
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (projectsQuery.data) setProjects(projectsQuery.data);
@@ -100,7 +103,7 @@ export default function ProjectsPage() {
   }
 
   return (
-    <AppLayout title="Projects & Tags">
+    <AppLayout title={t("projects.title")}>
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 h-[calc(100vh-5rem)] lg:h-full overflow-y-auto lg:overflow-hidden pb-4 lg:pb-0 w-full max-w-full">
         {/* Management Left Pane (Master) */}
         <div className="flex-none lg:flex-[3] flex flex-col min-w-0 bg-card rounded-xl border border-border emissive-border shrink-0 lg:overflow-hidden h-auto lg:h-full">
@@ -109,7 +112,7 @@ export default function ProjectsPage() {
           <CardHeader className="p-3 xl:p-4 pb-0 shrink-0 flex flex-col xl:flex-row xl:items-center justify-between gap-3 xl:gap-4 w-full border-none px-4">
             <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
               <Database className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
-              Registry
+              {t("projects.registry")}
             </CardTitle>
             <div className={cn("relative flex p-0.5 bg-accent/30 rounded-[10px] xl:max-w-[280px] w-full", activeTab === "PROJECTS" ? "theme-work" : "theme-study")}>
                {(["PROJECTS", "TAGS"] as const).map((tab) => {
@@ -128,7 +131,7 @@ export default function ProjectsPage() {
                      )}
                    >
                      <Icon className="h-2.5 w-2.5 xl:h-3 xl:w-3 mr-1.5" />
-                     {isWork ? "Projects" : "Tags"}
+                     {isWork ? t("projects.projects") : t("projects.tags")}
                      {isActive && (
                        <motion.span
                          layoutId="registry-toggle-bg"
@@ -145,10 +148,10 @@ export default function ProjectsPage() {
           <div className="flex-1 min-h-0 relative mt-4">
              {activeTab === "PROJECTS" ? (
                 <ListManager
-                  title="Projects"
-                  description="Click to select and filter, hover to edit or delete."
+                  title={t("projects.projects")}
+                  description={t("projects.clickToFilter")}
                   icon={FolderGit2}
-                  placeholder="Ex: API Backend, Web Frontend"
+                  placeholder={t("projects.projectPlaceholder")}
                   themeClass="theme-work"
                   className="border-none rounded-none"
                   items={projects}
@@ -162,10 +165,10 @@ export default function ProjectsPage() {
                 />
              ) : (
                 <ListManager
-                  title="Tags"
-                  description="Click to select and filter, hover to edit or delete."
+                  title={t("projects.tags")}
+                  description={t("projects.clickToFilter")}
                   icon={TagIcon}
-                  placeholder="Ex: Rust, Next.js, Algorithms"
+                  placeholder={t("projects.tagPlaceholder")}
                   themeClass="theme-study"
                   className="border-none rounded-none"
                   items={tags}

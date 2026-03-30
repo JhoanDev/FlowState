@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CalendarCheck } from "lucide-react";
 import type { ConsistencyDay } from "@/types";
 import { useSettings } from "@/providers/settings-provider";
+import { useTranslation } from "react-i18next";
 
 interface ConsistencyGridProps {
   data: ConsistencyDay[] | null;
@@ -38,6 +39,7 @@ function DayCell({ day, locale }: { day: ConsistencyDay, locale: string }) {
 
 export function ConsistencyGrid({ data, isLoading }: ConsistencyGridProps) {
   const { settings } = useSettings();
+  const { t } = useTranslation();
   const locale = settings?.dateFormat === "BR" ? "pt-BR" : "en-US";
 
   const activeDays = data?.filter((d) => d.hasActivity).length ?? 0;
@@ -50,11 +52,11 @@ export function ConsistencyGrid({ data, isLoading }: ConsistencyGridProps) {
         <div className="flex items-center justify-between">
           <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
             <CalendarCheck className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
-            Consistency
+            {t("goals.consistency")}
           </CardTitle>
           {data && (
             <span className="text-[10px] xl:text-xs text-muted-foreground">
-              {activeDays}/{totalDays} days ({rate}%)
+              {activeDays}/{totalDays} {t("dashboard.days")} ({rate}%)
             </span>
           )}
         </div>

@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import type { CalendarDay } from "@/services/logbookService";
+import { useTranslation } from "react-i18next";
 
 interface LogbookCalendarProps {
   currentMonth: Date;
@@ -17,13 +18,6 @@ interface LogbookCalendarProps {
   onNextMonth: () => void;
   onGoToToday: () => void;
 }
-
-const DAY_LABELS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
 
 const intensityStyles: Record<number, string> = {
   0: "bg-card border-border hover:border-primary/50",
@@ -43,10 +37,21 @@ export function LogbookCalendar({
   onNextMonth,
   onGoToToday,
 }: LogbookCalendarProps) {
-  const monthName = MONTH_NAMES[currentMonth.getUTCMonth()];
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === "ptBR" || i18n.language === "pt-BR" ? "pt-BR" : "en-US";
+  
+  const monthName = new Intl.DateTimeFormat(locale, { month: "long" }).format(currentMonth);
+  // capitalize first letter
+  const formattedMonthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
   const year = currentMonth.getUTCFullYear();
 
   const startPad = currentMonth.getUTCDay();
+
+  const DAY_LABELS = Array.from({ length: 7 }).map((_, i) => {
+    const d = new Date(2021, 0, i + 3); // Jan 3 2021 was Sunday
+    return new Intl.DateTimeFormat(locale, { weekday: "long" }).format(d);
+  });
 
   // Encontrar o dia de maior esforço do mês para a escala limite 100%
   const maxSeconds = Math.max(...days.map(d => d.totalSeconds || 0), 1);
@@ -57,14 +62,14 @@ export function LogbookCalendar({
         <div className="flex items-center justify-between">
           <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
             <CalendarIcon className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
-            {monthName} {year}
+            {formattedMonthName} {year}
           </CardTitle>
           <div className="flex items-center gap-1 xl:gap-1.5">
             <Button variant="outline" size="icon" className="h-6 w-6 xl:h-7 xl:w-7" onClick={onPrevMonth}>
               <ChevronLeft className="h-3 w-3 xl:h-3.5 xl:w-3.5" />
             </Button>
             <Button variant="outline" size="sm" className="h-6 xl:h-7 px-2 xl:px-3 font-medium text-[10px] xl:text-xs" onClick={onGoToToday}>
-              Today
+              {t("dashboard.today")}
             </Button>
             <Button variant="outline" size="icon" className="h-6 w-6 xl:h-7 xl:w-7" onClick={onNextMonth}>
               <ChevronRight className="h-3 w-3 xl:h-3.5 xl:w-3.5" />
@@ -131,7 +136,7 @@ export function LogbookCalendar({
                              "hidden xl:inline-block text-[8px] xl:text-[9px] uppercase font-bold tracking-widest px-1 xl:px-1.5 py-0.5 rounded-sm",
                              isSelected ? "bg-primary text-primary-foreground" : "bg-foreground text-background"
                            )}>
-                             Today
+                             {t("dashboard.today")}
                            </span>
                            <span className={cn(
                              "xl:hidden block h-1 w-1 rounded-full shrink-0",

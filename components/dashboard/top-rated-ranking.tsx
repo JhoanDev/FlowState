@@ -8,6 +8,10 @@ import { Trophy, Briefcase, BookOpen, Star } from "lucide-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
+
+// silence unused imports
+void Button;
 
 export interface TopRatedItem {
   id: string;
@@ -26,9 +30,11 @@ interface TopRatedRankingProps {
 export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRankingProps) {
   const [activeTab, setActiveTab] = useState<"WORK" | "STUDY">("WORK");
   const router = useRouter();
+  const { t } = useTranslation();
 
   const items = activeTab === "WORK" ? workItems : studyItems;
   const isWork = activeTab === "WORK";
+  void isWork;
 
   return (
     <Card className="flex flex-col h-full bg-card border-border">
@@ -36,7 +42,7 @@ export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRa
         <div className="flex items-center gap-2 xl:gap-3 justify-between">
           <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
             <Trophy className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
-            Top Rated
+            {t("dashboard.topRated")}
           </CardTitle>
           <div className={cn("relative flex p-0.5 bg-accent/30 rounded-[10px]", activeTab === "WORK" ? "theme-work" : "theme-study")}>
             {(["WORK", "STUDY"] as const).map((tab) => {
@@ -55,7 +61,7 @@ export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRa
                   )}
                 >
                   <Icon className="w-2.5 h-2.5 xl:w-3 xl:h-3 mr-1 xl:mr-1.5" />
-                  {isWorkTab ? "Work" : "Study"}
+                  {isWorkTab ? t("session.work") : t("session.study")}
                   {isActive && (
                     <motion.span
                       layoutId="top-rated-toggle-bg"
@@ -77,7 +83,7 @@ export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRa
            ))
         ) : items.length === 0 ? (
            <div className="flex h-full items-center justify-center text-sm text-muted-foreground italic">
-             No rated sessions available.
+             {t("common.empty")}
            </div>
         ) : (
            items.map((item, index) => (
@@ -99,7 +105,7 @@ export function TopRatedRanking({ workItems, studyItems, isLoading }: TopRatedRa
                        {item.name}
                      </span>
                      <span className="text-[8px] xl:text-[10px] text-muted-foreground mt-1 font-medium leading-none">
-                       {item.totalSessions} sessions
+                       {item.totalSessions} {t("dashboard.sessions")}
                      </span>
                    </div>
                 </div>

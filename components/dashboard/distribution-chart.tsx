@@ -10,6 +10,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Briefcase } from "lucide-react";
 import type { DistributionChart } from "@/types";
+import { useTranslation } from "react-i18next";
 
 interface DistributionChartProps {
   data: DistributionChart | null;
@@ -25,6 +26,7 @@ function DonutRing({
   selectedSlice: string | null;
   onSelectSlice: (slice: string | null) => void;
 }) {
+  const { t } = useTranslation();
   const size = 140;
   const strokeWidth = 18;
   const radius = (size - strokeWidth) / 2;
@@ -90,7 +92,7 @@ function DonutRing({
         className="fill-muted-foreground text-[11px]"
         dominantBaseline="middle"
       >
-        total
+        {t("dashboard.total") || "total"}
       </text>
     </svg>
   );
@@ -98,6 +100,7 @@ function DonutRing({
 
 export function DistributionChartCard({ data, isLoading }: DistributionChartProps) {
   const [selectedSlice, setSelectedSlice] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const selectedData = data?.slices.find((s) => s.label === selectedSlice);
 
@@ -106,7 +109,7 @@ export function DistributionChartCard({ data, isLoading }: DistributionChartProp
       <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
         <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
           <Briefcase className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-work" />
-          {data?.title ?? "Distribution"}
+          {t("dashboard.workDistribution")}
         </CardTitle>
       </CardHeader>
 
@@ -153,7 +156,7 @@ export function DistributionChartCard({ data, isLoading }: DistributionChartProp
                 <div className="flex flex-col justify-center h-full gap-2.5 opacity-60 mix-blend-luminosity">
                   <div className="w-4 h-4 xl:w-5 xl:h-5 border-2 border-dashed border-muted-foreground shrink-0" />
                   <span className="text-[10px] xl:text-xs text-muted-foreground font-medium text-balance text-left select-none uppercase tracking-widest">
-                    Select Data
+                    {t("dashboard.selectData") || "Select Data"}
                   </span>
                 </div>
               )}

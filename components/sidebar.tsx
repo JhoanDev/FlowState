@@ -10,19 +10,19 @@ import {
   Target,
   Folder,
   Flame,
+  Command,
+  Search,
 } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import { useCommandPalette } from "@/hooks/use-command-palette";
 
-const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", href: "/" },
-  { icon: Target, label: "Session", href: "/session" },
-  { icon: Folder, label: "Projects & Tags", href: "/projects" },
-  { icon: Flame, label: "Goals & Streaks", href: "/goals" },
-  { icon: BookOpen, label: "Logbook", href: "/logbook" },
-];
+// silence unused imports
+void BarChart2;
+void Clock;
 
 function NavLink({
   href,
@@ -54,7 +54,7 @@ function NavLink({
         "relative z-10 h-5 w-5 shrink-0 transition-all duration-200",
         isActive ? "text-primary" : "group-hover:text-foreground group-hover:scale-110"
       )} />
-      <span className={cn("relative z-10", isActive && "font-bold")}>{label}</span>
+      <span className={cn("relative z-10 truncate", isActive && "font-bold")}>{label}</span>
       {isActive && (
         <motion.span 
           layoutId={`sidebar-active-${layoutIdPrefix}`}
@@ -71,6 +71,16 @@ function NavLink({
 
 export function Sidebar({ className, onNavClick, layoutIdPrefix = "desktop" }: { className?: string; onNavClick?: () => void; layoutIdPrefix?: string }) {
   const pathname = usePathname();
+  const { t } = useTranslation();
+  const { open: openPalette } = useCommandPalette();
+
+  const navItems = [
+    { icon: LayoutDashboard, label: t("nav.dashboard"), href: "/" },
+    { icon: Target, label: t("nav.session"), href: "/session" },
+    { icon: Folder, label: t("nav.projects"), href: "/projects" },
+    { icon: Flame, label: t("nav.goals"), href: "/goals" },
+    { icon: BookOpen, label: t("nav.logbook"), href: "/logbook" },
+  ];
 
   return (
     <aside
@@ -87,8 +97,23 @@ export function Sidebar({ className, onNavClick, layoutIdPrefix = "desktop" }: {
           width={36}
           height={36}
           className="shrink-0"
+          unoptimized
         />
-        <span className="text-base font-bold tracking-tight">FlowState</span>
+        <span className="text-base font-bold tracking-tight truncate">FlowState</span>
+      </div>
+
+      {/* Command Palette trigger */}
+      <div className="px-4 pb-3">
+        <button
+          onClick={() => { onNavClick?.(); openPalette(); }}
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/50 hover:bg-accent border border-border text-muted-foreground hover:text-foreground text-xs font-medium transition-colors duration-200 cursor-pointer group"
+        >
+          <Search className="h-3.5 w-3.5 shrink-0" />
+          <span className="flex-1 min-w-0 truncate text-left">{t("commandPalette.hint")}...</span>
+          <kbd className="hidden xl:flex items-center gap-0.5 shrink-0 text-[10px] font-mono border border-border/50 rounded px-1 py-0.5 group-hover:border-border transition-colors">
+            <Command className="h-2.5 w-2.5" />K
+          </kbd>
+        </button>
       </div>
 
       {/* Navigation */}
@@ -111,7 +136,7 @@ export function Sidebar({ className, onNavClick, layoutIdPrefix = "desktop" }: {
         <NavLink
           href="/settings"
           icon={Settings}
-          label="Settings"
+          label={t("nav.settings")}
           isActive={pathname === "/settings"}
           layoutIdPrefix={layoutIdPrefix}
           onClick={onNavClick}

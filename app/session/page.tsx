@@ -14,6 +14,7 @@ import { Play, ClipboardList } from "lucide-react";
 import type { SessionStartConfig, SessionReviewData, Session } from "@/types";
 import { useSettings } from "@/providers/settings-provider";
 import { saveManualSession } from "@/services/sessions";
+import { useTranslation } from "react-i18next";
 
 type SessionState = "IDLE" | "ACTIVE" | "REVIEW";
 
@@ -33,6 +34,7 @@ export default function SessionPage() {
   const [finishedAt, setFinishedAt] = React.useState<Date | null>(null);
   const [activePanel, setActivePanel] = React.useState<ActivePanel>("config");
   const { settings } = useSettings();
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     // Automatically manage strict mode (fullscreen) based on session state
@@ -111,16 +113,16 @@ export default function SessionPage() {
     return (
       <div className="mb-6 p-4 rounded-lg bg-accent/30 border border-border flex flex-col gap-2.5 text-sm">
         <div className="flex justify-between items-center">
-          <span className="text-muted-foreground">Started at</span>
+          <span className="text-muted-foreground">{t("session.startedAt")}</span>
           <span className="font-mono font-medium">{startedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-muted-foreground">Finished at</span>
+          <span className="text-muted-foreground">{t("session.finishedAt")}</span>
           <span className="font-mono font-medium">{finishedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
         </div>
         <div className="h-px bg-border/50 my-1" />
         <div className="flex justify-between items-center">
-          <span className="text-muted-foreground">Total Time</span>
+          <span className="text-muted-foreground">{t("session.totalTime")}</span>
           <span className="font-mono font-semibold text-primary">{formatDuration(duration)}</span>
         </div>
       </div>
@@ -132,7 +134,7 @@ export default function SessionPage() {
     : undefined;
 
   return (
-    <AppLayout title="Session">
+    <AppLayout title={t("session.title")}>
       <div className={cn("h-[calc(100vh-5rem)] lg:h-full overflow-y-auto lg:overflow-hidden pb-4 lg:pb-0 flex flex-col gap-4 transition-colors duration-500 w-full max-w-full", themeClass)}>
         <AnimatePresence mode="wait">
           {sessionState === "IDLE" && (
@@ -175,13 +177,13 @@ export default function SessionPage() {
                           <Play className="h-7 w-7 text-primary fill-primary" />
                         </div>
                         <div className="text-center space-y-2">
-                          <p className="text-lg font-semibold">Start Session</p>
+                          <p className="text-lg font-semibold">{t("session.startSession")}</p>
                           <p className="text-sm text-muted-foreground max-w-[220px] leading-relaxed">
-                            Configure timer mode, project and tags to start a focus session
+                            {t("session.configureTimer")}
                           </p>
                         </div>
                         <span className="text-xs font-medium text-primary/70 border border-primary/20 rounded-full px-3 py-1 group-hover:bg-primary/10 transition-colors duration-200">
-                          Click to configure
+                          {t("session.clickToConfigure")}
                         </span>
                       </Card>
                     </motion.div>
@@ -218,13 +220,13 @@ export default function SessionPage() {
                           <ClipboardList className="h-7 w-7 text-primary" />
                         </div>
                         <div className="text-center space-y-2">
-                          <p className="text-lg font-semibold">Log Past Session</p>
+                          <p className="text-lg font-semibold">{t("session.logPastSession")}</p>
                           <p className="text-sm text-muted-foreground max-w-[220px] leading-relaxed">
-                            Record a session you forgot to track with date, time and details
+                            {t("session.recordPast")}
                           </p>
                         </div>
                         <span className="text-xs font-medium text-primary/70 border border-primary/20 rounded-full px-3 py-1 group-hover:bg-primary/10 transition-colors duration-200">
-                          Click to log
+                          {t("session.clickToLog")}
                         </span>
                       </Card>
                     </motion.div>

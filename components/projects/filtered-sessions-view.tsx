@@ -9,6 +9,7 @@ import { Clock, Star, Activity, PlusCircle, Calendar as CalendarIcon, BookOpen, 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useSettings } from "@/providers/settings-provider";
+import { useTranslation } from "react-i18next";
 
 interface FilteredSessionsViewProps {
   type: "PROJECT" | "TAG" | null;
@@ -28,7 +29,8 @@ function formatDuration(seconds: number): string {
 
 export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }: FilteredSessionsViewProps) {
   const { settings } = useSettings();
-  const locale = settings?.dateFormat === "BR" ? "pt-BR" : "en-US";
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === "ptBR" || i18n.language === "pt-BR" ? "pt-BR" : "en-US";
 
   function formatDate(isoDate: string): string {
     return new Date(isoDate).toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" });
@@ -79,7 +81,7 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
            </div>
            <h3 className="text-sm xl:text-base font-bold text-foreground">Explore Data</h3>
            <p className="text-[10px] xl:text-xs text-muted-foreground">
-              Select a project or a tag from the left panel to filter your sessions and explore your historical tracking.
+              {t("projects.exploreDataDesc") || "Select a project or a tag from the left panel to filter your sessions and explore your historical tracking."}
            </p>
         </div>
       </Card>
@@ -108,12 +110,12 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
              )}
              <span className="truncate">{itemName}</span>
              <span className="text-[10px] xl:text-xs font-normal uppercase tracking-wider text-muted-foreground ml-1 xl:ml-2 shrink-0">
-               ({type === "PROJECT" ? "Work Project" : "Study Tag"})
+               ({type === "PROJECT" ? t("session.work") : t("session.study")})
              </span>
            </CardTitle>
         </div>
         <Button variant="ghost" size="sm" onClick={onClear} className="h-6 xl:h-7 px-2 xl:px-3 text-[10px] xl:text-xs font-semibold text-muted-foreground hover:text-foreground">
-          Clear Filter
+          {t("common.clear") || "Clear Filter"}
         </Button>
       </CardHeader>
       
@@ -121,21 +123,21 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
         {/* Top Stats Banner */}
         <div className="grid grid-cols-3 divide-x divide-border/50 border-b border-border/50 bg-card shrink-0">
            <div className="p-2 xl:p-3 flex flex-col items-center justify-center">
-             <span className="text-[9px] xl:text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-0.5 xl:mb-1 text-center">Time</span>
+             <span className="text-[9px] xl:text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-0.5 xl:mb-1 text-center">{t("dashboard.time")}</span>
              <div className="flex items-center gap-1 xl:gap-1.5 text-foreground font-mono">
                <Clock className="w-3.5 h-3.5 xl:w-4 xl:w-4 text-primary" />
                <span className="text-sm xl:text-base font-bold">{exactHours}h</span>
              </div>
            </div>
            <div className="p-2 xl:p-3 flex flex-col items-center justify-center">
-             <span className="text-[9px] xl:text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-0.5 xl:mb-1 text-center">Sessions</span>
+             <span className="text-[9px] xl:text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-0.5 xl:mb-1 text-center">{t("dashboard.sessions")}</span>
              <div className="flex items-center gap-1 xl:gap-1.5 text-foreground font-mono">
                <CalendarIcon className="w-3.5 h-3.5 xl:w-4 xl:w-4 text-primary" />
                <span className="text-sm xl:text-base font-bold">{sessionCount}</span>
              </div>
            </div>
            <div className="p-2 xl:p-3 flex flex-col items-center justify-center">
-             <span className="text-[9px] xl:text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-0.5 xl:mb-1 text-center">Avg</span>
+             <span className="text-[9px] xl:text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-0.5 xl:mb-1 text-center">{t("dashboard.avg")}</span>
              <div className="flex items-center gap-1 xl:gap-1.5 text-foreground font-mono">
                <Star className="w-3.5 h-3.5 xl:w-4 xl:w-4 text-orange-400 fill-orange-400" />
                <span className="text-sm xl:text-base font-bold">{avgRating}</span>
@@ -145,7 +147,7 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
 
         {/* Scrollable list */}
         <div className="flex-1 md:overflow-y-auto p-3 xl:p-4 space-y-3 xl:space-y-4 min-h-0">
-          <h4 className="text-xs xl:text-sm font-bold text-foreground mb-3 xl:mb-4">Historical Records</h4>
+          <h4 className="text-xs xl:text-sm font-bold text-foreground mb-3 xl:mb-4">{t("projects.sessionHistory") || "Historical Records"}</h4>
           
           {isLoading ? (
             Array.from({ length: 4 }).map((_, i) => (
@@ -154,7 +156,7 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
           ) : activities.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 opacity-60">
                <PlusCircle className="w-6 h-6 xl:w-8 xl:h-8 text-muted-foreground mb-2 xl:mb-3" />
-               <p className="text-[10px] xl:text-xs font-semibold">No records explicitly mapped to this {type.toLowerCase()}.</p>
+               <p className="text-[10px] xl:text-xs font-semibold">{t("common.empty") || `No records explicitly mapped to this ${type.toLowerCase()}.`}</p>
             </div>
           ) : (
             activities.map((activity) => (

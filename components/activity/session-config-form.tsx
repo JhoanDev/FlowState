@@ -13,6 +13,7 @@ import { useAsync } from "@/hooks/use-async";
 import { getProjects } from "@/services/projects";
 import { getTags } from "@/services/tags";
 import type { SessionType, TimerMode, SessionStartConfig } from "@/types";
+import { useTranslation } from "react-i18next";
 
 interface SessionConfigFormProps {
   onStart?: (config: SessionStartConfig) => void;
@@ -31,6 +32,7 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
   const [plannedSeconds, setPlannedSeconds] = React.useState(25 * 60);
   const [projectId, setProjectId] = React.useState<number | null>(null);
   const [tagIds, setTagIds] = React.useState<number[]>([]);
+  const { t } = useTranslation();
 
   const projects = useAsync(getProjects);
   const tags = useAsync(getTags);
@@ -55,10 +57,10 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
       <CardHeader className="p-3 xl:p-4 pb-0 shrink-0">
         <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
           <Timer className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
-          Configure Session
+          {t("session.title")}
         </CardTitle>
         <p className="text-[10px] xl:text-xs text-muted-foreground mt-1 xl:mt-1.5 ml-5 max-w-[90%]">
-          What&apos;s the goal for the next block?
+          {t("session.configureTimer")}
         </p>
       </CardHeader>
 
@@ -68,7 +70,7 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
         {/* Timer Mode */}
         <div className="space-y-2 xl:space-y-3 shrink-0">
           <label className="text-[10px] xl:text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Timer Mode
+            {t("session.timerMode")}
           </label>
           <div className="relative flex w-full items-center p-0.5 xl:p-1 rounded-[10px] border border-border bg-muted">
             {(["PROGRESSIVE", "REGRESSIVE"] as const).map((mode) => {
@@ -88,7 +90,7 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
                   )}
                 >
                   <Icon className="w-3.5 h-3.5 xl:w-4 xl:h-4 mr-1.5 xl:mr-2" />
-                  {isProgressive ? "Progressive" : "Pomodoro"}
+                  {isProgressive ? t("session.progressive") : "Pomodoro"}
                   {isActive && (
                     <motion.span
                       layoutId="timer-mode-bg"
@@ -145,7 +147,7 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
             >
               <div className="space-y-2 xl:space-y-3">
                 <label className="text-[10px] xl:text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Project
+                  {t("session.project")}
                 </label>
                 <ProjectSelector
                   value={projectId}
@@ -161,7 +163,7 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
         {/* Tags (always visible) */}
         <div className="space-y-2 xl:space-y-3 shrink-0">
           <label className="text-[10px] xl:text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Tags
+            {t("session.tags")}
           </label>
           <TagSelector
             selectedIds={tagIds}
@@ -176,7 +178,7 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
         <div className="pt-4 border-t border-border shrink-0">
           <Button className="w-full gap-2.5 text-sm" size="lg" onClick={handleStart}>
             <Play className="h-4 w-4 fill-current" />
-            Start Focus
+            {t("session.start")}
           </Button>
         </div>
       </CardContent>

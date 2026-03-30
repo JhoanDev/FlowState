@@ -7,6 +7,7 @@ import { Star, Clock, BookOpen, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ActivityEntry } from "@/types";
 import { useSettings } from "@/providers/settings-provider";
+import { useTranslation } from "react-i18next";
 
 interface SessionReviewListProps {
   date: string | null;
@@ -15,7 +16,8 @@ interface SessionReviewListProps {
 }
 
 function StarRating({ rating }: { rating: number | null }) {
-  if (!rating) return <span className="text-xs text-muted-foreground italic">No rating</span>;
+  const { t } = useTranslation();
+  if (!rating) return <span className="text-xs text-muted-foreground italic">{t("common.empty")}</span>;
   
   return (
     <div className="flex items-center gap-0.5">
@@ -44,13 +46,14 @@ function formatTime(isoDate: string, use12h: boolean): string {
 }
 
 function EntryCard({ activity, use12h }: { activity: ActivityEntry, use12h: boolean }) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-3 p-3 sm:p-4 rounded-lg border border-border bg-card hover:border-muted-foreground/30 transition-colors">
       <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4">
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           {/* Main Badge */}
           <Badge variant={activity.type === "WORK" ? "work" : "study"} className="text-[10px] font-bold px-1.5 py-0.5">
-            {activity.type}
+            {activity.type === "WORK" ? t("session.work") : t("session.study")}
           </Badge>
 
           {/* Project/Tags */}
@@ -92,7 +95,7 @@ function EntryCard({ activity, use12h }: { activity: ActivityEntry, use12h: bool
         {activity.notes ? (
           activity.notes
         ) : (
-          <span className="text-muted-foreground italic">No diary notes were written for this session.</span>
+          <span className="text-muted-foreground italic">{t("common.empty") || "No diary notes were written for this session."}</span>
         )}
       </div>
     </div>
@@ -101,6 +104,7 @@ function EntryCard({ activity, use12h }: { activity: ActivityEntry, use12h: bool
 
 export function SessionReviewList({ date, activities, isLoading }: SessionReviewListProps) {
   const { settings } = useSettings();
+  const { t } = useTranslation();
   const use12h = settings?.timeFormat === "12h";
 
   if (!date) {
@@ -108,7 +112,7 @@ export function SessionReviewList({ date, activities, isLoading }: SessionReview
       <Card className="flex flex-col h-auto min-h-[250px] lg:min-h-0 lg:h-full items-center justify-center border-dashed">
         <div className="text-center space-y-2">
           <BookOpen className="h-8 w-8 text-muted-foreground mx-auto opacity-50" />
-          <p className="text-sm font-medium text-muted-foreground">Select a day from the calendar to view its diary</p>
+          <p className="text-sm font-medium text-muted-foreground">{t("common.empty") || "Select a day from the calendar to view its diary"}</p>
         </div>
       </Card>
     );
@@ -119,7 +123,7 @@ export function SessionReviewList({ date, activities, isLoading }: SessionReview
       <CardHeader className="p-3 xl:p-4 pb-0 shrink-0 border-b border-border bg-card">
         <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
           <BookOpen className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary" />
-          Session Diary
+          {t("logbook.title")}
           <span className="text-[10px] xl:text-xs font-normal text-muted-foreground ml-2">
             ({date})
           </span>
@@ -141,7 +145,7 @@ export function SessionReviewList({ date, activities, isLoading }: SessionReview
             <div className="h-12 w-12 rounded-full border border-dashed border-muted-foreground/30 flex items-center justify-center">
               <span className="text-muted-foreground">O_O</span>
             </div>
-            <p className="text-sm text-muted-foreground">No sessions recorded on this date.</p>
+            <p className="text-sm text-muted-foreground">{t("projects.noSessions")}</p>
           </div>
         ) : (
           activities.map((activity) => (

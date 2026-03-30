@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { getSettings, updateSettings } from "@/services/settingsService";
-import type { AppSettings, ThemeOption } from "@/types";
+import type { AppSettings, ThemeOption, LanguageOption } from "@/types";
+import i18n from "@/lib/i18n";
 
 interface SettingsContextType {
   settings: AppSettings | null;
@@ -22,6 +23,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       if (mounted) {
         setSettings(data);
         applyThemeClass(data.theme);
+        applyLanguage(data.language);
         setIsLoading(false);
       }
     });
@@ -39,6 +41,16 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const applyLanguage = (language: LanguageOption) => {
+    // Map the app's LanguageOption to i18n locale keys
+    const localeMap: Record<LanguageOption, string> = {
+      en: "en",
+      pt: "pt-BR",
+      es: "en", // es not implemented yet, fallback to en
+    };
+    i18n.changeLanguage(localeMap[language]);
+  };
+
   const updateSetting = async <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => {
     if (!settings) return;
     
@@ -49,12 +61,15 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     if (key === "theme") {
       applyThemeClass(value as ThemeOption);
     }
+    if (key === "language") {
+      applyLanguage(value as LanguageOption);
+    }
 
     try {
       await updateSettings(newSettings);
     } catch (e) {
       console.error("Failed to update setting internally", e);
-      // Revert if failed (optional, simple app so we might just ignore)
+      // Revert if failed
       setSettings(settings);
     }
   };
@@ -73,3 +88,4 @@ export function useSettings() {
   }
   return context;
 }
+

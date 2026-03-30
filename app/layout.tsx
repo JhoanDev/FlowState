@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SettingsProvider } from "@/providers/settings-provider";
+import { I18nProvider } from "@/providers/i18n-provider";
+import { CommandPaletteProvider } from "@/providers/command-palette-provider";
 import { GlobalLoader } from "@/components/layout/global-loader";
 import "./globals.css";
 
@@ -29,10 +31,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SettingsProvider>
-          <GlobalLoader />
-          {children}
-        </SettingsProvider>
+        <I18nProvider>
+          <SettingsProvider>
+            <CommandPaletteProvider>
+              <GlobalLoader />
+              {children}
+            </CommandPaletteProvider>
+          </SettingsProvider>
+        </I18nProvider>
       </body>
     </html>
   );

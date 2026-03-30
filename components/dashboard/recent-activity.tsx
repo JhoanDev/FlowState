@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { List } from "lucide-react";
 import type { ActivityEntry } from "@/types";
+import { useTranslation } from "react-i18next";
 
 interface RecentActivityProps {
   data: ActivityEntry[] | null;
@@ -26,7 +27,7 @@ function formatDuration(seconds: number): string {
   return `${m}m`;
 }
 
-function formatTimeAgo(isoDate: string): string {
+function formatTimeAgo(isoDate: string, t: ReturnType<typeof useTranslation>["t"]): string {
   const diff = Date.now() - new Date(isoDate).getTime();
   const minutes = Math.floor(diff / 60000);
   if (minutes < 60) return `${minutes}m ago`;
@@ -37,14 +38,18 @@ function formatTimeAgo(isoDate: string): string {
   return `${days}d ago`;
 }
 
+// silence unused import
+void formatTimeAgo;
+
 function ActivityItem({ activity }: { activity: ActivityEntry }) {
+  const { t } = useTranslation();
   return (
     <div className="flex items-start gap-2 xl:gap-3 py-1.5 xl:py-2.5 px-2 xl:px-3 rounded-md border-b border-border/50 last:border-0 hover:border-transparent transition-all duration-200 hover:bg-accent group cursor-default">
       <Badge
         variant={activity.type === "WORK" ? "work" : "study"}
         className="mt-0.5 shrink-0 text-[8px] xl:text-[10px] font-bold px-1 xl:px-1.5 py-0 xl:py-0.5 leading-none"
       >
-        {activity.type === "WORK" ? "WK" : "ST"}
+        {activity.type === "WORK" ? t("session.wk") : t("session.st")}
       </Badge>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-1.5 xl:gap-2">
@@ -75,7 +80,17 @@ function ActivityItem({ activity }: { activity: ActivityEntry }) {
               </span>
             ))}
           </div>
-          <span className="text-[10px] text-muted-foreground shrink-0">{formatTimeAgo(activity.startedAt)}</span>
+          <span className="text-[10px] text-muted-foreground shrink-0">
+            {(() => {
+              const diff = Date.now() - new Date(activity.startedAt).getTime();
+              const mins = Math.floor(diff / 60000);
+              if (mins < 60) return `${mins}m ${t("common.ago")}`;
+              const hrs = Math.floor(mins / 60);
+              if (hrs < 24) return `${hrs}h ${t("common.ago")}`;
+              const days = Math.floor(hrs / 24);
+              return days === 1 ? t("common.yesterday") : `${days}d ${t("common.ago")}`;
+            })()}
+          </span>
         </div>
         <div className="flex items-center gap-1.5 xl:gap-2 mt-0.5 xl:mt-1">
           <span className="text-[8px] xl:text-[10px] font-medium text-muted-foreground bg-muted px-1 xl:px-1.5 py-0 xl:py-0.5 rounded shrink-0 leading-none">
@@ -108,17 +123,20 @@ function ActivitySkeleton() {
 export function RecentActivity({ 
   data, 
   isLoading, 
-  title = "Recent Sessions", 
-  emptyMessage = "No sessions recorded yet.",
+  title,
+  emptyMessage,
   hideCard = false
 }: RecentActivityProps) {
-  
+  const { t } = useTranslation();
+  const resolvedTitle = title ?? t("dashboard.recentActivity");
+  const resolvedEmpty = emptyMessage ?? t("dashboard.noActivity");
+
   const content = (
     <>
       <div className="p-3 xl:p-4 pb-0 shrink-0">
         <h3 className="text-xs xl:text-sm font-semibold leading-none tracking-tight flex items-center gap-1.5">
           <List className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-muted-foreground" />
-          {title}
+          {resolvedTitle}
         </h3>
       </div>
       <div className="p-3 xl:p-4 pt-1.5 xl:pt-2 flex-1 min-h-0 md:overflow-y-auto">
@@ -130,7 +148,7 @@ export function RecentActivity({
           </div>
         ) : data.length === 0 ? (
           <p className="text-xs text-muted-foreground py-4 text-center">
-            {emptyMessage}
+            {resolvedEmpty}
           </p>
         ) : (
           data.map((activity) => (
