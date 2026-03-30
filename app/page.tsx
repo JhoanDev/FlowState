@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { AppLayout } from "@/components/layout/app-layout";
 import { RecentActivity } from "@/components/dashboard/recent-activity";
 import { ContributionHeatmap } from "@/components/dashboard/contribution-heatmap";
@@ -17,7 +17,20 @@ import {
 } from "@/services/dashboard";
 import { TopRatedRanking } from "@/components/dashboard/top-rated-ranking";
 import { StudyTagRanking } from "@/components/dashboard/study-tag-ranking";
+import { motion } from "motion/react";
 import type { ActivityEntry } from "@/types";
+
+const containerVariants = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.07 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 16, filter: "blur(4px)" },
+  show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] as const } },
+};
 
 export default function Dashboard() {
   const activities = useAsync(getRecentActivities);
@@ -53,33 +66,48 @@ export default function Dashboard() {
 
   return (
     <AppLayout title="Overview">
-      <div className="flex flex-col gap-3 xl:gap-4 h-[calc(100vh-5rem)] md:h-full overflow-y-auto md:overflow-hidden pb-4 md:pb-0 transition-all duration-300 w-full max-w-full">
-        {/* Row 1 — Heatmap (55% height) + Recent Sessions (45% width) */}
-        <div className="flex flex-col md:flex-row gap-3 xl:gap-4 md:flex-[0.55] h-auto md:h-full min-h-0 shrink-0">
-          <ContributionHeatmap 
-            data={heatmap.data} 
-            isLoading={heatmap.isLoading} 
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="grid gap-3 xl:gap-4 h-[calc(100vh-5rem)] md:h-full overflow-y-auto md:overflow-hidden pb-4 md:pb-0 w-full max-w-full grid-cols-1 md:grid-cols-3 md:grid-rows-[1.2fr_1fr]"
+      >
+        {/* Heatmap — 1 column, row 1 */}
+        <motion.div variants={itemVariants} className="min-h-0 flex flex-col">
+          <ContributionHeatmap
+            data={heatmap.data}
+            isLoading={heatmap.isLoading}
             selectedDate={selectedDate}
             onSelectDate={handleSelectDate}
             selectedActivities={selectedActivities}
             isLoadingSelected={isLoadingSelected}
           />
-          <div className="flex-1 min-w-0 flex flex-col h-auto md:h-full min-h-0">
-            <RecentActivity data={activities.data} isLoading={activities.isLoading} />
-          </div>
-        </div>
+        </motion.div>
 
-        {/* Row 2 — Distribution Charts & Ranking (45% height) */}
-        <div className="grid gap-3 xl:gap-4 grid-cols-1 md:grid-cols-3 md:flex-[0.45] h-auto md:h-full min-h-0 shrink-0">
+        {/* Recent Sessions — spans 2 columns on desktop */}
+        <motion.div variants={itemVariants} className="md:col-span-2 min-h-0 flex flex-col min-w-0">
+          <RecentActivity data={activities.data} isLoading={activities.isLoading} />
+        </motion.div>
+
+        {/* Work Distribution — 1 column, row 2 */}
+        <motion.div variants={itemVariants} className="min-h-0 flex flex-col">
           <DistributionChartCard data={workDist.data} isLoading={workDist.isLoading} />
+        </motion.div>
+
+        {/* Study Focus — 1 column, row 2 */}
+        <motion.div variants={itemVariants} className="min-h-0 flex flex-col">
           <StudyTagRanking data={studyTags.data} isLoading={studyTags.isLoading} />
+        </motion.div>
+
+        {/* Top Rated — 1 column, row 2 */}
+        <motion.div variants={itemVariants} className="min-h-0 flex flex-col">
           <TopRatedRanking
             workItems={topRatedWork.data || []}
             studyItems={topRatedStudy.data || []}
             isLoading={topRatedWork.isLoading || topRatedStudy.isLoading}
           />
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </AppLayout>
   );
 }

@@ -103,7 +103,7 @@ export default function ProjectsPage() {
     <AppLayout title="Projects & Tags">
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 h-[calc(100vh-5rem)] lg:h-full overflow-y-auto lg:overflow-hidden pb-4 lg:pb-0 w-full max-w-full">
         {/* Management Left Pane (Master) */}
-        <div className="flex-none lg:flex-[3] flex flex-col min-w-0 bg-card rounded-xl border border-border shadow-sm shrink-0 lg:overflow-hidden h-auto lg:h-full">
+        <div className="flex-none lg:flex-[3] flex flex-col min-w-0 bg-card rounded-xl border border-border emissive-border shrink-0 lg:overflow-hidden h-auto lg:h-full">
           
           {/* Internal Toggle Header */}
           <CardHeader className="p-3 xl:p-4 pb-0 shrink-0 flex flex-col xl:flex-row xl:items-center justify-between gap-3 xl:gap-4 w-full border-none px-4">

@@ -55,7 +55,7 @@ export function ProjectSelector({
                 className="h-3 w-3 rounded-full shrink-0"
                 style={{ backgroundColor: proj.color }}
               />
-              {proj.name}
+              <span className="truncate">{proj.name}</span>
             </span>
           </button>
         );

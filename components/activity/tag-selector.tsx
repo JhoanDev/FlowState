@@ -63,7 +63,7 @@ export function TagSelector({
                 className="h-3 w-3 rounded-full shrink-0"
                 style={{ backgroundColor: tag.color }}
               />
-              {tag.name}
+              <span className="truncate">{tag.name}</span>
             </span>
           </button>
         );

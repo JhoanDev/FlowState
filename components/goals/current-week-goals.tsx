@@ -111,7 +111,7 @@ function AddGoalForm({
             type="button"
             onClick={() => setSelectedId(opt.id)}
             className={cn(
-              "inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-md border transition-colors duration-200",
+              "inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-md border transition-colors duration-200 max-w-[180px]",
               selectedId === opt.id
                 ? type === "WORK"
                   ? "bg-work/10 text-work border-work/30"
@@ -123,7 +123,7 @@ function AddGoalForm({
               className="h-2.5 w-2.5 rounded-full shrink-0"
               style={{ backgroundColor: opt.color }}
             />
-            {opt.name}
+            <span className="truncate">{opt.name}</span>
           </button>
         ))}
       </div>

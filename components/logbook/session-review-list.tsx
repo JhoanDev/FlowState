@@ -56,21 +56,21 @@ function EntryCard({ activity, use12h }: { activity: ActivityEntry, use12h: bool
           {/* Project/Tags */}
           {activity.projectName && (
             <span
-              className="inline-flex items-center gap-1.5 text-xs font-semibold px-2 py-0.5 rounded-md border border-border bg-background"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold px-2 py-0.5 rounded-md border border-border bg-background max-w-[160px]"
               style={{ color: activity.projectColor ?? undefined }}
             >
-              <Layers className="h-3 w-3" />
-              {activity.projectName}
+              <Layers className="h-3 w-3 shrink-0" />
+              <span className="truncate">{activity.projectName}</span>
             </span>
           )}
           {activity.tags.map((tag) => (
             <span
               key={tag.name}
-              className="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-md border border-border bg-background"
+              className="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-md border border-border bg-background max-w-[140px]"
               style={{ color: tag.color }}
             >
-              <BookOpen className="h-3 w-3" />
-              {tag.name}
+              <BookOpen className="h-3 w-3 shrink-0" />
+              <span className="truncate">{tag.name}</span>
             </span>
           ))}
         </div>

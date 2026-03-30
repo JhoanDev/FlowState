@@ -162,7 +162,7 @@ export function ContributionHeatmap({
   const displaySelectedDate = selectedDate ? new Date(selectedDate + "T12:00:00Z").toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" }) : "";
 
   return (
-    <Card className="flex flex-col w-full md:flex-[0.55] shrink-0 h-auto md:h-full md:overflow-hidden min-h-0 border-border">
+    <Card className="flex flex-col w-full h-full md:overflow-hidden min-h-0 border-border">
       <CardHeader className="pb-0 p-3 xl:p-4 shrink-0">
         <div className="flex items-center justify-between">
           <CardTitle className="text-xs xl:text-sm flex items-center gap-1.5">
