@@ -39,6 +39,7 @@ pub fn run() {
             commands::sessions::get_session,
             commands::sessions::save_manual_session,
             commands::sessions::get_today_stats,
+            commands::sessions::delete_session,
             // Goals
             commands::goals::get_weekly_goals,
             commands::goals::create_weekly_goal,
@@ -57,6 +58,7 @@ pub fn run() {
             commands::stats::get_streak_info,
             commands::stats::get_consistency_days,
             commands::stats::get_calendar_days,
+            commands::stats::get_study_tag_ranking,
             // Dashboard / Activities
             commands::dashboard::get_recent_activities,
             commands::dashboard::get_activities_by_date,

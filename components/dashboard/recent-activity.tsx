@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -8,7 +9,8 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { List } from "lucide-react";
+import { DeleteSessionDialog } from "@/components/ui/delete-session-dialog";
+import { List, Trash2 } from "lucide-react";
 import type { ActivityEntry } from "@/types";
 import { useTranslation } from "react-i18next";
 
@@ -18,6 +20,7 @@ interface RecentActivityProps {
   title?: string;
   emptyMessage?: string;
   hideCard?: boolean;
+  onSessionDeleted?: () => void;
 }
 
 function formatDuration(seconds: number): string {
@@ -41,67 +44,86 @@ function formatTimeAgo(isoDate: string, t: ReturnType<typeof useTranslation>["t"
 // silence unused import
 void formatTimeAgo;
 
-function ActivityItem({ activity }: { activity: ActivityEntry }) {
+function ActivityItem({ activity, onDelete }: { activity: ActivityEntry; onDelete?: () => void }) {
   const { t } = useTranslation();
+  const [showDialog, setShowDialog] = useState(false);
+
   return (
-    <div className="flex items-start gap-2 xl:gap-3 py-1.5 xl:py-2.5 px-2 xl:px-3 rounded-md border-b border-border/50 last:border-0 hover:border-transparent transition-all duration-200 hover:bg-accent group cursor-default">
-      <Badge
-        variant={activity.type === "WORK" ? "work" : "study"}
-        className="mt-0.5 shrink-0 text-[8px] xl:text-[10px] font-bold px-1 xl:px-1.5 py-0 xl:py-0.5 leading-none"
-      >
-        {activity.type === "WORK" ? t("session.wk") : t("session.st")}
-      </Badge>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between gap-1.5 xl:gap-2">
-          <div className="flex items-center gap-1 xl:gap-1.5 min-w-0 overflow-hidden">
-            {activity.projectName && (
-              <span
-                className="inline-flex items-center gap-1 text-[8px] xl:text-[10px] font-semibold px-1 xl:px-1.5 py-0 xl:py-0.5 rounded border border-border shrink-0 leading-none"
-                style={{ color: activity.projectColor ?? undefined }}
-              >
+    <>
+      <div className="flex items-start gap-2 xl:gap-3 py-1.5 xl:py-2.5 px-2 xl:px-3 rounded-md border-b border-border/50 last:border-0 hover:border-transparent transition-all duration-200 hover:bg-accent group cursor-default">
+        <Badge
+          variant={activity.type === "WORK" ? "work" : "study"}
+          className="mt-0.5 shrink-0 text-[8px] xl:text-[10px] font-bold px-1 xl:px-1.5 py-0 xl:py-0.5 leading-none"
+        >
+          {activity.type === "WORK" ? t("session.wk") : t("session.st")}
+        </Badge>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-1.5 xl:gap-2">
+            <div className="flex items-center gap-1 xl:gap-1.5 min-w-0 overflow-hidden">
+              {activity.projectName && (
                 <span
-                  className="h-1 w-1 xl:h-1.5 xl:w-1.5 rounded-full shrink-0"
-                  style={{ backgroundColor: activity.projectColor ?? undefined }}
-                />
-                {activity.projectName}
-              </span>
-            )}
-            {activity.tags.slice(0, 2).map((tag) => (
-              <span
-                key={tag.name}
-                className="inline-flex items-center gap-1 text-[8px] xl:text-[10px] font-medium px-1 xl:px-1.5 py-0 xl:py-0.5 rounded border border-border shrink-0 leading-none"
-                style={{ color: tag.color }}
-              >
+                  className="inline-flex items-center gap-1 text-[8px] xl:text-[10px] font-semibold px-1 xl:px-1.5 py-0 xl:py-0.5 rounded border border-border shrink-0 leading-none"
+                  style={{ color: activity.projectColor ?? undefined }}
+                >
+                  <span
+                    className="h-1 w-1 xl:h-1.5 xl:w-1.5 rounded-full shrink-0"
+                    style={{ backgroundColor: activity.projectColor ?? undefined }}
+                  />
+                  {activity.projectName}
+                </span>
+              )}
+              {activity.tags.slice(0, 2).map((tag) => (
                 <span
-                  className="h-1 w-1 xl:h-1.5 xl:w-1.5 rounded-full shrink-0"
-                  style={{ backgroundColor: tag.color }}
-                />
-                {tag.name}
+                  key={tag.name}
+                  className="inline-flex items-center gap-1 text-[8px] xl:text-[10px] font-medium px-1 xl:px-1.5 py-0 xl:py-0.5 rounded border border-border shrink-0 leading-none"
+                  style={{ color: tag.color }}
+                >
+                  <span
+                    className="h-1 w-1 xl:h-1.5 xl:w-1.5 rounded-full shrink-0"
+                    style={{ backgroundColor: tag.color }}
+                  />
+                  {tag.name}
+                </span>
+              ))}
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+              <span className="text-[10px] text-muted-foreground">
+                {(() => {
+                  const diff = Date.now() - new Date(activity.startedAt).getTime();
+                  const mins = Math.floor(diff / 60000);
+                  if (mins < 60) return `${mins}m ${t("common.ago")}`;
+                  const hrs = Math.floor(mins / 60);
+                  if (hrs < 24) return `${hrs}h ${t("common.ago")}`;
+                  const days = Math.floor(hrs / 24);
+                  return days === 1 ? t("common.yesterday") : `${days}d ${t("common.ago")}`;
+                })()}
               </span>
-            ))}
+              <button
+                onClick={() => setShowDialog(true)}
+                className="opacity-0 group-hover:opacity-100 transition-opacity ml-1 p-0.5 rounded hover:bg-destructive/10 hover:text-destructive text-muted-foreground"
+                title={t("session.deleteSession")}
+              >
+                <Trash2 className="h-3 w-3" />
+              </button>
+            </div>
           </div>
-          <span className="text-[10px] text-muted-foreground shrink-0">
-            {(() => {
-              const diff = Date.now() - new Date(activity.startedAt).getTime();
-              const mins = Math.floor(diff / 60000);
-              if (mins < 60) return `${mins}m ${t("common.ago")}`;
-              const hrs = Math.floor(mins / 60);
-              if (hrs < 24) return `${hrs}h ${t("common.ago")}`;
-              const days = Math.floor(hrs / 24);
-              return days === 1 ? t("common.yesterday") : `${days}d ${t("common.ago")}`;
-            })()}
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5 xl:gap-2 mt-0.5 xl:mt-1">
-          <span className="text-[8px] xl:text-[10px] font-medium text-muted-foreground bg-muted px-1 xl:px-1.5 py-0 xl:py-0.5 rounded shrink-0 leading-none">
-            {formatDuration(activity.durationSeconds)}
-          </span>
-          <span className="text-[8px] xl:text-[10px] text-muted-foreground truncate mx-0.5">
-            {activity.notes}
-          </span>
+          <div className="flex items-center gap-1.5 xl:gap-2 mt-0.5 xl:mt-1">
+            <span className="text-[8px] xl:text-[10px] font-medium text-muted-foreground bg-muted px-1 xl:px-1.5 py-0 xl:py-0.5 rounded shrink-0 leading-none">
+              {formatDuration(activity.durationSeconds)}
+            </span>
+            <span className="text-[8px] xl:text-[10px] text-muted-foreground truncate mx-0.5">
+              {activity.notes}
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+      <DeleteSessionDialog
+        sessionId={activity.id}
+        open={showDialog}
+        onOpenChange={setShowDialog}
+        onDeleted={() => onDelete?.()}
+      />
+    </>
   );
 }
 
@@ -120,12 +142,13 @@ function ActivitySkeleton() {
   );
 }
 
-export function RecentActivity({ 
-  data, 
-  isLoading, 
+export function RecentActivity({
+  data,
+  isLoading,
   title,
   emptyMessage,
-  hideCard = false
+  hideCard = false,
+  onSessionDeleted,
 }: RecentActivityProps) {
   const { t } = useTranslation();
   const resolvedTitle = title ?? t("dashboard.recentActivity");
@@ -152,7 +175,7 @@ export function RecentActivity({
           </p>
         ) : (
           data.map((activity) => (
-            <ActivityItem key={activity.id} activity={activity} />
+            <ActivityItem key={activity.id} activity={activity} onDelete={onSessionDeleted ? () => onSessionDeleted() : undefined} />
           ))
         )}
       </div>

@@ -81,6 +81,28 @@ export function useLogbook() {
     setSelectedDate(now.toISOString().split("T")[0]);
   }, []);
 
+  const refetchActivities = useCallback(async () => {
+    if (!selectedDate) return;
+    setIsLoadingActivities(true);
+    try {
+      const activities = await getActivitiesByDate(selectedDate);
+      setSelectedActivities(activities);
+    } catch (err) {
+      console.error("Failed to refetch activities:", err);
+    } finally {
+      setIsLoadingActivities(false);
+    }
+    // Also refresh calendar days
+    try {
+      const year = currentMonth.getUTCFullYear();
+      const month = currentMonth.getUTCMonth();
+      const days = await getCalendarDays(year, month);
+      setCalendarDays(days);
+    } catch (err) {
+      console.error("Failed to refetch calendar:", err);
+    }
+  }, [selectedDate, currentMonth]);
+
   return {
     currentMonth,
     calendarDays,
@@ -91,6 +113,7 @@ export function useLogbook() {
     isLoadingActivities,
     nextMonth,
     prevMonth,
-    goToToday
+    goToToday,
+    refetchActivities,
   };
 }

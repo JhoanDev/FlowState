@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star, Clock, BookOpen, Layers } from "lucide-react";
+import { DeleteSessionDialog } from "@/components/ui/delete-session-dialog";
+import { Star, Clock, BookOpen, Layers, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ActivityEntry } from "@/types";
 import { useSettings } from "@/providers/settings-provider";
@@ -13,6 +15,7 @@ interface SessionReviewListProps {
   date: string | null;
   activities: ActivityEntry[];
   isLoading: boolean;
+  onSessionDeleted?: () => void;
 }
 
 function StarRating({ rating }: { rating: number | null }) {
@@ -45,64 +48,77 @@ function formatTime(isoDate: string, use12h: boolean): string {
   return new Date(isoDate).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: use12h });
 }
 
-function EntryCard({ activity, use12h }: { activity: ActivityEntry, use12h: boolean }) {
+function EntryCard({ activity, use12h, onDelete }: { activity: ActivityEntry; use12h: boolean; onDelete?: () => void }) {
   const { t } = useTranslation();
+  const [showDialog, setShowDialog] = useState(false);
+
   return (
-    <div className="flex flex-col gap-3 p-3 sm:p-4 rounded-lg border border-border bg-card hover:border-muted-foreground/30 transition-colors">
-      <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4">
-        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-          {/* Main Badge */}
-          <Badge variant={activity.type === "WORK" ? "work" : "study"} className="text-[10px] font-bold px-1.5 py-0.5">
-            {activity.type === "WORK" ? t("session.work") : t("session.study")}
-          </Badge>
+    <>
+      <div className="group flex flex-col gap-3 p-3 sm:p-4 rounded-lg border border-border bg-card hover:border-muted-foreground/30 transition-colors">
+        <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <Badge variant={activity.type === "WORK" ? "work" : "study"} className="text-[10px] font-bold px-1.5 py-0.5">
+              {activity.type === "WORK" ? t("session.work") : t("session.study")}
+            </Badge>
 
-          {/* Project/Tags */}
-          {activity.projectName && (
-            <span
-              className="inline-flex items-center gap-1.5 text-xs font-semibold px-2 py-0.5 rounded-md border border-border bg-background max-w-[160px]"
-              style={{ color: activity.projectColor ?? undefined }}
-            >
-              <Layers className="h-3 w-3 shrink-0" />
-              <span className="truncate">{activity.projectName}</span>
-            </span>
-          )}
-          {activity.tags.map((tag) => (
-            <span
-              key={tag.name}
-              className="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-md border border-border bg-background max-w-[140px]"
-              style={{ color: tag.color }}
-            >
-              <BookOpen className="h-3 w-3 shrink-0" />
-              <span className="truncate">{tag.name}</span>
-            </span>
-          ))}
-        </div>
-
-        {/* Meta info right */}
-        <div className="flex flex-col items-end gap-1.5 sm:flex-row sm:items-center sm:gap-3 shrink-0">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Clock className="h-3.5 w-3.5" />
-            <span className="font-medium">{formatDuration(activity.durationSeconds)}</span>
-            <span className="opacity-50">({formatTime(activity.startedAt, use12h)})</span>
+            {activity.projectName && (
+              <span
+                className="inline-flex items-center gap-1.5 text-xs font-semibold px-2 py-0.5 rounded-md border border-border bg-background max-w-[160px]"
+                style={{ color: activity.projectColor ?? undefined }}
+              >
+                <Layers className="h-3 w-3 shrink-0" />
+                <span className="truncate">{activity.projectName}</span>
+              </span>
+            )}
+            {activity.tags.map((tag) => (
+              <span
+                key={tag.name}
+                className="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-md border border-border bg-background max-w-[140px]"
+                style={{ color: tag.color }}
+              >
+                <BookOpen className="h-3 w-3 shrink-0" />
+                <span className="truncate">{tag.name}</span>
+              </span>
+            ))}
           </div>
-          <div className="hidden sm:block h-4 w-[1px] bg-border" />
-          <StarRating rating={activity.rating} />
+
+          <div className="flex flex-col items-end gap-1.5 sm:flex-row sm:items-center sm:gap-3 shrink-0">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Clock className="h-3.5 w-3.5" />
+              <span className="font-medium">{formatDuration(activity.durationSeconds)}</span>
+              <span className="opacity-50">({formatTime(activity.startedAt, use12h)})</span>
+            </div>
+            <div className="hidden sm:block h-4 w-[1px] bg-border" />
+            <StarRating rating={activity.rating} />
+            <button
+              onClick={() => setShowDialog(true)}
+              className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-destructive/10 hover:text-destructive text-muted-foreground"
+              title={t("session.deleteSession")}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-1 p-2 sm:p-3 rounded-md bg-muted/50 border border-border/50 text-xs sm:text-sm leading-relaxed text-foreground whitespace-pre-wrap">
+          {activity.notes ? (
+            activity.notes
+          ) : (
+            <span className="text-muted-foreground italic">{t("common.empty") || "No diary notes were written for this session."}</span>
+          )}
         </div>
       </div>
-
-      {/* Diary Notes */}
-      <div className="mt-1 p-2 sm:p-3 rounded-md bg-muted/50 border border-border/50 text-xs sm:text-sm leading-relaxed text-foreground whitespace-pre-wrap">
-        {activity.notes ? (
-          activity.notes
-        ) : (
-          <span className="text-muted-foreground italic">{t("common.empty") || "No diary notes were written for this session."}</span>
-        )}
-      </div>
-    </div>
+      <DeleteSessionDialog
+        sessionId={activity.id}
+        open={showDialog}
+        onOpenChange={setShowDialog}
+        onDeleted={() => onDelete?.()}
+      />
+    </>
   );
 }
 
-export function SessionReviewList({ date, activities, isLoading }: SessionReviewListProps) {
+export function SessionReviewList({ date, activities, isLoading, onSessionDeleted }: SessionReviewListProps) {
   const { settings } = useSettings();
   const { t } = useTranslation();
   const use12h = settings?.timeFormat === "12h";
@@ -149,7 +165,7 @@ export function SessionReviewList({ date, activities, isLoading }: SessionReview
           </div>
         ) : (
           activities.map((activity) => (
-            <EntryCard key={activity.id} activity={activity} use12h={use12h} />
+            <EntryCard key={activity.id} activity={activity} use12h={use12h} onDelete={onSessionDeleted} />
           ))
         )}
       </CardContent>

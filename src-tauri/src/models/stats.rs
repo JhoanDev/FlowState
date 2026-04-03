@@ -94,3 +94,11 @@ pub struct CalendarDay {
     pub intensity: i64,
     pub total_seconds: i64,
 }
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StudyTagRankingItem {
+    pub label: String,
+    pub hours: f64,
+    pub color: String,
+}

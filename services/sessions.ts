@@ -89,6 +89,21 @@ export async function saveManualSession(
   return newSession;
 }
 
+export async function deleteSession(sessionId: number): Promise<void> {
+  const res = await invokeTauri<void>("delete_session", { sessionId });
+  if (res !== null) return;
+
+  await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
+  const idx = mockSessions.findIndex((s) => s.id === sessionId);
+  if (idx !== -1) mockSessions.splice(idx, 1);
+  // Also remove session_tags
+  for (let i = mockSessionTags.length - 1; i >= 0; i--) {
+    if (mockSessionTags[i].sessionId === sessionId) {
+      mockSessionTags.splice(i, 1);
+    }
+  }
+}
+
 export async function getTodayStats(): Promise<TodayStats> {
   const res = await invokeTauri<TodayStats>("get_today_stats");
   if (res) return res;

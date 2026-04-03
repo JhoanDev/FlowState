@@ -209,3 +209,32 @@ pub fn get_today_stats(db: State<'_, DbPool>) -> Result<TodayStats, String> {
     })
     .map_err(|e| format!("Query error: {}", e))
 }
+
+#[tauri::command]
+pub fn delete_session(
+    db: State<'_, DbPool>,
+    session_id: i64,
+) -> Result<(), String> {
+    let conn = db.0.lock().map_err(|e| format!("Lock error: {}", e))?;
+
+    // Delete related session_tags first (FK)
+    conn.execute(
+        "DELETE FROM session_tags WHERE session_id = ?1",
+        rusqlite::params![session_id],
+    )
+    .map_err(|e| format!("Delete tags error: {}", e))?;
+
+    // Delete the session
+    let affected = conn
+        .execute(
+            "DELETE FROM sessions WHERE id = ?1",
+            rusqlite::params![session_id],
+        )
+        .map_err(|e| format!("Delete error: {}", e))?;
+
+    if affected == 0 {
+        return Err(format!("Session {} not found", session_id));
+    }
+
+    Ok(())
+}

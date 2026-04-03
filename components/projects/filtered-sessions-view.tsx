@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getActivitiesByProject, getActivitiesByTag } from "@/services/dashboard";
 import type { ActivityEntry } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Clock, Star, Activity, PlusCircle, Calendar as CalendarIcon, BookOpen, Layers } from "lucide-react";
+import { DeleteSessionDialog } from "@/components/ui/delete-session-dialog";
+import { Clock, Star, Activity, PlusCircle, Calendar as CalendarIcon, BookOpen, Layers, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useSettings } from "@/providers/settings-provider";
@@ -26,6 +27,101 @@ function formatDuration(seconds: number): string {
   return `${m}m`;
 }
 
+
+function SessionCard({
+  activity,
+  type,
+  itemName,
+  formatDate,
+  formatTime,
+  onDeleted,
+}: {
+  activity: ActivityEntry;
+  type: "PROJECT" | "TAG" | null;
+  itemName: string;
+  formatDate: (d: string) => string;
+  formatTime: (d: string) => string;
+  onDeleted: () => void;
+}) {
+  const { t } = useTranslation();
+  const [showDialog, setShowDialog] = useState(false);
+
+  return (
+    <>
+      <div className="group p-3 rounded-lg border border-border/60 bg-card flex flex-col gap-2 hover:border-primary/40 transition-colors">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-1.5">
+            {activity.projectName && (
+              <span
+                className={cn("text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-sm",
+                  type === "PROJECT" ? "text-background" : "bg-accent/40 text-muted-foreground"
+                )}
+                style={{
+                  backgroundColor: type === "PROJECT" ? (activity.projectColor || "currentColor") : undefined,
+                  color: type !== "PROJECT" ? activity.projectColor || undefined : undefined
+                }}
+              >
+                {activity.projectName}
+              </span>
+            )}
+            {activity.tags.map(t => {
+              const isTarget = type === "TAG" && t.name === itemName;
+              return (
+                <span
+                  key={t.name}
+                  className={cn("text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-sm",
+                    isTarget ? "text-background" : "bg-accent/40 text-muted-foreground"
+                  )}
+                  style={{
+                    backgroundColor: isTarget ? t.color : undefined,
+                    color: !isTarget ? t.color : undefined
+                  }}
+                >
+                  {t.name}
+                </span>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-col items-end gap-1 shrink-0 mt-0.5 sm:mt-0 sm:flex-row sm:items-center sm:gap-2.5">
+            {activity.rating && (
+              <span className="text-[11px] font-bold flex items-center gap-0.5 text-orange-400">
+                {activity.rating} <Star className="w-3 h-3 fill-orange-400" />
+              </span>
+            )}
+            <span className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {formatDuration(activity.durationSeconds)}
+            </span>
+            <button
+              onClick={() => setShowDialog(true)}
+              className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-destructive/10 hover:text-destructive text-muted-foreground"
+              title={t("session.deleteSession")}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+
+        {activity.notes && (
+          <div className="text-[13px] text-foreground/90 italic whitespace-pre-wrap leading-relaxed px-0.5">
+            &quot;{activity.notes}&quot;
+          </div>
+        )}
+
+        <div className="text-[9px] font-mono font-medium text-muted-foreground/60 uppercase text-right">
+          {formatDate(activity.startedAt)} • {formatTime(activity.startedAt)}
+        </div>
+      </div>
+      <DeleteSessionDialog
+        sessionId={activity.id}
+        open={showDialog}
+        onOpenChange={setShowDialog}
+        onDeleted={onDeleted}
+      />
+    </>
+  );
+}
 
 export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }: FilteredSessionsViewProps) {
   const { settings } = useSettings();
@@ -160,67 +256,17 @@ export function FilteredSessionsView({ type, id, itemName, itemColor, onClear }:
             </div>
           ) : (
             activities.map((activity) => (
-              <div key={activity.id} className="p-3 rounded-lg border border-border/60 bg-card flex flex-col gap-2 hover:border-primary/40 transition-colors">
-                 <div className="flex items-start justify-between gap-2">
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      {/* Project Badge */}
-                      {activity.projectName && (
-                         <span 
-                           className={cn("text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-sm", 
-                             type === "PROJECT" ? "text-background" : "bg-accent/40 text-muted-foreground"
-                           )} 
-                           style={{ 
-                             backgroundColor: type === "PROJECT" ? (activity.projectColor || "currentColor") : undefined,
-                             color: type !== "PROJECT" ? activity.projectColor || undefined : undefined
-                           }}
-                         >
-                           {activity.projectName}
-                         </span>
-                      )}
-                      
-                      {/* Tags Badges */}
-                      {activity.tags.map(t => {
-                         const isTarget = type === "TAG" && t.name === itemName;
-                         return (
-                           <span 
-                             key={t.name} 
-                             className={cn("text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-sm", 
-                               isTarget ? "text-background" : "bg-accent/40 text-muted-foreground"
-                             )} 
-                             style={{ 
-                               backgroundColor: isTarget ? t.color : undefined,
-                               color: !isTarget ? t.color : undefined
-                             }}
-                           >
-                             {t.name}
-                           </span>
-                         );
-                      })}
-                    </div>
-
-                    <div className="flex flex-col items-end gap-1 shrink-0 mt-0.5 sm:mt-0 sm:flex-row sm:items-center sm:gap-2.5">
-                       {activity.rating && (
-                          <span className="text-[11px] font-bold flex items-center gap-0.5 text-orange-400">
-                             {activity.rating} <Star className="w-3 h-3 fill-orange-400" />
-                          </span>
-                       )}
-                       <span className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1">
-                         <Clock className="w-3 h-3" />
-                         {formatDuration(activity.durationSeconds)}
-                       </span>
-                    </div>
-                 </div>
-
-                 {activity.notes && (
-                    <div className="text-[13px] text-foreground/90 italic whitespace-pre-wrap leading-relaxed px-0.5">
-                      &quot;{activity.notes}&quot;
-                    </div>
-                 )}
-                 
-                 <div className="text-[9px] font-mono font-medium text-muted-foreground/60 uppercase text-right">
-                   {formatDate(activity.startedAt)} • {formatTime(activity.startedAt)}
-                 </div>
-              </div>
+              <SessionCard
+                key={activity.id}
+                activity={activity}
+                type={type}
+                itemName={itemName}
+                formatDate={formatDate}
+                formatTime={formatTime}
+                onDeleted={() => {
+                  setActivities(prev => prev.filter(a => a.id !== activity.id));
+                }}
+              />
             ))
           )}
         </div>

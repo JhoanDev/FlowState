@@ -24,6 +24,7 @@ interface ContributionHeatmapProps {
   onSelectDate?: (date: string) => void;
   selectedActivities?: ActivityEntry[] | null;
   isLoadingSelected?: boolean;
+  onSessionDeleted?: () => void;
 }
 
 const LABEL_W = 28;
@@ -153,13 +154,14 @@ function HeatmapGrid({ days: rawDays, selectedDate, onSelectDate, locale }: Heat
   );
 }
 
-export function ContributionHeatmap({ 
-  data, 
-  isLoading, 
-  selectedDate, 
+export function ContributionHeatmap({
+  data,
+  isLoading,
+  selectedDate,
   onSelectDate,
   selectedActivities,
-  isLoadingSelected
+  isLoadingSelected,
+  onSessionDeleted,
 }: ContributionHeatmapProps) {
   const { settings } = useSettings();
   const { t } = useTranslation();
@@ -203,6 +205,7 @@ export function ContributionHeatmap({
             title={`${t("dashboard.sessions")} · ${displaySelectedDate}`}
             emptyMessage={t("dashboard.noSessions")}
             hideCard={true}
+            onSessionDeleted={onSessionDeleted}
           />
         ) : (
           <div className="flex-1 flex items-center justify-center p-4 min-h-0">

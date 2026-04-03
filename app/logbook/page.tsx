@@ -18,6 +18,7 @@ export default function LogbookPage() {
     nextMonth,
     prevMonth,
     goToToday,
+    refetchActivities,
   } = useLogbook();
   const { t } = useTranslation();
 
@@ -44,6 +45,7 @@ export default function LogbookPage() {
             date={selectedDate}
             activities={selectedActivities}
             isLoading={isLoadingActivities}
+            onSessionDeleted={refetchActivities}
           />
         </div>
       </div>

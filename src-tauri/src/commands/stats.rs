@@ -3,7 +3,7 @@ use tauri::State;
 use crate::database::DbPool;
 use crate::models::{
     CalendarDay, ConsistencyDay, DashboardStats, DistributionChart, DistributionSlice, HeatmapDay,
-    StreakInfo, TopRatedItem,
+    StreakInfo, StudyTagRankingItem, TopRatedItem,
 };
 
 // ─── Streak Helpers ─────────────────────────────────────────────
@@ -578,4 +578,44 @@ pub fn get_calendar_days(
     }
 
     Ok(result)
+}
+
+// ─── Study Tag Ranking ─────────────────────────────────────────
+
+#[tauri::command]
+pub fn get_study_tag_ranking(db: State<'_, DbPool>) -> Result<Vec<StudyTagRankingItem>, String> {
+    let conn = db.0.lock().map_err(|e| format!("Lock error: {}", e))?;
+
+    let mut stmt = conn
+        .prepare(
+            "SELECT t.name AS label,
+                    t.color AS color,
+                    SUM(s.duration_seconds) / 3600.0 AS hours
+             FROM sessions s
+             INNER JOIN session_tags st ON st.session_id = s.id
+             INNER JOIN tags t ON t.id = st.tag_id
+             WHERE s.type = 'STUDY' AND s.status = 'COMPLETED'
+             GROUP BY st.tag_id
+             ORDER BY hours DESC",
+        )
+        .map_err(|e| format!("Query error: {}", e))?;
+
+    let rows = stmt
+        .query_map([], |row| {
+            Ok(StudyTagRankingItem {
+                label: row.get(0)?,
+                hours: {
+                    let h: f64 = row.get(2)?;
+                    (h * 10.0).round() / 10.0
+                },
+                color: row.get(1)?,
+            })
+        })
+        .map_err(|e| format!("Query error: {}", e))?;
+
+    let mut items = Vec::new();
+    for row in rows {
+        items.push(row.map_err(|e| format!("Row error: {}", e))?);
+    }
+    Ok(items)
 }

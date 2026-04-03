@@ -46,6 +46,18 @@ export default function Dashboard() {
   const [isLoadingSelected, setIsLoadingSelected] = useState(false);
   const { t } = useTranslation();
 
+  const handleSessionDeleted = useCallback(() => {
+    activities.refetch();
+    heatmap.refetch();
+    workDist.refetch();
+    studyTags.refetch();
+    topRatedWork.refetch();
+    topRatedStudy.refetch();
+    if (selectedDate) {
+      getActivitiesByDate(selectedDate).then(setSelectedActivities);
+    }
+  }, [selectedDate]);
+
   const handleSelectDate = useCallback(async (date: string) => {
     if (selectedDate === date) {
       setSelectedDate(null);
@@ -83,12 +95,13 @@ export default function Dashboard() {
             onSelectDate={handleSelectDate}
             selectedActivities={selectedActivities}
             isLoadingSelected={isLoadingSelected}
+            onSessionDeleted={handleSessionDeleted}
           />
         </motion.div>
 
         {/* Recent Sessions — spans 2 columns on desktop */}
         <motion.div variants={itemVariants} className="md:col-span-2 min-h-0 flex flex-col min-w-0">
-          <RecentActivity data={activities.data} isLoading={activities.isLoading} />
+          <RecentActivity data={activities.data} isLoading={activities.isLoading} onSessionDeleted={handleSessionDeleted} />
         </motion.div>
 
         {/* Work Distribution — 1 column, row 2 */}
