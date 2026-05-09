@@ -88,7 +88,7 @@ function ColorPicker({
             disabled={isTaken}
             onClick={() => onChange(color)}
             className={cn(
-              "h-6 w-6 rounded-full transition-all duration-200 border-2",
+              "h-6 w-6 rounded-full transition-all duration-200 border-2 cursor-pointer",
               isTaken
                 ? "opacity-20 cursor-not-allowed border-transparent"
                 : isSelected
@@ -178,14 +178,14 @@ function EditPopover({
         <button
           type="button"
           onClick={handleSave}
-          className="h-9 w-9 shrink-0 flex items-center justify-center rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-200"
+          className="h-9 w-9 shrink-0 flex items-center justify-center rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-200 cursor-pointer"
         >
           <Check className="h-4 w-4" />
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="h-9 w-9 shrink-0 flex items-center justify-center rounded-md bg-muted text-muted-foreground hover:bg-accent transition-colors duration-200"
+          className="h-9 w-9 shrink-0 flex items-center justify-center rounded-md bg-muted text-muted-foreground hover:bg-accent transition-colors duration-200 cursor-pointer"
         >
           <X className="h-4 w-4" />
         </button>
@@ -355,7 +355,7 @@ export function ListManager({
                           e.stopPropagation();
                           setEditingId(editingId === item.id ? null : item.id);
                         }}
-                        className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-200"
+                        className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-200 cursor-pointer"
                         title="Edit"
                       >
                         <Pencil className="h-3.5 w-3.5" />
@@ -366,7 +366,7 @@ export function ListManager({
                           if (selectedId === item.id && onSelect) onSelect(-1); // Deselect on remove
                           onRemove(item.id);
                         }}
-                        className="p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200"
+                        className="p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200 cursor-pointer"
                         title="Delete"
                       >
                         <X className="h-4 w-4" />

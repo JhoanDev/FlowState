@@ -248,6 +248,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Ensure all clickable elements show the pointer hand */
+button, 
+[role="button"],
+input[type="button"],
+input[type="submit"] {
+  cursor: pointer;
+}
+
+button:disabled,
+button[disabled],
+[role="button"][aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
 /* Subtle scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
