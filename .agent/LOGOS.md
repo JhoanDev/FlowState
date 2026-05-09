@@ -8,10 +8,10 @@ Logos oficiais em SVG vetorial, alinhados ao design system v2.1.
 - `flowstate-mark-dark.svg` — Mark padrão para uso em fundos escuros (dark theme)
 - `flowstate-mark-mono.svg` — Mark monocromático (1 cor) — favicon, embeds, print
 - `flowstate-mark-on-primary.svg` — Mark para uso em fundo --primary (violet)
-- `flowstate-mark-state-work.svg` — Mark com sessão WORK ativa (barra do meio em laranja)
-- `flowstate-mark-state-study.svg` — Mark com sessão STUDY ativa (barra do meio em azul)
+- `flowstate-mark-state-work.svg` — Mark com sessão WORK ativa
+- `flowstate-mark-state-study.svg` — Mark com sessão STUDY ativa
 - `flowstate-mark-state-paused.svg` — Mark em estado PAUSED (50% opacity)
-- `flowstate-lockup-light.svg` — Lockup completo (mark + wordmark "FlowState") para light theme
+- `flowstate-lockup-light.svg` — Lockup completo (mark + wordmark "FlowState")
 - `flowstate-lockup-dark.svg` — Lockup completo (mark + wordmark) para dark theme
 
 ## Paleta usada (tokens do globals.css)

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { motion, AnimatePresence } from "motion/react";
-import Image from "next/image";
+
 import { useSettings } from "@/providers/settings-provider";
 
 export function GlobalLoader() {
@@ -34,13 +34,16 @@ export function GlobalLoader() {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex flex-col items-center gap-6"
           >
-            <div className="relative w-28 h-28 rounded-3xl overflow-hidden border border-border/50 emissive-border">
-              <Image 
-                src="/logo.png" 
+            <div className="relative w-28 h-28 rounded-3xl overflow-hidden border border-border/50 emissive-border flex items-center justify-center p-5">
+              <img 
+                src="/flowstate-mark-light.svg" 
                 alt="FlowState Logo" 
-                fill 
-                className="object-cover" 
-                priority 
+                className="w-full h-full object-contain block dark:hidden" 
+              />
+              <img 
+                src="/flowstate-mark-dark.svg" 
+                alt="FlowState Logo" 
+                className="w-full h-full object-contain hidden dark:block" 
               />
             </div>
             

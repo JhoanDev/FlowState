@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import Image from "next/image";
+
 import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useCommandPalette } from "@/hooks/use-command-palette";
@@ -91,13 +91,19 @@ export function Sidebar({ className, onNavClick, layoutIdPrefix = "desktop" }: {
     >
       {/* Logo */}
       <div className="flex h-[72px] items-center gap-3.5 px-7">
-        <Image
-          src="/logo.png"
+        <img
+          src="/flowstate-mark-light.svg"
           alt="FlowState Logo"
           width={36}
           height={36}
-          className="shrink-0"
-          unoptimized
+          className="shrink-0 block dark:hidden"
+        />
+        <img
+          src="/flowstate-mark-dark.svg"
+          alt="FlowState Logo"
+          width={36}
+          height={36}
+          className="shrink-0 hidden dark:block"
         />
         <span className="text-base font-bold tracking-tight truncate">FlowState</span>
       </div>

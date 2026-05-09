@@ -1,6 +1,6 @@
 <!-- markdownlint-disable-file MD013 -->
 <p align="center">
-  <img src="public/logo.png" alt="FlowState Logo" width="80" />
+  <img src="public/flowstate-mark-mono.svg" alt="FlowState Logo" width="80" />
 </p>
 
 <h1 align="center">FlowState</h1>
