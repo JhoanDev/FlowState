@@ -387,7 +387,7 @@ reinsere os settings padrão. **Não** recria tabelas.
 | `tauri-build`          | 2      | Build script                      |
 | `tauri-plugin-log`     | 2      | Logging estruturado               |
 | `tauri-plugin-dialog`  | 2      | Diálogos nativos (file picker)    |
-| `rusqlite`             | 0.31   | SQLite (feature `bundled`)        |
+| `rusqlite`             | 0.39   | SQLite (feature `bundled`)        |
 | `serde` + `serde_json` | 1      | Serialização IPC                  |
 | `chrono`               | 0.4    | Manipulação de datas              |
 | `log`                  | 0.4    | Macros de logging (`log::info!`)  |

@@ -13,9 +13,9 @@ simultaneamente:
 
 | Arquivo                     | Campo     | Exemplo   |
 | --------------------------- | --------- | --------- |
-| `package.json`              | `version` | `"1.2.0"` |
-| `src-tauri/Cargo.toml`      | `version` | `"1.2.0"` |
-| `src-tauri/tauri.conf.json` | `version` | `"1.2.0"` |
+| `package.json`              | `version` | `"1.2.2"` |
+| `src-tauri/Cargo.toml`      | `version` | `"1.2.2"` |
+| `src-tauri/tauri.conf.json` | `version` | `"1.2.2"` |
 
 Seguir **SemVer** (`MAJOR.MINOR.PATCH`):
 
