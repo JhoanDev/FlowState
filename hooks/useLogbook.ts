@@ -2,10 +2,11 @@ import { useState, useCallback, useEffect } from "react";
 import { getCalendarDays, type CalendarDay } from "@/services/logbookService";
 import { getActivitiesByDate } from "@/services/dashboard"; // Reuse detailed sessions fetcher
 import type { ActivityEntry } from "@/types";
+import { isTauri } from "@/services/tauri";
 
 export function useLogbook() {
   const [currentMonth, setCurrentMonth] = useState<Date>(() => {
-    const now = new Date("2026-03-18T00:00:00Z"); // Mock context "today"
+    const now = isTauri() ? new Date() : new Date("2026-03-18T00:00:00Z");
     return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
   });
   
@@ -76,7 +77,7 @@ export function useLogbook() {
   }, []);
 
   const goToToday = useCallback(() => {
-    const now = new Date("2026-03-18T00:00:00Z");
+    const now = isTauri() ? new Date() : new Date("2026-03-18T00:00:00Z");
     setCurrentMonth(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)));
     setSelectedDate(now.toISOString().split("T")[0]);
   }, []);
