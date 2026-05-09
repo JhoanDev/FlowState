@@ -4,6 +4,7 @@ import * as React from "react";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSettings } from "@/providers/settings-provider";
+import { useTranslation } from "react-i18next";
 
 interface DatePickerProps {
   value: string; // YYYY-MM-DD
@@ -27,7 +28,25 @@ function getFirstDayOfMonth(year: number, month: number) {
 
 export function DatePicker({ value, onChange, className }: DatePickerProps) {
   const { settings } = useSettings();
-  const locale = settings?.dateFormat === "BR" ? "pt-BR" : "en-US";
+  const { t, i18n } = useTranslation();
+  
+  const uiLocale = i18n.language || "en-US";
+  const dateFormat = settings?.dateFormat || "US";
+
+  const monthNames = React.useMemo(() => {
+    return Array.from({ length: 12 }, (_, i) => {
+      const name = new Date(2024, i, 1).toLocaleDateString(uiLocale, { month: "long" });
+      return name.charAt(0).toUpperCase() + name.slice(1);
+    });
+  }, [uiLocale]);
+
+  const dayNames = React.useMemo(() => {
+    return Array.from({ length: 7 }, (_, i) => {
+      const name = new Date(2024, 0, 7 + i).toLocaleDateString(uiLocale, { weekday: "short" });
+      const clean = name.replace(/\./g, "").slice(0, 2);
+      return clean.charAt(0).toUpperCase() + clean.slice(1);
+    });
+  }, [uiLocale]);
 
   const [isOpen, setIsOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -78,11 +97,26 @@ export function DatePicker({ value, onChange, className }: DatePickerProps) {
     }
   };
 
-  const handleSelectDay = (day: number) => {
-    const mm = String(currentMonth + 1).padStart(2, "0");
-    const dd = String(day).padStart(2, "0");
-    onChange(`${currentYear}-${mm}-${dd}`);
+  const selectDate = (date: Date) => {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+    onChange(`${yyyy}-${mm}-${dd}`);
     setIsOpen(false);
+  };
+
+  const handleSelectDay = (day: number) => {
+    selectDate(new Date(currentYear, currentMonth, day, 12, 0, 0));
+  };
+
+  const selectToday = () => {
+    selectDate(new Date());
+  };
+
+  const selectYesterday = () => {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    selectDate(d);
   };
 
   const toggleOpen = () => setIsOpen(prev => !prev);
@@ -94,9 +128,11 @@ export function DatePicker({ value, onChange, className }: DatePickerProps) {
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
   // Formatting display
-  const displayDate = value 
-    ? new Date(value + "T12:00:00").toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" })
-    : "Select date";
+  let displayDate = t("common.date") || "Date";
+  if (value) {
+    const [y, m, d] = value.split("-");
+    displayDate = dateFormat === "BR" ? `${d}/${m}/${y}` : `${m}/${d}/${y}`;
+  }
 
   return (
     <div className={cn("relative", className)} ref={containerRef}>
@@ -109,7 +145,7 @@ export function DatePicker({ value, onChange, className }: DatePickerProps) {
         )}
       >
         <CalendarIcon className="w-4 h-4 text-muted-foreground shrink-0" />
-        <span className={!value ? "text-muted-foreground" : "text-foreground"}>
+        <span className={!value ? "text-muted-foreground" : "text-foreground tabular-nums tracking-wide"}>
           {displayDate}
         </span>
       </button>
@@ -117,6 +153,22 @@ export function DatePicker({ value, onChange, className }: DatePickerProps) {
       {isOpen && (
         <div className="absolute top-full left-0 mt-2 z-50 w-[280px] rounded-xl border border-border bg-card/95 backdrop-blur-md emissive-border animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="p-3">
+            {/* Quick Actions */}
+            <div className="flex gap-2 mb-3 pb-3 border-b border-border/50">
+              <button 
+                onClick={selectToday}
+                className="flex-1 py-1.5 text-xs font-semibold rounded-md bg-accent/50 hover:bg-accent text-foreground transition-colors"
+              >
+                {t("common.today") || "Hoje"}
+              </button>
+              <button 
+                onClick={selectYesterday}
+                className="flex-1 py-1.5 text-xs font-semibold rounded-md bg-accent/50 hover:bg-accent text-foreground transition-colors"
+              >
+                {t("common.yesterday") || "Ontem"}
+              </button>
+            </div>
+
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
               <button
@@ -126,8 +178,8 @@ export function DatePicker({ value, onChange, className }: DatePickerProps) {
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <div className="text-sm font-bold text-foreground">
-                {MONTH_NAMES[currentMonth]} {currentYear}
+              <div className="text-sm font-bold text-foreground capitalize">
+                {monthNames[currentMonth]} {currentYear}
               </div>
               <button
                 type="button"
@@ -140,8 +192,8 @@ export function DatePicker({ value, onChange, className }: DatePickerProps) {
 
             {/* Weekdays */}
             <div className="grid grid-cols-7 gap-1 mb-2">
-              {DAY_NAMES.map(d => (
-                <div key={d} className="text-center text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              {dayNames.map((d, i) => (
+                <div key={`${d}-${i}`} className="text-center text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                   {d}
                 </div>
               ))}

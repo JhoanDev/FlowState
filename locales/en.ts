@@ -36,6 +36,9 @@ const en = {
     date: "Date",
     ago: "ago",
     yesterday: "Yesterday",
+    exact: "Exact",
+    day: "Day",
+    today: "Today",
   },
 
   // ─── Dashboard ───────────────────────────────────────────────

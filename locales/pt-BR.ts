@@ -36,6 +36,9 @@ const ptBR = {
     date: "Data",
     ago: "atrás",
     yesterday: "Ontem",
+    exact: "Exato",
+    day: "Dia",
+    today: "Hoje",
   },
 
   // ─── Dashboard ───────────────────────────────────────────────
