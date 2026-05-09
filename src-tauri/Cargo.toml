@@ -1,6 +1,6 @@
 [package]
 name = "flowstate"
-version = "1.2.1"
+version = "1.2.2"
 description = "FlowState — Desktop productivity & time management app"
 authors = ["jhoanoliveira"]
 license = "MIT"
@@ -20,6 +20,6 @@ serde_json = "1"
 log = "0.4"
 tauri = { version = "2", features = [] }
 tauri-plugin-log = "2"
-rusqlite = { version = "0.31", features = ["bundled"] }
+rusqlite = { version = "0.39", features = ["bundled"] }
 chrono = { version = "0.4", features = ["serde"] }
-tauri-plugin-dialog = "2.6.0"
+tauri-plugin-dialog = "2.7.1"
