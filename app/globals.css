@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 /* ─── Tailwind Theme Bridge ──────────────────────────────────────
    Maps CSS vars → Tailwind classes: bg-background, text-foreground,
    border-border, bg-primary, text-muted, bg-card, etc.            */
