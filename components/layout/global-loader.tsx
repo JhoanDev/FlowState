@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "motion/react";
 
 import { useSettings } from "@/providers/settings-provider";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 export function GlobalLoader() {
   const { isLoading: isSettingsLoading } = useSettings();
   const [minTimeElapsed, setMinTimeElapsed] = React.useState(false);
@@ -36,12 +38,12 @@ export function GlobalLoader() {
           >
             <div className="relative w-28 h-28 rounded-3xl overflow-hidden border border-border/50 emissive-border flex items-center justify-center p-5">
               <img 
-                src="/flowstate-mark-light.svg" 
+                src={`${basePath}/flowstate-mark-light.svg`} 
                 alt="FlowState Logo" 
                 className="w-full h-full object-contain block dark:hidden" 
               />
               <img 
-                src="/flowstate-mark-dark.svg" 
+                src={`${basePath}/flowstate-mark-dark.svg`} 
                 alt="FlowState Logo" 
                 className="w-full h-full object-contain hidden dark:block" 
               />

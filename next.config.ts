@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
     basePath: "/FlowState",
     assetPrefix: "/FlowState",
   }),
+  env: {
+    NEXT_PUBLIC_BASE_PATH: isGitHubPages ? "/FlowState" : "",
+  },
 };
 
 export default nextConfig;

@@ -105,7 +105,8 @@ Testes unitários existem apenas no Rust. Sem testes frontend.
 **Regra:** ao adicionar ou modificar um `#[tauri::command]`, adicione testes
 para a lógica interna no mesmo arquivo (`#[cfg(test)] mod tests`).
 
-- Lógica vai em funções privadas `fn <nome>_inner(conn: &Connection, ...) -> Result<T, String>`
+- Lógica vai em funções privadas
+  `fn <nome>_inner(conn: &Connection, ...) -> Result<T, String>`
 - Commands são wrappers finos que fazem lock e delegam
 - Testes usam `Connection::open_in_memory()` + migrations reais (sem mocks)
 

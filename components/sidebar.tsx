@@ -69,6 +69,8 @@ function NavLink({
   );
 }
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 export function Sidebar({ className, onNavClick, layoutIdPrefix = "desktop" }: { className?: string; onNavClick?: () => void; layoutIdPrefix?: string }) {
   const pathname = usePathname();
   const { t } = useTranslation();
@@ -92,14 +94,14 @@ export function Sidebar({ className, onNavClick, layoutIdPrefix = "desktop" }: {
       {/* Logo */}
       <div className="flex h-[72px] items-center gap-3.5 px-7">
         <img
-          src="/flowstate-mark-light.svg"
+          src={`${basePath}/flowstate-mark-light.svg`}
           alt="FlowState Logo"
           width={36}
           height={36}
           className="shrink-0 block dark:hidden"
         />
         <img
-          src="/flowstate-mark-dark.svg"
+          src={`${basePath}/flowstate-mark-dark.svg`}
           alt="FlowState Logo"
           width={36}
           height={36}
