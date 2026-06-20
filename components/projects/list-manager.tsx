@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, X, Check, Pencil, type LucideIcon } from "lucide-react";
+import { Plus, X, Check, Pencil, AlertCircle, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const COLOR_PRESETS = [
@@ -53,8 +53,8 @@ interface ListManagerProps {
   themeClass: "theme-work" | "theme-study";
   items: ListItem[];
   isLoading: boolean;
-  onAdd: (name: string, color: string) => void;
-  onEdit: (id: number, data: { name?: string; color?: string }) => void;
+  onAdd: (name: string, color: string) => Promise<void>;
+  onEdit: (id: number, data: { name?: string; color?: string }) => Promise<void>;
   onRemove: (id: number) => void;
   selectedId?: number | null;
   onSelect?: (id: number) => void;
@@ -113,20 +113,23 @@ function EditPopover({
 }: {
   item: ListItem;
   usedColors: Set<string>;
-  onSave: (data: { name: string; color: string }) => void;
+  onSave: (data: { name: string; color: string }) => Promise<void>;
   onCancel: () => void;
 }) {
   const [editName, setEditName] = React.useState(item.name);
   const [editColor, setEditColor] = React.useState(item.color);
+  const [saveError, setSaveError] = React.useState<string | null>(null);
+  const [isSaving, setIsSaving] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const popoverRef = React.useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     inputRef.current?.focus();
     inputRef.current?.select();
   }, []);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const trimmed = editName.trim();
     if (!trimmed) {
       onCancel();
@@ -136,19 +139,36 @@ function EditPopover({
       onCancel();
       return;
     }
-    onSave({ name: trimmed, color: editColor });
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      await onSave({ name: trimmed, color: editColor });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setSaveError(
+        msg.includes("UNIQUE constraint") || msg.includes("already")
+          ? t("projects.errorNameTaken")
+          : msg
+      );
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  // Close on click outside
+  // Close on click outside (only when not in error state)
   React.useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
-        handleSave();
+      if (
+        popoverRef.current &&
+        !popoverRef.current.contains(e.target as Node)
+      ) {
+        if (!saveError) handleSave();
+        else onCancel();
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [editName, editColor, item.name, item.color, onCancel, onSave]); 
+  }, [editName, editColor, item.name, item.color, saveError]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -171,14 +191,21 @@ function EditPopover({
         <input
           ref={inputRef}
           value={editName}
-          onChange={(e) => setEditName(e.target.value)}
+          onChange={(e) => {
+            setEditName(e.target.value);
+            setSaveError(null);
+          }}
           onKeyDown={handleKeyDown}
-          className="flex-1 h-9 bg-transparent px-3 text-sm font-medium rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-all duration-200"
+          className={cn(
+            "flex-1 h-9 bg-transparent px-3 text-sm font-medium rounded-md border focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring transition-all duration-200",
+            saveError ? "border-destructive focus:ring-destructive/50" : "border-input"
+          )}
         />
         <button
           type="button"
           onClick={handleSave}
-          className="h-9 w-9 shrink-0 flex items-center justify-center rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-200 cursor-pointer"
+          disabled={isSaving}
+          className="h-9 w-9 shrink-0 flex items-center justify-center rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-200 cursor-pointer disabled:opacity-50"
         >
           <Check className="h-4 w-4" />
         </button>
@@ -190,6 +217,14 @@ function EditPopover({
           <X className="h-4 w-4" />
         </button>
       </div>
+
+      {/* Inline error */}
+      {saveError && (
+        <div className="flex items-center gap-1.5 text-xs text-destructive">
+          <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+          <span>{saveError}</span>
+        </div>
+      )}
 
       {/* Color grid */}
       <ColorPicker
@@ -222,6 +257,8 @@ export function ListManager({
 }: ListManagerProps) {
   const [inputValue, setInputValue] = React.useState("");
   const [editingId, setEditingId] = React.useState<number | null>(null);
+  const [addError, setAddError] = React.useState<string | null>(null);
+  const [isAdding, setIsAdding] = React.useState(false);
   const { t } = useTranslation();
 
   const usedColors = new Set(items.map((i) => i.color));
@@ -237,21 +274,35 @@ export function ListManager({
     }
   }, [items.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
     if (usedColors.has(selectedColor)) return;
-    onAdd(inputValue.trim(), selectedColor);
-    setInputValue("");
-    const nextAvailable = COLOR_PRESETS.filter(
-      (c) => !usedColors.has(c) && c !== selectedColor
-    );
-    if (nextAvailable.length > 0) {
-      setSelectedColor(nextAvailable[0]);
+
+    setIsAdding(true);
+    setAddError(null);
+    try {
+      await onAdd(inputValue.trim(), selectedColor);
+      setInputValue("");
+      const nextAvailable = COLOR_PRESETS.filter(
+        (c) => !usedColors.has(c) && c !== selectedColor
+      );
+      if (nextAvailable.length > 0) {
+        setSelectedColor(nextAvailable[0]);
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setAddError(
+        msg.includes("UNIQUE constraint") || msg.includes("already")
+          ? t("projects.errorNameTaken")
+          : msg
+      );
+    } finally {
+      setIsAdding(false);
     }
   };
 
-  const handleEditSave = (id: number, data: { name: string; color: string }) => {
+  const handleEditSave = async (id: number, data: { name: string; color: string }) => {
     const item = items.find((i) => i.id === id);
     if (!item) return;
 
@@ -260,7 +311,7 @@ export function ListManager({
     if (data.color !== item.color) changes.color = data.color;
 
     if (Object.keys(changes).length > 0) {
-      onEdit(id, changes);
+      await onEdit(id, changes);
     }
     setEditingId(null);
   };
@@ -288,15 +339,34 @@ export function ListManager({
           <form onSubmit={handleSubmit} className="flex gap-2.5">
             <Input
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={(e) => {
+                setInputValue(e.target.value);
+                setAddError(null);
+              }}
               placeholder={placeholder}
-              className="flex-1 h-8 xl:h-9 text-xs xl:text-sm"
+              className={cn(
+                "flex-1 h-8 xl:h-9 text-xs xl:text-sm",
+                addError && "border-destructive focus-visible:ring-destructive/50"
+              )}
             />
-            <Button type="submit" size="sm" className="h-8 xl:h-9 px-3 xl:px-4 gap-1.5 xl:gap-2 text-[10px] xl:text-xs font-semibold">
+            <Button
+              type="submit"
+              size="sm"
+              disabled={isAdding}
+              className="h-8 xl:h-9 px-3 xl:px-4 gap-1.5 xl:gap-2 text-[10px] xl:text-xs font-semibold"
+            >
               <Plus className="h-3.5 w-3.5 xl:h-4 xl:w-4" />
               {t("common.add")}
             </Button>
           </form>
+
+          {/* Add error */}
+          {addError && (
+            <div className="flex items-center gap-1.5 text-xs text-destructive animate-in fade-in slide-in-from-top-1 duration-200">
+              <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+              <span>{addError}</span>
+            </div>
+          )}
 
           {/* Color picker */}
           <div className="flex items-center gap-2">
@@ -332,7 +402,7 @@ export function ListManager({
                           ? ""
                           : "hover:bg-accent/40 bg-transparent"
                     )}
-                    style={{ 
+                    style={{
                       borderColor: selectedId === item.id ? item.color : `${item.color}40`,
                       backgroundColor: selectedId === item.id ? `${item.color}15` : undefined,
                       boxShadow: selectedId === item.id ? `0 0 0 1px ${item.color}` : undefined
@@ -363,7 +433,7 @@ export function ListManager({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (selectedId === item.id && onSelect) onSelect(-1); // Deselect on remove
+                          if (selectedId === item.id && onSelect) onSelect(-1);
                           onRemove(item.id);
                         }}
                         className="p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200 cursor-pointer"

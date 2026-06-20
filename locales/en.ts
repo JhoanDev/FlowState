@@ -103,6 +103,8 @@ const en = {
     strictMode: "Strict Mode active",
     wk: "WK",
     st: "ST",
+    errorProjectRequired: "A project is required for Work sessions.",
+    errorTagRequired: "At least one tag is required for Study sessions.",
   },
 
   // ─── Projects & Tags ─────────────────────────────────────────
@@ -129,6 +131,7 @@ const en = {
     exploreData: "Explore Data",
     exploreDataDesc: "Select a project or a tag from the left panel to filter your sessions and explore your historical tracking.",
     noRecords: "No records explicitly mapped to this",
+    errorNameTaken: "This name is already taken.",
   },
 
   // ─── Goals & Streaks ─────────────────────────────────────────

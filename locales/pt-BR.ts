@@ -103,6 +103,8 @@ const ptBR = {
     strictMode: "Modo rigoroso ativo",
     wk: "TR",
     st: "ES",
+    errorProjectRequired: "Um projeto é obrigatório para sessões de Trabalho.",
+    errorTagRequired: "Ao menos uma tag é obrigatória para sessões de Estudo.",
   },
 
   // ─── Projects & Tags ─────────────────────────────────────────
@@ -129,6 +131,7 @@ const ptBR = {
     exploreData: "Explorar Dados",
     exploreDataDesc: "Selecione um projeto ou tag no painel esquerdo para filtrar suas sessões e explorar seu rastreamento histórico.",
     noRecords: "Nenhum registro mapeado explicitamente para",
+    errorNameTaken: "Este nome já está em uso.",
   },
 
   // ─── Goals & Streaks ─────────────────────────────────────────

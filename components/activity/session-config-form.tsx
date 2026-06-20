@@ -32,12 +32,27 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
   const [plannedSeconds, setPlannedSeconds] = React.useState(25 * 60);
   const [projectId, setProjectId] = React.useState<number | null>(null);
   const [tagIds, setTagIds] = React.useState<number[]>([]);
+  const [validationError, setValidationError] = React.useState<string | null>(null);
   const { t } = useTranslation();
 
   const projects = useAsync(getProjects);
   const tags = useAsync(getTags);
 
+  const handleTypeChange = (type: SessionType) => {
+    setSessionType(type);
+    setValidationError(null);
+  };
+
   const handleStart = () => {
+    if (sessionType === "WORK" && projectId === null) {
+      setValidationError(t("session.errorProjectRequired"));
+      return;
+    }
+    if (sessionType === "STUDY" && tagIds.length === 0) {
+      setValidationError(t("session.errorTagRequired"));
+      return;
+    }
+    setValidationError(null);
     onStart?.({
       type: sessionType,
       timerMode,
@@ -65,7 +80,7 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
       </CardHeader>
 
       <CardContent className="p-3 xl:p-4 pt-3 flex-1 flex flex-col gap-4 min-h-0 md:overflow-y-auto">
-        <SessionTypeToggle value={sessionType} onChange={setSessionType} />
+        <SessionTypeToggle value={sessionType} onChange={handleTypeChange} />
 
         {/* Timer Mode */}
         <div className="space-y-2 xl:space-y-3 shrink-0">
@@ -151,7 +166,7 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
                 </label>
                 <ProjectSelector
                   value={projectId}
-                  onChange={setProjectId}
+                  onChange={(v) => { setProjectId(v); setValidationError(null); }}
                   projects={projects.data ?? []}
                   isLoading={projects.isLoading}
                 />
@@ -167,13 +182,27 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
           </label>
           <TagSelector
             selectedIds={tagIds}
-            onChange={setTagIds}
+            onChange={(v) => { setTagIds(v); setValidationError(null); }}
             tags={tags.data ?? []}
             isLoading={tags.isLoading}
           />
         </div>
 
         <div className="flex-1" />
+
+        <AnimatePresence>
+          {validationError && (
+            <motion.p
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="text-xs font-medium text-destructive bg-destructive/10 border border-destructive/20 rounded-lg px-3 py-2 shrink-0"
+            >
+              {validationError}
+            </motion.p>
+          )}
+        </AnimatePresence>
 
         <div className="pt-4 border-t border-border shrink-0">
           <Button className="w-full gap-2.5 text-sm" size="lg" onClick={handleStart}>

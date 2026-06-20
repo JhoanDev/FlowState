@@ -28,6 +28,7 @@ pub fn run() {
             commands::projects::create_project,
             commands::projects::update_project,
             commands::projects::delete_project,
+            commands::projects::archive_project,
             // Tags
             commands::tags::get_tags,
             commands::tags::create_tag,

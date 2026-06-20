@@ -896,7 +896,7 @@ dependencies = [
 
 [[package]]
 name = "flowstate"
-version = "1.2.2"
+version = "1.2.3"
 dependencies = [
  "chrono",
  "log",

@@ -56,3 +56,12 @@ export async function deleteProject(id: number): Promise<void> {
   const idx = mockProjects.findIndex((p) => p.id === id);
   if (idx !== -1) mockProjects.splice(idx, 1);
 }
+
+export async function archiveProject(id: number): Promise<void> {
+  const res = await invokeTauri<void>("archive_project", { id });
+  if (res !== null) return;
+
+  await new Promise((r) => setTimeout(r, SIMULATED_DELAY));
+  const project = mockProjects.find((p) => p.id === id);
+  if (project) project.archived = true;
+}

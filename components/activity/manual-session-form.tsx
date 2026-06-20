@@ -45,6 +45,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
   const [hoverRating, setHoverRating] = React.useState(0);
   const [notes, setNotes] = React.useState("");
   const [isSaving, setIsSaving] = React.useState(false);
+  const [validationError, setValidationError] = React.useState<string | null>(null);
   const { t } = useTranslation();
 
   const projects = useAsync(getProjects);
@@ -106,6 +107,15 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
 
   const handleSave = async () => {
     if (!canSave) return;
+    if (sessionType === "WORK" && projectId === null) {
+      setValidationError(t("session.errorProjectRequired"));
+      return;
+    }
+    if (sessionType === "STUDY" && tagIds.length === 0) {
+      setValidationError(t("session.errorTagRequired"));
+      return;
+    }
+    setValidationError(null);
     setIsSaving(true);
     try {
       let finalStartedAt: string;
@@ -176,7 +186,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
       </CardHeader>
 
       <CardContent className="p-3 xl:p-4 pt-3 flex-1 flex flex-col gap-4 min-h-0 md:overflow-y-auto">
-        <SessionTypeToggle value={sessionType} onChange={setSessionType} />
+        <SessionTypeToggle value={sessionType} onChange={(v) => { setSessionType(v); setValidationError(null); }} />
 
         {/* Input Mode Tabs */}
         <div className="flex bg-accent/50 p-1 rounded-lg w-fit shrink-0">
@@ -326,7 +336,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
             </label>
             <ProjectSelector
               value={projectId}
-              onChange={setProjectId}
+              onChange={(v) => { setProjectId(v); setValidationError(null); }}
               projects={projects.data ?? []}
               isLoading={projects.isLoading}
             />
@@ -340,7 +350,7 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
           </label>
           <TagSelector
             selectedIds={tagIds}
-            onChange={setTagIds}
+            onChange={(v) => { setTagIds(v); setValidationError(null); }}
             tags={tags.data ?? []}
             isLoading={tags.isLoading}
           />
@@ -386,6 +396,20 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
             className="flex-1 min-h-0 bg-transparent p-3 text-sm rounded-lg border border-input focus:ring-2 focus:ring-ring/50 focus:border-ring outline-none placeholder:text-muted-foreground resize-none transition-all duration-200"
           />
         </div>
+
+        <AnimatePresence>
+          {validationError && (
+            <motion.p
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="text-xs font-medium text-destructive bg-destructive/10 border border-destructive/20 rounded-lg px-3 py-2 shrink-0"
+            >
+              {validationError}
+            </motion.p>
+          )}
+        </AnimatePresence>
 
         <div className="pt-4 border-t border-border shrink-0">
           <Button
