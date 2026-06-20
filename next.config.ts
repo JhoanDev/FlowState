@@ -10,8 +10,8 @@ const nextConfig: NextConfig = {
   // basePath and assetPrefix are only needed for GitHub Pages.
   // When building for Tauri, these must be empty.
   ...(isGitHubPages && {
-    basePath: "/flowstate",
-    assetPrefix: "/flowstate",
+    basePath: "/FlowState",
+    assetPrefix: "/FlowState",
   }),
 };
 

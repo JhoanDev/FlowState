@@ -98,6 +98,24 @@ weekly_goals                      settings (key-value)
 - Booleans: stored as `INTEGER` `0`/`1`. Convert on read.
 - PRAGMAs: WAL mode and foreign keys enabled on open.
 
+## Testing (Backend only)
+
+Testes unitários existem apenas no Rust. Sem testes frontend.
+
+**Regra:** ao adicionar ou modificar um `#[tauri::command]`, adicione testes
+para a lógica interna no mesmo arquivo (`#[cfg(test)] mod tests`).
+
+- Lógica vai em funções privadas `fn <nome>_inner(conn: &Connection, ...) -> Result<T, String>`
+- Commands são wrappers finos que fazem lock e delegam
+- Testes usam `Connection::open_in_memory()` + migrations reais (sem mocks)
+
+```bash
+# Rodar todos os testes Rust
+rtk cargo test --manifest-path src-tauri/Cargo.toml
+```
+
+Use `/test-backend` para ver o padrão completo com exemplos.
+
 ## Slash Commands
 
 Use estes comandos para carregar contexto detalhado antes de trabalhar:
@@ -110,6 +128,7 @@ Use estes comandos para carregar contexto detalhado antes de trabalhar:
 | `/backend` | Trabalhar em `src-tauri/src/` — commands Rust, models, DbPool. |
 | `/database` | Alterar schema, migrations e entender mapeamento TS↔SQLite. |
 | `/deploy` | Bumpar versão, preparar release e sequência de build. |
+| `/test-backend` | Escrever ou rodar testes unitários Rust (padrão + exemplos). |
 
 Após mudanças significativas, atualize o skill correspondente somente se o
 conteúdo ficou desatualizado (ex: novo command IPC, coluna no schema, novas
@@ -117,7 +136,15 @@ regras visuais ou padrão Rust). Não atualize por mudanças pontuais de código
 
 ## Versioning & i18n
 
-- **Version bump:** sync `package.json`, `src-tauri/Cargo.toml`, and
-  `src-tauri/tauri.conf.json`. Follows SemVer.
+**A cada mudança de funcionalidade ou correção de bug, bump a versão**
+**nos 3 arquivos:**
+
+- `package.json` → campo `version`
+- `src-tauri/Cargo.toml` → campo `version`
+- `src-tauri/tauri.conf.json` → campo `version`
+
+SemVer: `PATCH` para bugfixes/ajustes visuais, `MINOR` para novas
+features, `MAJOR` para breaking changes no schema do banco.
+
 - **i18n:** Locales in `locales/en.ts`, `locales/pt-BR.ts`. Setup in
   `lib/i18n.ts` and `providers/i18n-provider.tsx`. Do not hardcode strings.
