@@ -10,6 +10,7 @@ node_modules/
 .next/
 out/
 build/
+docs/ 
 
 # Next.js telemetry & cache
 .vercel
