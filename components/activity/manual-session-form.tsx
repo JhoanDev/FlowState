@@ -92,6 +92,20 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
     });
   };
 
+  const durationWheelRef = React.useRef<HTMLDivElement>(null);
+  const adjustDurationRef = React.useRef(adjustDuration);
+  React.useEffect(() => { adjustDurationRef.current = adjustDuration; });
+  React.useEffect(() => {
+    const el = durationWheelRef.current;
+    if (!el) return;
+    const handler = (e: WheelEvent) => {
+      e.preventDefault();
+      adjustDurationRef.current(e.deltaY < 0 ? 5 : -5);
+    };
+    el.addEventListener("wheel", handler, { passive: false });
+    return () => el.removeEventListener("wheel", handler);
+  }, []);
+
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/\D/g, "");
     setDurationMin(val);
@@ -251,12 +265,9 @@ export function ManualSessionForm({ onSaved }: ManualSessionFormProps) {
                 <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block truncate">
                   {t("logbook.duration")} <span className="text-[10px] lowercase">(min)</span>
                 </label>
-                <div 
+                <div
+                  ref={durationWheelRef}
                   className="group flex items-center gap-1.5 h-10 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm transition-all duration-200 focus-within:ring-2 focus-within:ring-ring/50 focus-within:border-ring"
-                  onWheel={(e) => {
-                    e.preventDefault();
-                    adjustDuration(e.deltaY < 0 ? 5 : -5);
-                  }}
                 >
                   <ClockIcon className="w-4 h-4 text-muted-foreground shrink-0 mr-0.5" />
                   <input

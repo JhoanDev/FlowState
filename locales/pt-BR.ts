@@ -105,6 +105,8 @@ const ptBR = {
     st: "ES",
     errorProjectRequired: "Um projeto é obrigatório para sessões de Trabalho.",
     errorTagRequired: "Ao menos uma tag é obrigatória para sessões de Estudo.",
+    errorLongBreakTooShort: "A pausa longa deve ser maior que a pausa curta.",
+    errorFocusTooShort: "O foco deve ser maior que a pausa curta.",
     pomodoroFocus: "Foco",
     pomodoroShortBreak: "Pausa Curta",
     pomodoroLongBreak: "Pausa Longa",

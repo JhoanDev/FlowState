@@ -30,6 +30,22 @@ interface PomodoroFieldProps {
 }
 
 function PomodoroField({ label, value, unit, step, min, max, onChange }: PomodoroFieldProps) {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const stateRef = React.useRef({ value, step, min, max, onChange });
+  React.useEffect(() => { stateRef.current = { value, step, min, max, onChange }; });
+
+  React.useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const handler = (e: WheelEvent) => {
+      e.preventDefault();
+      const { value, step, min, max, onChange } = stateRef.current;
+      onChange(Math.min(max, Math.max(min, value + (e.deltaY < 0 ? step : -step))));
+    };
+    el.addEventListener("wheel", handler, { passive: false });
+    return () => el.removeEventListener("wheel", handler);
+  }, []);
+
   const adjust = (delta: number) =>
     onChange(Math.min(max, Math.max(min, value + delta)));
 
@@ -39,11 +55,8 @@ function PomodoroField({ label, value, unit, step, min, max, onChange }: Pomodor
         {label}
       </label>
       <div
+        ref={containerRef}
         className="group flex items-center gap-1 h-9 w-full rounded-lg border border-input bg-transparent px-2 text-sm transition-all duration-200 focus-within:ring-2 focus-within:ring-ring/50 focus-within:border-ring"
-        onWheel={(e) => {
-          e.preventDefault();
-          adjust(e.deltaY < 0 ? step : -step);
-        }}
       >
         <input
           type="text"
@@ -90,6 +103,17 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
     setValidationError(null);
   };
 
+  const handleShortMinChange = (v: number) => {
+    setShortMin(v);
+    if (v >= focusMin) setFocusMin(v + 5);
+    if (v >= longMin) setLongMin(v + 5);
+  };
+
+  const handleFocusMinChange = (v: number) => {
+    setFocusMin(v);
+    if (v <= shortMin) setShortMin(v - 1);
+  };
+
   const handleStart = () => {
     if (sessionType === "WORK" && projectId === null) {
       setValidationError(t("session.errorProjectRequired"));
@@ -97,6 +121,14 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
     }
     if (sessionType === "STUDY" && tagIds.length === 0) {
       setValidationError(t("session.errorTagRequired"));
+      return;
+    }
+    if (timerMode === "POMODORO" && focusMin <= shortMin) {
+      setValidationError(t("session.errorFocusTooShort"));
+      return;
+    }
+    if (timerMode === "POMODORO" && longMin <= shortMin) {
+      setValidationError(t("session.errorLongBreakTooShort"));
       return;
     }
     setValidationError(null);
@@ -186,9 +218,9 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
                     value={focusMin}
                     unit="min"
                     step={5}
-                    min={5}
+                    min={shortMin + 1}
                     max={120}
-                    onChange={setFocusMin}
+                    onChange={handleFocusMinChange}
                   />
                   <PomodoroField
                     label={t("session.pomodoroShortBreak")}
@@ -197,14 +229,14 @@ export function SessionConfigForm({ onStart }: SessionConfigFormProps) {
                     step={1}
                     min={1}
                     max={30}
-                    onChange={setShortMin}
+                    onChange={handleShortMinChange}
                   />
                   <PomodoroField
                     label={t("session.pomodoroLongBreak")}
                     value={longMin}
                     unit="min"
                     step={5}
-                    min={5}
+                    min={shortMin + 1}
                     max={60}
                     onChange={setLongMin}
                   />

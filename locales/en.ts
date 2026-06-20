@@ -105,6 +105,8 @@ const en = {
     st: "ST",
     errorProjectRequired: "A project is required for Work sessions.",
     errorTagRequired: "At least one tag is required for Study sessions.",
+    errorLongBreakTooShort: "Long break must be longer than short break.",
+    errorFocusTooShort: "Focus must be longer than short break.",
     pomodoroFocus: "Focus",
     pomodoroShortBreak: "Short Break",
     pomodoroLongBreak: "Long Break",
