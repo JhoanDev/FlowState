@@ -44,7 +44,8 @@ Mapeiam 1:1 com structs Rust.
 
 ```ts
 type SessionType = "WORK" | "STUDY";
-type TimerMode = "PROGRESSIVE" | "REGRESSIVE";
+type TimerMode = "PROGRESSIVE" | "POMODORO";
+type PomodoroPhase = "WORK" | "SHORT_BREAK" | "LONG_BREAK";
 type SessionStatus = "ACTIVE" | "PAUSED" | "COMPLETED" | "CANCELLED";
 type ThemeOption = "light" | "dark" | "system";
 type LanguageOption = "en" | "pt" | "es"; // "es" faz fallback para "en"

@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { SessionConfigForm } from "@/components/activity/session-config-form";
 import { ManualSessionForm } from "@/components/activity/manual-session-form";
 import { TimerDisplay } from "@/components/activity/timer-display";
+import { PomodoroDisplay } from "@/components/activity/pomodoro-display";
 import { SessionReviewForm } from "@/components/activity/session-review-form";
 import { AppLayout } from "@/components/layout/app-layout";
 import { Card } from "@/components/ui/card";
@@ -253,15 +254,21 @@ export default function SessionPage() {
               transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
               className="flex items-center justify-center h-full"
             >
-              <TimerDisplay
-                mode={sessionConfig.timerMode}
-                initialSeconds={
-                  sessionConfig.timerMode === "REGRESSIVE" && sessionConfig.plannedDurationSeconds
-                    ? sessionConfig.plannedDurationSeconds
-                    : 0
-                }
-                onFinish={handleTimerFinished}
-              />
+              {sessionConfig.timerMode === "POMODORO" ? (
+                <PomodoroDisplay
+                  workSeconds={sessionConfig.plannedDurationSeconds ?? 25 * 60}
+                  shortBreakSeconds={sessionConfig.shortBreakSeconds ?? 5 * 60}
+                  longBreakSeconds={sessionConfig.longBreakSeconds ?? 15 * 60}
+                  cyclesBeforeLongBreak={sessionConfig.cyclesBeforeLongBreak ?? 4}
+                  onFinish={handleTimerFinished}
+                />
+              ) : (
+                <TimerDisplay
+                  mode="PROGRESSIVE"
+                  initialSeconds={0}
+                  onFinish={handleTimerFinished}
+                />
+              )}
             </motion.div>
           )}
 

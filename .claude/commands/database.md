@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS sessions (
     project_id               INTEGER REFERENCES projects(id) ON DELETE SET NULL,
     timer_mode               TEXT NOT NULL
                              CHECK (timer_mode IN ('PROGRESSIVE',
-                                                   'REGRESSIVE')),
+                                                   'POMODORO')),
     status                   TEXT NOT NULL DEFAULT 'ACTIVE'
                              CHECK (status IN ('ACTIVE', 'PAUSED',
                                                'COMPLETED', 'CANCELLED')),

@@ -30,7 +30,7 @@ export const mockSessions: Session[] = [
     id: 2,
     type: "STUDY",
     projectId: null,
-    timerMode: "REGRESSIVE",
+    timerMode: "POMODORO",
     status: "COMPLETED",
     plannedDurationSeconds: 2700,
     durationSeconds: 2700, // 45m
@@ -124,7 +124,7 @@ export const mockSessions: Session[] = [
     id: 8,
     type: "STUDY",
     projectId: null,
-    timerMode: "REGRESSIVE",
+    timerMode: "POMODORO",
     status: "COMPLETED",
     plannedDurationSeconds: 5400,
     durationSeconds: 5400, // 1h 30m
@@ -214,7 +214,7 @@ export const mockSessions: Session[] = [
     id: 14,
     type: "STUDY",
     projectId: null,
-    timerMode: "REGRESSIVE",
+    timerMode: "POMODORO",
     status: "COMPLETED",
     plannedDurationSeconds: 3600,
     durationSeconds: 3600, // 1h
@@ -352,7 +352,7 @@ export const mockSessions: Session[] = [
     id: 23,
     type: "STUDY",
     projectId: null,
-    timerMode: "REGRESSIVE",
+    timerMode: "POMODORO",
     status: "COMPLETED",
     plannedDurationSeconds: 2700,
     durationSeconds: 2700, // 45m
@@ -412,7 +412,7 @@ export const mockSessions: Session[] = [
     id: 27,
     type: "STUDY",
     projectId: null,
-    timerMode: "REGRESSIVE",
+    timerMode: "POMODORO",
     status: "COMPLETED",
     plannedDurationSeconds: 3600,
     durationSeconds: 3600, // 1h
@@ -502,7 +502,7 @@ export const mockSessions: Session[] = [
     id: 33,
     type: "STUDY",
     projectId: null,
-    timerMode: "REGRESSIVE",
+    timerMode: "POMODORO",
     status: "COMPLETED",
     plannedDurationSeconds: 5400,
     durationSeconds: 5400, // 1h 30m
@@ -552,7 +552,7 @@ export const mockSessions: Session[] = [
     id: 36,
     type: "STUDY",
     projectId: null,
-    timerMode: "REGRESSIVE",
+    timerMode: "POMODORO",
     status: "COMPLETED",
     plannedDurationSeconds: 7200,
     durationSeconds: 7200, // 2h
@@ -642,7 +642,7 @@ export const mockSessions: Session[] = [
     id: 42,
     type: "STUDY",
     projectId: null,
-    timerMode: "REGRESSIVE",
+    timerMode: "POMODORO",
     status: "COMPLETED",
     plannedDurationSeconds: 3600,
     durationSeconds: 3600, // 1h
@@ -702,7 +702,7 @@ export const mockSessions: Session[] = [
     id: 46,
     type: "STUDY",
     projectId: null,
-    timerMode: "REGRESSIVE",
+    timerMode: "POMODORO",
     status: "COMPLETED",
     plannedDurationSeconds: 5400,
     durationSeconds: 5400, // 1h 30m
@@ -768,7 +768,7 @@ export const mockSessions: Session[] = [
     id: 50,
     type: "STUDY",
     projectId: null,
-    timerMode: "REGRESSIVE",
+    timerMode: "POMODORO",
     status: "COMPLETED",
     plannedDurationSeconds: 2700,
     durationSeconds: 2700, // 45m
@@ -896,7 +896,7 @@ export const mockSessions: Session[] = [
     id: 58,
     type: "STUDY",
     projectId: null,
-    timerMode: "REGRESSIVE",
+    timerMode: "POMODORO",
     status: "COMPLETED",
     plannedDurationSeconds: 3600,
     durationSeconds: 3600, // 1h

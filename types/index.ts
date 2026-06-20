@@ -3,7 +3,9 @@
 
 export type SessionType = "WORK" | "STUDY";
 
-export type TimerMode = "PROGRESSIVE" | "REGRESSIVE";
+export type TimerMode = "PROGRESSIVE" | "POMODORO";
+
+export type PomodoroPhase = "WORK" | "SHORT_BREAK" | "LONG_BREAK";
 
 export type SessionStatus = "ACTIVE" | "PAUSED" | "COMPLETED" | "CANCELLED";
 
@@ -30,7 +32,7 @@ export interface Session {
   projectId: number | null;
   timerMode: TimerMode;
   status: SessionStatus;
-  plannedDurationSeconds: number | null; // for REGRESSIVE mode
+  plannedDurationSeconds: number | null; // for POMODORO mode (single work interval)
   durationSeconds: number;
   startedAt: string; // ISO 8601
   finishedAt: string | null;
@@ -97,6 +99,10 @@ export interface SessionStartConfig {
   plannedDurationSeconds: number | null;
   projectId: number | null;
   tagIds: number[];
+  // Pomodoro-only fields (undefined when timerMode !== "POMODORO")
+  shortBreakSeconds?: number;
+  longBreakSeconds?: number;
+  cyclesBeforeLongBreak?: number;
 }
 
 export interface TodayStats {

@@ -20,6 +20,10 @@
   <img src="https://img.shields.io/badge/SQLite-local--first-003B57?logo=sqlite" alt="SQLite" />
 </p>
 
+> **Quer experimentar agora mesmo?**  
+> Acesse a versão web de demonstração com dados mockados em: [**jhoandev.github.io/FlowState**](https://jhoandev.github.io/FlowState/).  
+> Nela você pode testar a interface de usuário, simular cronômetros de foco, gerenciar projetos e tags fictícios, planejar metas e explorar todo o painel de métricas diretamente no seu navegador, sem precisar compilar ou instalar nada localmente.
+
 ---
 
 ## Sobre

@@ -440,10 +440,10 @@ mod tests {
         let conn = setup();
         let pid = insert_project(&conn, "Projeto");
         let mut input = work_input(Some(pid));
-        input.timer_mode = "REGRESSIVE".into();
+        input.timer_mode = "POMODORO".into();
         input.planned_duration_seconds = Some(1500);
         let s = insert_session_inner(&conn, &input).unwrap();
-        assert_eq!(s.timer_mode, "REGRESSIVE");
+        assert_eq!(s.timer_mode, "POMODORO");
         assert_eq!(s.planned_duration_seconds, Some(1500));
     }
 

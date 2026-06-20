@@ -17,6 +17,8 @@ pub fn init_db(app: &tauri::App) -> Result<DbPool, Box<dyn std::error::Error>> {
         let conn = pool.0.lock().map_err(|e| format!("Lock error: {}", e))?;
         conn.execute_batch(migrations::CREATE_TABLES)
             .map_err(|e| format!("Migration error: {}", e))?;
+        migrations::migrate_regressive_to_pomodoro(&conn)
+            .map_err(|e| format!("Migration v2 error: {}", e))?;
     }
 
     log::info!("Database initialized at {:?}", db_path);
