@@ -26,8 +26,8 @@ Toda alteração de versão deve atualizar os 3 arquivos simultaneamente:
 - O deploy do preview web é hospedado no **GitHub Pages**.
 - Como roda puramente no navegador (sem Tauri), o backend retorna `null` e o
   frontend carrega **obrigatoriamente os dados mockados** (`mocks/`).
-- **Automação:** Configurado via `.github/workflows/deploy-pages.yml`
-  para rodar automaticamente no push da branch `main`.
+- **Automação:** Configurado via `.github/workflows/pages.yml` para rodar
+  automaticamente no push da branch `main`.
 
 ## 4. Dependências do Sistema & Build (Referência)
 
