@@ -6,7 +6,7 @@ export type { TimerMode };
 interface UseSessionTimerProps {
   initialSeconds?: number;
   mode?: TimerMode;
-  onTimerComplete?: () => void;
+  onTimerComplete?: (elapsedSeconds: number) => void;
 }
 
 export function useSessionTimer({
@@ -28,13 +28,13 @@ export function useSessionTimer({
         setIsActive(false);
         setIsPaused(false);
         if (prev > 0 && onTimerComplete) {
-          setTimeout(onTimerComplete, 0);
+          setTimeout(() => onTimerComplete(initialSeconds), 0);
         }
         return 0;
       }
       return next;
     });
-  }, [mode, onTimerComplete]);
+  }, [mode, initialSeconds, onTimerComplete]);
 
   useEffect(() => {
     if (isActive && !isPaused) {

@@ -33,6 +33,7 @@ export default function SessionPage() {
   const [startedAt, setStartedAt] = React.useState<Date | null>(null);
   const [finishedAt, setFinishedAt] = React.useState<Date | null>(null);
   const [activePanel, setActivePanel] = React.useState<ActivePanel>("config");
+  const [elapsedSeconds, setElapsedSeconds] = React.useState<number | null>(null);
   const { settings } = useSettings();
   const { t } = useTranslation();
 
@@ -56,10 +57,12 @@ export default function SessionPage() {
   const handleSessionStarted = (config: SessionStartConfig) => {
     setSessionConfig(config);
     setStartedAt(new Date());
+    setElapsedSeconds(null);
     setSessionState("ACTIVE");
   };
 
-  const handleTimerFinished = () => {
+  const handleTimerFinished = (secs: number) => {
+    setElapsedSeconds(secs);
     setFinishedAt(new Date());
     setSessionState("REVIEW");
   };
@@ -71,7 +74,9 @@ export default function SessionPage() {
     }
 
     const finalFinishedAt = finishedAt || new Date();
-    const durationSeconds = Math.max(1, Math.round((finalFinishedAt.getTime() - startedAt.getTime()) / 1000));
+    const durationSeconds = elapsedSeconds !== null
+      ? elapsedSeconds
+      : Math.max(1, Math.round((finalFinishedAt.getTime() - startedAt.getTime()) / 1000));
 
     const sessionPayload: Omit<Session, "id" | "createdAt"> = {
       type: sessionConfig.type,
@@ -109,7 +114,9 @@ export default function SessionPage() {
 
   const getSessionSummary = () => {
     if (!startedAt || !finishedAt) return null;
-    const duration = Math.max(1, Math.round((finishedAt.getTime() - startedAt.getTime()) / 1000));
+    const duration = elapsedSeconds !== null
+      ? elapsedSeconds
+      : Math.max(1, Math.round((finishedAt.getTime() - startedAt.getTime()) / 1000));
     return (
       <div className="mb-6 p-4 rounded-lg bg-accent/30 border border-border flex flex-col gap-2.5 text-sm">
         <div className="flex justify-between items-center">

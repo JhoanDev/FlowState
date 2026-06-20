@@ -10,7 +10,7 @@ import type { TimerMode } from "@/types";
 interface TimerDisplayProps {
   initialSeconds?: number;
   mode?: TimerMode;
-  onFinish?: () => void;
+  onFinish?: (elapsedSeconds: number) => void;
 }
 
 function AnimatedDigit({ digit, isActive }: { digit: string; isActive: boolean }) {
@@ -54,6 +54,7 @@ export function TimerDisplay({
   onFinish,
 }: TimerDisplayProps) {
   const {
+    seconds,
     formattedTime,
     isActive,
     isPaused,
@@ -115,8 +116,9 @@ export function TimerDisplay({
 
           <button
             onClick={() => {
+              const elapsed = mode === "PROGRESSIVE" ? seconds : initialSeconds - seconds;
               stop();
-              onFinish?.();
+              onFinish?.(elapsed);
             }}
             className="flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-lg border border-border text-sm font-semibold text-foreground transition-all duration-200 hover:bg-accent active:scale-[0.97]"
           >
