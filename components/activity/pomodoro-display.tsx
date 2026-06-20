@@ -121,7 +121,7 @@ export function PomodoroDisplay({
     ? isPaused
       ? t("session.pause")
       : phaseLabel
-    : "Ready";
+    : t("session.pomodoroReady");
 
   return (
     <Card className="w-full max-w-3xl">

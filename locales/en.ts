@@ -117,7 +117,8 @@ const en = {
     pomodoroAccumulated: "{{time}} accumulated",
     pomodoroRound: "Round {{n}}",
     pomodoroCyclesHint: "rounds → long break",
-    pomodoroCycleSummary: "{{focus}}m focus · {{short}}m / {{long}}m break · ×{{cycles}} → long break",
+    pomodoroCycleSummary: "Focus {{focus}}m → short break {{short}}m · every {{cycles}} rounds → long break {{long}}m",
+    pomodoroReady: "Ready",
   },
 
   // ─── Projects & Tags ─────────────────────────────────────────

@@ -117,7 +117,8 @@ const ptBR = {
     pomodoroAccumulated: "{{time}} acumulado",
     pomodoroRound: "Rodada {{n}}",
     pomodoroCyclesHint: "rodadas → pausa longa",
-    pomodoroCycleSummary: "{{focus}}m foco · {{short}}m / {{long}}m pausa · ×{{cycles}} → pausa longa",
+    pomodoroCycleSummary: "Foco {{focus}}m → pausa curta {{short}}m · a cada {{cycles}} rodadas → pausa longa {{long}}m",
+    pomodoroReady: "Pronto",
   },
 
   // ─── Projects & Tags ─────────────────────────────────────────
